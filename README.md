@@ -7,4 +7,5 @@ This is a creepy talking head with eyes.
 - Raspberry Pi 3B+
 - Adafruit Eye Bonnent Kit
 
-
+# Getting going:
+Start with a 'dotnet restore'

@@ -18,7 +18,10 @@ namespace Magic8Head
             while (true)
             {
                 var status = controller.Read(buttonPin);
-                Console.WriteLine ($"Button is {status}");
+                
+                if (status == PinValue.Low)
+                    SaySomethingNice();
+                    
                 Thread.Sleep (100);
             }
         }
@@ -29,6 +32,12 @@ namespace Magic8Head
             controller = new GpioController(0, new RaspberryPi3Driver());
 
             controller.OpenPin (buttonPin, PinMode.InputPullUp);
+        }
+
+        public static void SaySomethingNice()
+        {
+            System.Console.WriteLine("Say something!!!");
+            return;
         }
     }
 }
