@@ -29,7 +29,7 @@ namespace Magic8Head
                 if (status == PinValue.Low)
                     SaySomethingNice();
                     
-                Thread.Sleep (100);
+                Thread.Sleep (200);
             }
         }
 
@@ -49,7 +49,8 @@ namespace Magic8Head
             sayings = new List<string>
             {
                 "Greetings Programs!",
-                "Have a nice Day"
+                "Have a nice Day",
+                "Ralph helps sooooooo much!"
             };
         }
 
