@@ -1,60 +1,72 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Device.Gpio;
 using System.Device.Gpio.Drivers;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.IO;
-using System.Diagnostics;
-using System.Collections.Generic;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
-namespace Magic8Head
+namespace Magic8HeadService
 {
-    class Program
+    public class Worker : BackgroundService
     {
-        static int buttonPin = 7;
-        static GpioController controller;
-        static List<string> sayings;
-        static Random random;
+        private readonly ILogger<Worker> _logger;
+        
+        int buttonPin = 7;
+        GpioController controller;
+        List<string> sayings;
+        Random random;
 
-        static async Task Main(string[] args)
+        public Worker(ILogger<Worker> logger)
         {
+            _logger = logger;
+
             SetupGPIO();
 
             SetupSayings();
+        }
 
-            while (true)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            while (!stoppingToken.IsCancellationRequested)
             {
+                //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 var status = controller.Read(buttonPin);
                 
                 if (status == PinValue.Low)
                     SaySomethingNice();
-                    
-                Thread.Sleep (200);
+
+                await Task.Delay(100, stoppingToken);
             }
         }
 
-        public static void SetupGPIO()
+        public void SetupGPIO()
         {
-            System.Console.WriteLine("Setiing up GPIO...");
+            _logger.LogInformation("Setiing up GPIO...");
             controller = new GpioController(0, new RaspberryPi3Driver());
 
             controller.OpenPin (buttonPin, PinMode.InputPullUp);
         }
 
-        public static void SetupSayings()
+        public void SetupSayings()
         {
-            System.Console.WriteLine("Setiing up Sayings...");
+            _logger.LogInformation("Setiing up Sayings...");
 
             random = new Random();
             sayings = new List<string>
             {
                 "Greetings Programs!",
                 "Have a nice Day",
-                "Ralph helps sooooooo much!"
+                "Ralph helps sooooooo much!",
+                "I think you should'nt have gotten out of bed today!"
             };
         }
 
-        public static void SaySomethingNice()
+        public void SaySomethingNice()
         {
             using (Process fliteProcess = new Process())
             {
@@ -73,7 +85,7 @@ namespace Magic8Head
                 var streamWriter = fliteProcess.StandardInput;
                 
                 var inputText = PickSaying();
-                System.Console.WriteLine($"Saying: {inputText}");
+                _logger.LogInformation($"Saying: {inputText}");
 
                 streamWriter.WriteLine(inputText);
                 streamWriter.Close();
@@ -84,13 +96,13 @@ namespace Magic8Head
             return;
         }
 
-        public static string PickSaying()
+        public string PickSaying()
         {
             var index = random.Next(sayings.Count);
-            System.Console.WriteLine($"count: {sayings.Count}, random: {index}");
+            _logger.LogInformation($"count: {sayings.Count}, random: {index}");
             var picked = sayings[index];
 
             return picked;
-        }
+        }        
     }
 }
