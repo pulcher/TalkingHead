@@ -9,3 +9,9 @@ This is a creepy talking head with eyes.
 
 # Getting going:
 Start with a 'dotnet restore'
+
+# Dev steps
+* mkdir Magic8HeadService
+* cd Magic8HeadService
+* dotnet new worker
+

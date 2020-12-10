@@ -34,7 +34,6 @@ namespace Magic8HeadService
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 var status = controller.Read(buttonPin);
                 
                 if (status == PinValue.Low)
