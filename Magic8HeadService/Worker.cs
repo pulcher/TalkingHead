@@ -85,6 +85,7 @@ namespace Magic8HeadService
                 "I will answer you tomorrow.",
                 "Catastrophies are always emminent!",
                 "Dogsaters happen at the wosrt of times!",
+                "Everything happens for a reason, sometimes the reason is you're stupid and make bad decisions:wq"
             };
         }
 
