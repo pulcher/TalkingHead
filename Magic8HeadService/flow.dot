@@ -1,0 +1,43 @@
+digraph {
+    Twitch -> TalkingHeadTwitchClient
+    TalkingHeadTwitchClient -> Twitch
+    TalkingHeadTwitchClient -> Microphone
+    
+    TalkingHeadTwitchClient -> AnnoucesStuff
+
+    TalkingHeadTwitchClient -> CogServices
+    TalkingHeadTwitchClient -> Games
+    Games -> "!mbh trivia"
+
+    CogServices -> NaturalLanguageParsing
+    CogServices -> SpeechToText
+    CogServices -> TextToSpeech
+    CogServices -> Intent
+    CogServices -> PIIDetection
+    CogServices -> CortanaSearchAndMath
+    
+    "!mbh Say 'stuff'" -> Twitch
+    "!mbh question [who are you?]" -> Twitch
+    "!mbh math [some text]" -> Twitch
+    "!mbh voice [list|use voice]" -> Twitch
+    "!mbh Turets [on|off]" -> Twitch
+    "!mbh Language [language]" -> Twitch
+    "!mbh dad joke" -> Twitch
+    Raid -> Twitch
+    Joined -> Twitch
+    Subscribed -> Twitch
+    "!mbh wink [left|right|both] eyes" -> Twitch
+    "!mbh mode [snark|positive|moon zappa]" -> Twitch
+    "!mbh [what is the asnwer to life, the universe and everything]" -> Twitch
+
+    TalkingHeadService -> Configuration
+    Configuration -> Quips
+    Quips -> snark
+    Quips -> family
+    Quips -> zen
+    Quips -> inspirational
+    Quips -> allDisaster
+    Quips -> WinnieThePooh
+    Configuration -> CurrentVoice
+
+}
