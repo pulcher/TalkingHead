@@ -16,19 +16,24 @@ digraph {
     CogServices -> PIIDetection
     CogServices -> CortanaSearchAndMath
     
-    "!mbh Say 'stuff'" -> Twitch
-    "!mbh question [who are you?]" -> Twitch
-    "!mbh math [some text]" -> Twitch
-    "!mbh voice [list|use voice]" -> Twitch
-    "!mbh Turets [on|off]" -> Twitch
-    "!mbh Language [language]" -> Twitch
-    "!mbh dad joke" -> Twitch
-    Raid -> Twitch
-    Joined -> Twitch
-    Subscribed -> Twitch
-    "!mbh wink [left|right|both] eyes" -> Twitch
-    "!mbh mode [snark|positive|moon zappa]" -> Twitch
-    "!mbh [what is the asnwer to life, the universe and everything]" -> Twitch
+    subgraph Commands {
+        label= "Commands";
+        "!mbh Say 'stuff'" -> Twitch
+        "!mbh question [who are you?]" -> Twitch
+        "!mbh math [some text]" -> Twitch
+        "!mbh voice [list|use voice]" -> Twitch
+        "!mbh Turets [on|off]" -> Twitch
+        "!mbh Language [language]" -> Twitch
+        "!mbh dad joke" -> Twitch
+        Raid -> Twitch
+        Joined -> Twitch
+        Subscribed -> Twitch
+        "!mbh wink [left|right|both] eyes" -> Twitch
+        "!mbh mode [snark|positive|moon zappa]" -> Twitch
+        "!mbh [what is the asnwer to life, the universe and everything]" -> Twitch
+        "!mbh set a timer for 45 minutes" -> Twitch
+        "!mbh feed the pets a treat" -> Twitch
+    }
 
     TalkingHeadService -> Configuration
     Configuration -> Quips
