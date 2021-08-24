@@ -84,8 +84,8 @@ namespace Magic8HeadService
                 "Up is down, down is up, and sideways is straight ahead!",
                 "I will answer you tomorrow.",
                 "Catastrophies are always emminent!",
-                "Dogsaters happen at the wosrt of times!",
-                "Everything happens for a reason, sometimes the reason is you're stupid and make bad decisions:wq"
+                "Dogsasters happen at the worst of times!",
+                "Everything happens for a reason, sometimes the reason is you're stupid and make bad decisions."
             };
         }
 
