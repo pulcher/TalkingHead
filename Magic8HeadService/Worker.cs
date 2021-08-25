@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 
 namespace Magic8HeadService
 {
@@ -26,6 +27,12 @@ namespace Magic8HeadService
         {
             _logger = logger;
             this.config = config;
+
+            var defaultLogLevel = config["Logging:LogLevel:Default"];
+            _logger.LogInformation($"defaultLogLevel = {defaultLogLevel}");
+
+            var userName = config["TwitchBotConfiguration:UserName"];
+            _logger.LogInformation($"username is {userName}");
 
             SetupGPIO();
 
