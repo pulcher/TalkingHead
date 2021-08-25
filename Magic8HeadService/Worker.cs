@@ -15,15 +15,17 @@ namespace Magic8HeadService
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
+        public readonly IConfiguration config;
         
         int buttonPin = 7;
         GpioController controller;
         List<string> sayings;
         Random random;
 
-        public Worker(ILogger<Worker> logger)
+        public Worker(ILogger<Worker> logger, IConfiguration config)
         {
             _logger = logger;
+            this.config = config;
 
             SetupGPIO();
 
