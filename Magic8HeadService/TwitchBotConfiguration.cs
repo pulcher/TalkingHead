@@ -1,4 +1,4 @@
-namespace Magic8HeadService.TwitchBotConfiguration
+namespace Magic8HeadService
 {
     public class TwitchBotConfiguration
     {
