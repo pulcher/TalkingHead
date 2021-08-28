@@ -32,7 +32,9 @@ namespace Magic8HeadService
             _logger.LogInformation($"defaultLogLevel = {defaultLogLevel}");
 
             var userName = config["TwitchBotConfiguration:UserName"];
-            _logger.LogInformation($"username is {userName}");
+            var accessToken = config["TwitchBotConfiguration:AccessToken"];
+
+            var twitchBot = new TwitchBot(userName, accessToken, _logger);
 
             SetupGPIO();
 
