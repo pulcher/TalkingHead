@@ -1,5 +1,7 @@
 using System;
 using System.Diagnostics;
+using System.Collections.Generic;
+using System.Linq;
 using TwitchLib.Client;
 using TwitchLib.Client.Enums;
 using TwitchLib.Client.Events;
@@ -81,31 +83,35 @@ namespace Magic8HeadService
 
         private void Client_OnChatCommandReceived(object sender, OnChatCommandReceivedArgs e)
 		{
-            client.SendMessage(e.Command.ChatMessage.Channel, $"I have received ${e.Command.ChatMessage.Username}'s command.  Are you postive you want me to: {e.Command.ArgumentsAsString}");
+            client.SendMessage(e.Command.ChatMessage.Channel, $"I have received {e.Command.ChatMessage.Username}'s command.  Are you postive you want me to: {e.Command.ArgumentsAsString}");
 
-			// var mostRecentStreamKey = StreamSnapshot.GetMostRecentStreamId("TaleLearnCode");
-			// if (mostRecentStreamKey != _StreamKey)
-			// {
-			// 	_StreamKey = mostRecentStreamKey;
-			// 	_BricksDropped = 0;
-			// 	_Oofs = 0;
-			// }
+            IMbhCommand action = new NullCommand(logger);
 
-			// switch (e.Command.CommandText.ToLower())
-			// {
-			// 	case "dropbrick":
-			// 		DropBrick(e);
-			// 		break;
-			// 	case "oof":
-			// 		Oof(e);
-			// 		break;
-			// 	case "stats":
-			// 		Stats();
-			// 		break;
-			// 	case "resetproject":
-			// 		ResetProject(e);
-			// 		break;
-			// }
+            logger.LogInformation($"command is: {e.Command.CommandText.ToLower()}");
+            logger.LogInformation($"args is null? : '{e.Command.ArgumentsAsList == null}'");             
+
+            switch (e.Command.ArgumentsAsList.FirstOrDefault()?.ToLower())
+            {
+                case AvailableCommands.Help:
+                case "":
+                case null:
+                    action = new HelpCommand(logger);
+                    break;
+                // case AvailableCommands.Ask:
+                // 	action = new askCommand();
+                // 	break;
+            // 	case "stats":
+            // 		Stats();
+            // 		break;
+            // 	case "resetproject":
+            // 		ResetProject(e);
+            // 		break;
+                // default:
+                //     action = new huhCommand();
+                //     break;
+            }
+            
+            action.Handle(e);
 		}
     }
 }
