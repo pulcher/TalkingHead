@@ -9,21 +9,32 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 
 namespace Magic8HeadService
 {
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
+        public readonly IConfiguration config;
         
         int buttonPin = 7;
         GpioController controller;
         List<string> sayings;
         Random random;
 
-        public Worker(ILogger<Worker> logger)
+        public Worker(ILogger<Worker> logger, IConfiguration config)
         {
             _logger = logger;
+            this.config = config;
+
+            var defaultLogLevel = config["Logging:LogLevel:Default"];
+            _logger.LogInformation($"defaultLogLevel = {defaultLogLevel}");
+
+            var userName = config["TwitchBotConfiguration:UserName"];
+            var accessToken = config["TwitchBotConfiguration:AccessToken"];
+
+            var twitchBot = new TwitchBot(userName, accessToken, _logger);
 
             SetupGPIO();
 
@@ -84,8 +95,8 @@ namespace Magic8HeadService
                 "Up is down, down is up, and sideways is straight ahead!",
                 "I will answer you tomorrow.",
                 "Catastrophies are always emminent!",
-                "Dogsaters happen at the wosrt of times!",
-                "Everything happens for a reason, sometimes the reason is you're stupid and make bad decisions:wq"
+                "Dogsasters happen at the worst of times!",
+                "Everything happens for a reason, sometimes the reason is you're stupid and make bad decisions."
             };
         }
 

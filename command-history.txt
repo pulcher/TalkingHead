@@ -1,0 +1,364 @@
+399  cd repos
+  400  dir
+  401  cd TalkingHead/
+  402  dir
+  403  cd Magic8Head/
+  404  dir
+  405  dotnet run
+  406  cd ..
+  407  git status
+  408  git diff
+  409  git pull
+  410  dotnet run
+  411  cd Magic8Head/
+  412  dotnet run
+  413  git diff
+  414  dotnet run
+  415  git status
+  416  git diff
+  417  git reset HEAD
+  418  git stash
+  419  git status
+  420  dotnet run
+  421  git status
+  422  git diff
+  423  git commit -am "ok, so delegates sorta blow for the moment. :("
+  424  git push
+  425  cd ..
+  426  dir
+  427  mkdir WorkerTest
+  428  cd WorkerTest
+  429  dotnet new worker
+  430  cd ..
+  431  dir
+  432  ls -l
+  433  git status
+  434  git add .
+  435  git status
+  436  git commit -am "added a worker test for daemons."
+  437  git push
+  438  sudo shutdown -h now
+  439  sudo top
+  440  systemd
+  441  man systemd
+  442  dir
+  443  cd repos
+  444  dir
+  445  cd TalkingHead/
+  446  dir
+  447  cd WorkerTest/
+  448  dir
+  449  ls -la
+  450  more appsettings.json
+  451  cd Properties/
+  452  dir
+  453  more launchSettings.json
+  454  cd ..
+  455  dir
+  456  more WorkerTest.csproj
+  457  more Program.cs
+  458  more Worker.cs
+  459  sudo shutdown -h now
+  460  cd repos
+  461  dir
+  462  cd TalkingHead/
+  463  git fetch -p
+  464  git pull
+  465  cd Magic8Head/
+  466  dir
+  467  dotnet run
+  468  cd ..dir
+  469  cd ../WorkerTest/
+  470  dir
+  471  dotnet add package Microsoft.Extensions.Hosting.Systemd --version 5.0.1
+  472  cd ..
+  473  cd Magic8Head/
+  474  sudo mkdir -p /srv/Magic8Head
+  475  sudo chown pi /srv/Magic8Head/
+  476  dotnet publich -c Release -o /srv/Magic8Head
+  477  dotnet publish -c Release -o /srv/Magic8Head
+  478  /srv/Magic8Head/Magic8Head
+  479  dir
+  480  cd ..
+  481  mkdir Magic8HeadService
+  482  cd Magic8HeadService
+  483  dotnet new worker
+  484  dir
+  485  dotnet run
+  486  dotnet restore
+  487  sudo mkdir /srv/Magic8HeadService
+  488  sudo chown pi /srv/Magic8HeadService/
+  489  dotnet publish -c Release -o /srv/Magic8HeadService/
+  490  /srv/Magic8HeadService/Magic8HeadService
+  491  date
+  492  env
+  493  sudo cp Magic8HeadService.service /etc/systemd/system/
+  494  sudo systemctl daemon-reload
+  495  sudo systemctl start Magic8HeadService
+  496  systemctl status
+  497  sudo journalctl -u Magic8HeadService
+  498  sudo systemctl stop Magic8HeadService
+  499  sudo journalctl -u Magic8HeadService
+  500  sudo cp Magic8HeadService.service /etc/systemd/system/
+  501  sudo systemctl daemon-reload
+  502  sudo systemctl restart Magic8HeadService
+  503  sudo journalctl -u Magic8HeadService
+  504  sudo systemctl restart Magic8HeadService
+  505  sudo journalctl -u Magic8HeadService
+  506  sudo systemctl enable Magic8HeadService
+  507  cd /etc/systemd/system/
+  508  ls
+  509  cd multi-user.target.wants/
+  510  dir
+  511  more Magic8HeadService.service
+  512  cd ..
+  513  cd
+  514  cd repos/TalkingHead/Magic8HeadService/
+  515  dir
+  516  dotnet run
+  517  dotnet restore
+  518  dotnet run
+  519  history
+  520  dotnet publish -c Release -o /srv/Magic8HeadService/\
+  521  sudo systemctl stop Magic8HeadService
+  522  dotnet publish -c Release -o /srv/Magic8HeadService/\
+  523  sudo systemctl start Magic8HeadService
+  524  sudo journalctl -p 3 -u Magic8HeadService
+  525  sudo journalctl -u Magic8HeadService
+  526  man journalctl
+  527  sudo journalctl -u Magic8HeadService -follow
+  528  sudo journalctl -u Magic8HeadService --follow
+  529  sudo shutdown -r now
+  530  sudo systemctl stop -u Magic8HeadService
+  531  sudo systemctl stop Magic8HeadService
+  532  sudo systemctl start Magic8HeadService
+  533  sudo systemctl restart Magic8HeadService
+  534  exit
+  535  dir
+  536  cd dotnet
+  537  ls
+  538  env
+  539  sudo top
+  540  sudo journalctl -u Magic8HeadService --follow
+  541  cd repos/TalkingHead/
+  542  dir
+  543  rm -rf Magic8Head
+  544  git status
+  545  git add .
+  546  git status
+  547  git commit -am "got the magic8 service in place"
+  548  ls
+  549  git status
+  550  git commit -am "milestone hit"
+  551  git push
+  552  sudo top
+  553  history
+  554  cd /etc/systemd/
+  555  dir
+  556  cd system/
+  557  dir
+  558  more Magic8HeadService.service
+  559  ls
+  560  cd multi-user.target.wants/
+  561  ls -l
+  562  history
+  563  sudo journalctl -u Magic8HeadService -follow
+  564  sudo journalctl -u Magic8HeadService --follow
+  565  cd
+  566  cd repos/TalkingHead/
+  567  git status
+  568  git commit -am "some things to clean up later on how to run things"
+  569  git push
+  570  dir
+  571  rm -rf WorkerTest/
+  572  dir
+  573  git status
+  574  git commit -am "removed worker test noise"
+  575  git push
+  576  mkdir TalkingHeadTwitch
+  577  cd TalkingHeadTwitch/
+  578  dotnet new worker
+  579  git status
+  580  dir
+  581  ls -l
+  582  dotnet run
+  583  sudo /srv/TalkingHeadTwitch
+  584  sudo mkdir /srv/TalkingHeadTwitch
+  585  sudo chown pi /srv/TalkingHeadTwitch/
+  586  dotnet publish -c Release -o /srv/TalkingHeadTwitch/
+  587  /srv/TalkingHeadTwitch/TalkingHeadTwitch
+  588  dir
+  589  mv Magic8HeadService.service TalkingHeadTwitch.service
+  590  sudo cp TalkingHeadTwitch.service /etc/systemd/system
+  591  sudo systemctl daemon-reload
+  592  sudo systemctl start TalkingHeadTwitch
+  593  systemctl status
+  594  sudo journalctl -u TalkingHeadTwitch
+  595  sudo systemctl stop TalkingHeadTwitch
+  596  cd ..
+  597  git status
+  598  git add .
+  599  git status
+  600  git commit -am "Added the beginning of the TalkingHeadTwitch service"
+  601  git push
+  602  sudo shutdown -h now
+  603  history
+  604  cd repos/
+  605  dir
+  606  cd TalkingHead/
+  607  dir
+  608  cd Magic8HeadService/
+  609  dir
+  610  vi Worker.cs
+  611  dotnet publish -c Release -o /srv/TalkingHeadTwitch/
+  612  sudo systemctl restart TalkingHeadService
+  613  sudo systemctl restart Magic8Head
+  614  sudo systemctl restart Magic8HeadService
+  615  sudo systemctl stop Magic8HeadService
+  616  /srv/Magic8HeadService/Magic8HeadService
+  617  ls -la
+  618  vi Worker.cs
+  619  dotnet run
+  620  vi Worker.cs
+  621  dotnet run
+  622  dotnet publish -c Release -o /srv/Magic8HeadService/
+  623  sudo systemctl restart Magic8HeadService
+  624  sudo shutdown -h now
+  625  shutdown -h now
+  626  sudo shutdown -h now
+  627  top
+  628  sudo shutdown -h now
+  629  dir
+  630  cd /var
+  631  dir
+  632  cd run
+  633  dir
+  634  cd /etc
+  635  view rc.local
+  636  cd /boot
+  637  dir
+  638  cd Pi_Eyes/
+  639  dir
+  640  sudo vi eyes.py
+  641  exit
+  642  cd .ssh
+  643  dir
+  644  cd .ssh
+  645  dir
+  646  ls -la
+  647  cd .config
+  648  dir
+  649  cd ..
+  650  which ssh
+  651  ssh-keygen
+  652  ip address
+  653  cd /etc/ssh/
+  654  dir
+  655  ls -la
+  656  moer ssh_host_rsa_key
+  657  more ssh_host_rsa_key
+  658  sudo more ssh_host_rsa_key
+  659  dir
+  660  exit
+  661  sudo shutdown -h now
+  662  sudo shtudown -h now
+  663  sudo shutdown -h now
+  664  exit
+  665  ls -la
+  666  exit
+  667  cd .ssh
+  668  dir
+  669  ls -la
+  670  cd .ssh
+  671  more .ssh
+  672  mv .ssh id_rsa.pub
+  673  mkdir .ssh
+  674  mv id_rsa.pub .ssh/authorized_keys
+  675  clear
+  676  ls
+  677  dr
+  678  dir
+  679  cd work
+  680  dir
+  681  cd ..\repos
+  682  dir
+  683  cd ..
+  684  dir
+  685  cd repos/
+  686  dir
+  687  cd TalkingHead/
+  688  dir
+  689  git status
+  690  cd Magic8HeadService/
+  691  dir
+  692  cd ..
+  693  cat /proc/sys/fs/inotify/max_user_watches
+  694  sudo vi /etc/sysctl.conf
+  695  sudo sysctl -p .
+  696  cd TalkingHead/
+  697  git fetch -p
+  698  git pull
+  699  git status
+  700  git diff
+  701  git commit -am "straightened up some code and fixed some misspelling"
+  702  git push
+  703  ls -l
+  704  asdl;fkjasdf;laskdjf
+  705  cd
+  706  dotnet --list-sdks
+  707  mkdri temp
+  708  mkdir temp
+  709  cd temp
+  710  dotnet new worker someworker
+  711  dotnet new worker -n someworker
+  712  dotnet run
+  713  dir
+  714  cd someworker/
+  715  dir
+  716  dotnet run
+  717  dir
+  718  ls -l
+  719  more Program.cs
+  720  more Worker.cs
+  721  more Program.cs
+  722  more Worker.cs
+  723  exit
+  724  sudo top
+  725  exit
+  726  sudo shutdown -h now
+  727  history
+  728  sudo journalctl -u Magic8HeadService
+  729  sudo systemctl stop Magic8HeadService
+  730  sudo journalctl -u Magic8HeadService
+  731  sudo systemctl start Magic8HeadService
+  732  clear
+  733  cd work
+  734  dotnet new worker -n something
+  735  sudo shutdown -h now
+  736  sudo top
+  737  ls
+  738  cd repos
+  739  ls
+  740  cd TalkingHead/
+  741  ls
+  742  ls -la
+  743  git pull
+  744  git status
+  745  git diff
+  746  ls -la
+  747  history
+pi@lab-pi:~/repos/TalkingHead $ client_loop: send disconnect: Connection reset
+█pulcher@DESKTOP-7AV2VI7██~█ 255█
+❯
+
+
+
+
+
+
+
+
+
+
+
+
