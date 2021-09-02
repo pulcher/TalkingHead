@@ -17,10 +17,13 @@ namespace Magic8HeadService
     {
         TwitchClient client;
         ILogger<Worker> logger;
+        SayingResponse sayingResponse;
 
-        public TwitchBot(string userName, string accessToken, ILogger<Worker> logger)
+        public TwitchBot(string userName, string accessToken, SayingResponse sayingResponse, ILogger<Worker> logger)
         {
             this.logger = logger;
+            this.sayingResponse = sayingResponse;
+
             var credentials = new ConnectionCredentials(userName, accessToken);
 	        var clientOptions = new ClientOptions
                 {
@@ -56,8 +59,8 @@ namespace Magic8HeadService
   
         private void Client_OnJoinedChannel(object sender, OnJoinedChannelArgs e)
         {
-            Console.WriteLine("Hey guys! I am a bot connected via TwitchLib!");
-            client.SendMessage(e.Channel, "Hey guys! I am a bot connected via TwitchLib!");
+            Console.WriteLine("Hey programs! I am a bot connected via TwitchLib!");
+            client.SendMessage(e.Channel, "Hey programs! I am a bot connected via TwitchLib!");
         }
 
         private void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
@@ -97,18 +100,9 @@ namespace Magic8HeadService
                 case null:
                     action = new HelpCommand(client, logger);
                     break;
-                // case AvailableCommands.Ask:
-                // 	action = new askCommand();
-                // 	break;
-            // 	case "stats":
-            // 		Stats();
-            // 		break;
-            // 	case "resetproject":
-            // 		ResetProject(e);
-            // 		break;
-                // default:
-                //     action = new huhCommand();
-                //     break;
+                case AvailableCommands.Ask:
+                	action = new AskCommand(client, sayingResponse, logger);
+                	break;
             }
             
             action.Handle(e);

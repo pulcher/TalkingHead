@@ -26,8 +26,6 @@ namespace Magic8HeadService
 
         public void Handle(OnChatCommandReceivedArgs cmd)
         {
-            logger.LogInformation($"I will help!");   
-
             var message = GetHelpMessage();
 
             client.SendMessage(cmd.Command.ChatMessage.Channel, message);
