@@ -95,7 +95,7 @@ namespace Magic8HeadService
                 case AvailableCommands.Help:
                 case "":
                 case null:
-                    action = new HelpCommand(logger);
+                    action = new HelpCommand(client, logger);
                     break;
                 // case AvailableCommands.Ask:
                 // 	action = new askCommand();
