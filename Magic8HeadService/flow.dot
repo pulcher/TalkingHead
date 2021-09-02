@@ -1,7 +1,7 @@
 digraph {
     Twitch -> TalkingHeadTwitchClient
     TalkingHeadTwitchClient -> Twitch
-    TalkingHeadTwitchClient -> Microphone
+    Microphone -> TalkingHeadTwitchClient
     
     TalkingHeadTwitchClient -> AnnoucesStuff
 
