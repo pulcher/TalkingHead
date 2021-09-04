@@ -9,7 +9,7 @@ namespace Magic8HeadService
         public const string Help = "help";
         [Description("Ask your burning question and get a response")]
         public const string Ask = "ask";
-        [Description("Just an old fashions shoutout!")]
-        public const string Shoutout = "so";
+        // [Description("Just an old fashions shoutout!")]
+        // public const string Shoutout = "so";
     }
 }

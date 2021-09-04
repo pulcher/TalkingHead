@@ -86,7 +86,7 @@ namespace Magic8HeadService
 
         private void Client_OnChatCommandReceived(object sender, OnChatCommandReceivedArgs e)
 		{
-            client.SendMessage(e.Command.ChatMessage.Channel, $"I have received {e.Command.ChatMessage.Username}'s command.  Are you postive you want me to: {e.Command.ArgumentsAsString}");
+            // client.SendMessage(e.Command.ChatMessage.Channel, $"I have received {e.Command.ChatMessage.Username}'s command.  Are you postive you want me to: {e.Command.ArgumentsAsString}");
 
             IMbhCommand action = new NullCommand(logger);
 
