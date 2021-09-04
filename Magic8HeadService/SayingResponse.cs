@@ -3,21 +3,39 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.CognitiveServices.Speech;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+
 
 namespace Magic8HeadService
 {
     public class SayingResponse
     {
         private Random random;
+        private IConfiguration config;
         private ILogger<Worker> logger;
         private List<string> sayings;
+        private SpeechSynthesizer speechSynthesizer;
 
         public string Attitude {get; set;}
 
-        public SayingResponse(ILogger<Worker> logger)
-        {
-            this.logger = logger;  
+        public SayingResponse(IConfiguration config, ILogger<Worker> logger)
+        {   
+            this.config = config;
+            this.logger = logger;
+
+            // create a new speech synth
+            var speechConfig = SpeechConfig
+                .FromSubscription(config["TwitchBotConfiguration:SpeechSubscription"], config["TwitchBotConfiguration:SpeechServiceRegion"]);
+            speechConfig.SpeechSynthesisLanguage = "en-GB";
+            speechConfig.SpeechSynthesisVoiceName = "en-GB-RyanNeural";
+            logger.LogInformation($"Here is the SpeechSynthesisLanguage: {speechConfig.SpeechSynthesisLanguage}");
+            logger.LogInformation($"Here is the SpeechSynthesisVoiceName: {speechConfig.SpeechSynthesisVoiceName}");
+
+            speechSynthesizer = new SpeechSynthesizer(speechConfig);
+
             SetupSayings();  
         }
 
@@ -59,32 +77,52 @@ namespace Magic8HeadService
             };
         }
 
-        public void SaySomethingNice(string message)
+        public async Task SaySomethingNice(string message)
         {
-            using (Process fliteProcess = new Process())
+            using (var result = await speechSynthesizer.SpeakTextAsync(message))
             {
-                var voiceDir = "/home/pi/work/speechTest/voices/";
-                var voice = "cmu_us_aew.flitevox";
-                var exec = "/usr/local/bin/flite";
-                var args = $"-voice awb";
+                if (result.Reason == ResultReason.SynthesizingAudioCompleted)
+                {
+                    logger.LogInformation($"Speech synthesized to speaker for text [{message}]");
+                }
+                else if (result.Reason == ResultReason.Canceled)
+                {
+                    var cancellation = SpeechSynthesisCancellationDetails.FromResult(result);
+                    logger.LogInformation($"CANCELED: Reason={cancellation.Reason}");
 
-                fliteProcess.StartInfo.FileName = exec;
-                fliteProcess.StartInfo.Arguments = args;
-                fliteProcess.StartInfo.UseShellExecute = false;
-                fliteProcess.StartInfo.RedirectStandardInput = true;
-
-                fliteProcess.Start();
-
-                var streamWriter = fliteProcess.StandardInput;
-                
-                var inputText = message; // PickSaying();
-                logger.LogInformation($"Saying: {inputText}");
-
-                streamWriter.WriteLine(inputText);
-                streamWriter.Close();
-
-                fliteProcess.WaitForExit();
+                    if (cancellation.Reason == CancellationReason.Error)
+                    {
+                        logger.LogError($"CANCELED: ErrorCode={cancellation.ErrorCode}");
+                        logger.LogError($"CANCELED: ErrorDetails=[{cancellation.ErrorDetails}]");
+                        logger.LogError($"CANCELED: Did you update the subscription info?");
+                    }
+                }
             }
+
+            // using (Process fliteProcess = new Process())
+            // {
+            //     var voiceDir = "/home/pi/work/speechTest/voices/";
+            //     var voice = "cmu_us_aew.flitevox";
+            //     var exec = "/usr/local/bin/flite";
+            //     var args = $"-voice awb";
+
+            //     fliteProcess.StartInfo.FileName = exec;
+            //     fliteProcess.StartInfo.Arguments = args;
+            //     fliteProcess.StartInfo.UseShellExecute = false;
+            //     fliteProcess.StartInfo.RedirectStandardInput = true;
+
+            //     fliteProcess.Start();
+
+            //     var streamWriter = fliteProcess.StandardInput;
+                
+            //     var inputText = message; // PickSaying();
+            //     logger.LogInformation($"Saying: {inputText}");
+
+            //     streamWriter.WriteLine(inputText);
+            //     streamWriter.Close();
+
+            //     fliteProcess.WaitForExit();
+            // }
 
             return;
         }

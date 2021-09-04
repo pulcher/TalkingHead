@@ -35,7 +35,7 @@ namespace Magic8HeadService
             var userName = config["TwitchBotConfiguration:UserName"];
             var accessToken = config["TwitchBotConfiguration:AccessToken"];
 
-            sayingResponse = new SayingResponse(_logger);
+            sayingResponse = new SayingResponse(config, _logger);
 
             var twitchBot = new TwitchBot(userName, accessToken, sayingResponse, _logger);
 
@@ -50,7 +50,7 @@ namespace Magic8HeadService
                 
                 if (status == PinValue.Low)
                 {
-                    sayingResponse.SaySomethingNice(sayingResponse.PickSaying());
+                    await sayingResponse.SaySomethingNice(sayingResponse.PickSaying());
                 }
 
                 await Task.Delay(100, stoppingToken);
