@@ -23,6 +23,8 @@ RestartSec=5
 # This environment variable is necessary when dotnet isn't loaded for the specified user.
 # To figure out this value, run 'env | grep DOTNET_ROOT' when dotnet has been loaded into your shell.
 Environment=DOTNET_ROOT=/home/pi/dotnet
+Environment=TwitchBotConfiguration__UserName=some username
+Environment=TwitchBotConfiguration__AccessToken=something no one should see
 
 [Install]
 WantedBy=multi-user.target
