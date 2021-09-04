@@ -19,7 +19,8 @@ namespace Magic8HeadService
         ILogger<Worker> logger;
         SayingResponse sayingResponse;
 
-        public TwitchBot(string userName, string accessToken, SayingResponse sayingResponse, ILogger<Worker> logger)
+        public TwitchBot(string userName, string accessToken, SayingResponse sayingResponse,
+            ILogger<Worker> logger)
         {
             this.logger = logger;
             this.sayingResponse = sayingResponse;
