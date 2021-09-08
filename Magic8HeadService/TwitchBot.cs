@@ -6,8 +6,10 @@ using TwitchLib.Client;
 using TwitchLib.Client.Enums;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Extensions;
+using TwitchLib.Client.Internal;
 using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
+using TwitchLib.Communication.Events;
 using TwitchLib.Communication.Models;
 using Microsoft.Extensions.Logging;
 
@@ -42,6 +44,7 @@ namespace Magic8HeadService
             client.OnMessageReceived += Client_OnMessageReceived;
             client.OnWhisperReceived += Client_OnWhisperReceived;
             client.OnNewSubscriber += Client_OnNewSubscriber;
+            client.OnReSubscriber += Client_OnReSubscriber;
             client.OnConnected += Client_OnConnected;
             client.OnChatCommandReceived += Client_OnChatCommandReceived;
 
@@ -79,10 +82,27 @@ namespace Magic8HeadService
         
         private void Client_OnNewSubscriber(object sender, OnNewSubscriberArgs e)
         {
+            var message = $"Welcome {e.Subscriber.DisplayName} to the my lab!";
+
             if (e.Subscriber.SubscriptionPlan == SubscriptionPlan.Prime)
-                client.SendMessage(e.Channel, $"Welcome {e.Subscriber.DisplayName} to the substers! You just earned 500 points! So kind of you to use your Twitch Prime on this channel!");
-            else
-                client.SendMessage(e.Channel, $"Welcome {e.Subscriber.DisplayName} to the substers! You just earned 500 points!");
+                message += " So kind of you to use your Twitch Prime on my channel!";
+
+            sayingResponse.SaySomethingNice(message).Wait();
+
+            client.SendMessage(e.Channel, message);
+
+        }
+
+        private void Client_OnReSubscriber(object sender, OnReSubscriberArgs e) 
+        {
+            var message = $"Thanks {e.ReSubscriber.DisplayName} for the re-sub!";
+            
+            if (e.ReSubscriber.SubscriptionPlan == SubscriptionPlan.Prime)
+                message += " So kind of you to use your Twitch Prime on my channel!";
+
+            sayingResponse.SaySomethingNice(message).Wait();
+
+            client.SendMessage(e.Channel, message);
         }
 
         private void Client_OnChatCommandReceived(object sender, OnChatCommandReceivedArgs e)
