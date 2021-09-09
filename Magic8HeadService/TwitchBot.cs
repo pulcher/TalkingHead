@@ -111,6 +111,8 @@ namespace Magic8HeadService
 
             IMbhCommand action = new NullCommand(logger);
 
+            var chatSubscription = e.Command.ChatMessage.IsSubscriber;
+
             logger.LogInformation($"command is: {e.Command.CommandText.ToLower()}");
             logger.LogInformation($"args is null? : '{e.Command.ArgumentsAsList == null}'");             
 
@@ -124,6 +126,9 @@ namespace Magic8HeadService
                 case AvailableCommands.Ask:
                 	action = new AskCommand(client, sayingResponse, logger);
                 	break;
+                case AvailableCommands.Say:
+                    action = new SayCommand(client, sayingResponse, logger);
+                    break;
             }
             
             action.Handle(e);

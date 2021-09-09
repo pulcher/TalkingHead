@@ -9,6 +9,8 @@ namespace Magic8HeadService
         public const string Help = "help";
         [Description("Ask your burning question and get a response")]
         public const string Ask = "ask";
+        [Description("Ask Mr. Big Head to say something... he may choose not to say it.")]
+        public const string Say = "say";
         // [Description("Just an old fashions shoutout!")]
         // public const string Shoutout = "so";
     }
