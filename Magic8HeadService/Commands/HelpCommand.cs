@@ -45,6 +45,8 @@ namespace Magic8HeadService
             }
 
             var trimmedResult = result.ToString().Substring(0, result.ToString().Length - 2);
+
+            trimmedResult += ".  To help code me or request another feature head over to my repository at https://github.com/pulcher/TalkingHead";
             return trimmedResult;
         }
     }
