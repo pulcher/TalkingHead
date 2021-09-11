@@ -47,6 +47,7 @@ namespace Magic8HeadService
             client.OnReSubscriber += Client_OnReSubscriber;
             client.OnConnected += Client_OnConnected;
             client.OnChatCommandReceived += Client_OnChatCommandReceived;
+            client.OnRaidNotification += Client_OnRaidNotification;
 
             client.Connect();
         }
@@ -99,6 +100,15 @@ namespace Magic8HeadService
             
             if (e.ReSubscriber.SubscriptionPlan == SubscriptionPlan.Prime)
                 message += " So kind of you to use your Twitch Prime on my channel!";
+
+            sayingResponse.SaySomethingNice(message).Wait();
+
+            client.SendMessage(e.Channel, message);
+        }
+
+        private void Client_OnRaidNotification(object sender, OnRaidNotificationArgs e)
+        {
+            var message = $"Thanks for the RAID {e.RaidNotification.DisplayName}!  How was your stream?";
 
             sayingResponse.SaySomethingNice(message).Wait();
 
