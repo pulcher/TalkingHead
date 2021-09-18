@@ -21,7 +21,6 @@ namespace MrBigHeadAuth.Web
 
             builder.Services.AddMsalAuthentication(options =>
             {
-                builder.Configuration.AddUserSecrets<Program>();
                 builder.Configuration.Bind("AzureAdB2C", options.ProviderOptions.Authentication);
             });
 
