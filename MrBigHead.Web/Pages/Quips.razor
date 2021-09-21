@@ -1,0 +1,46 @@
+﻿@page "/quips"
+@inject HttpClient Http
+
+<h1>Quips</h1>
+
+<p>All the current quips!</p>
+
+@if (sayings == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mood</th>
+                <th>Saying</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var quip in sayings)
+            {
+            <tr>
+                <td>@quip.Mood</td>
+                <td>@quip.Saying</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Sayings[] sayings;
+
+    protected override async Task OnInitializedAsync()
+    {
+        sayings = await Http.GetFromJsonAsync<Sayings[]>("sample-data/sayings.json");
+    }
+
+    public class Sayings
+    {
+        public string Mood { get; set; }
+        public string Saying { get; set; }
+    }
+}
