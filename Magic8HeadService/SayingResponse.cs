@@ -49,7 +49,7 @@ namespace Magic8HeadService
             random = new Random();
             sayings = sayingsService.GetAllSayings();
 
-            logger.LogInformation($"saying: {sayings}");
+            logger.LogInformation($"saying count: {sayings.Count}");
             //sayings = new List<string>
             //{
             //    "Greetings Programs!",
@@ -137,8 +137,9 @@ namespace Magic8HeadService
 
         public string PickSaying()
         {
+            logger.LogInformation("PickSaying: ");
             var index = random.Next(sayings.Count);
-            logger.LogInformation($"count: {sayings.Count}, random: {index}");
+            logger.LogInformation($"PickSaying: count: {sayings.Count}, random: {index}");
             var picked = sayings[index];
 
             return picked.Quip;
