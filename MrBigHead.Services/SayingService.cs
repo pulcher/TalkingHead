@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using MrBigHead.Shared;
+﻿using MrBigHead.Shared;
 using System;
 using System.Collections.Generic;
 
@@ -8,21 +7,16 @@ namespace MrBigHead.Services
     public class SayingService : ISayingService
     {
         private List<Saying> sayings;
-        private readonly ILogger logger;
 
-        public SayingService(ILogger logger)
+        public SayingService()
         {
-            this.logger = logger;
             this.sayings = new List<Saying>();
 
             // do this until the get work from the functions
             this.sayings = GetDefaultSaying();
-
-            logger.LogInformation("SayingService initialized...");
-
         }
 
-        public List<Saying> GetAllSayings() => sayings;
+        public List<Saying> GetAllSayings() => GetDefaultSaying();
 
         private static List<Saying> GetDefaultSaying()
         {
