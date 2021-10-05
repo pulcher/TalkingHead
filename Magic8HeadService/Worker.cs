@@ -41,9 +41,9 @@ namespace Magic8HeadService
 
             using var scope = service.CreateScope();
 
-            var scopedSayingService =
-                scope.ServiceProvider
-                    .GetRequiredService<ISayingService>();
+            //var scopedSayingService =
+            //    scope.ServiceProvider
+            //        .GetRequiredService<ISayingService>();
 
             var scopedSayingResponse =
                 scope.ServiceProvider
@@ -56,6 +56,8 @@ namespace Magic8HeadService
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            logger.LogDebug("ExecuteAsync fired...");
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 var status = controller.Read(buttonPin);
