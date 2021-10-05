@@ -10,12 +10,14 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Magic8HeadService
 {
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> logger;
+        private readonly IServiceProvider service;
         public readonly IConfiguration config;
 
         int buttonPin = 7;
@@ -24,10 +26,10 @@ namespace Magic8HeadService
         Random random;
         ISayingResponse sayingResponse;
 
-        public Worker(ISayingResponse sayingResponse, IConfiguration config, ILogger<Worker> logger)
+        public Worker(IServiceProvider service, IConfiguration config, ILogger<Worker> logger)
         {
-            this.sayingResponse = sayingResponse;
             this.logger = logger;
+            this.service = service;
             this.config = config;
 
             var defaultLogLevel = config["Logging:LogLevel:Default"];
@@ -36,7 +38,12 @@ namespace Magic8HeadService
             var userName = config["TwitchBotConfiguration:UserName"];
             var accessToken = config["TwitchBotConfiguration:AccessToken"];
 
-            var twitchBot = new TwitchBot(userName, accessToken, sayingResponse, logger);
+            using var scope = service.CreateScope();
+            var scopedSayingResponse =
+                scope.ServiceProvider
+                    .GetRequiredService<ISayingResponse>();
+
+            var twitchBot = new TwitchBot(userName, accessToken, scopedSayingResponse, logger);
 
             SetupGPIO();
         }
