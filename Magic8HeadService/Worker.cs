@@ -65,7 +65,11 @@ namespace Magic8HeadService
                 if (status == PinValue.Low)
                 {
                     logger.LogInformation("saying words...");
-                    sayingResponse.SaySomethingNice(sayingResponse.PickSaying());
+
+                    var message = sayingResponse.PickSaying();
+                    logger.LogInformation($"ExecuteAsync: picked saying {message}");
+
+                    await sayingResponse.SaySomethingNice(message);
                 }
 
                 await Task.Delay(100, stoppingToken);
