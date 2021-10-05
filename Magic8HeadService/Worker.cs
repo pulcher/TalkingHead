@@ -64,6 +64,7 @@ namespace Magic8HeadService
 
                 if (status == PinValue.Low)
                 {
+                    logger.LogInformation("saying words...");
                     await sayingResponse.SaySomethingNice(sayingResponse.PickSaying());
                 }
 
