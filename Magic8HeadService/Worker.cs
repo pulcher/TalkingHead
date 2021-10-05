@@ -60,14 +60,12 @@ namespace Magic8HeadService
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                logger.LogInformation("looping...");
-
                 var status = controller.Read(buttonPin);
 
                 if (status == PinValue.Low)
                 {
                     logger.LogInformation("saying words...");
-                    await sayingResponse.SaySomethingNice(sayingResponse.PickSaying());
+                    sayingResponse.SaySomethingNice(sayingResponse.PickSaying());
                 }
 
                 await Task.Delay(100, stoppingToken);
