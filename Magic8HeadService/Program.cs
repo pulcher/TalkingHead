@@ -21,9 +21,9 @@ namespace Magic8HeadService
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddHostedService<Worker>()
-                        .AddScoped<ISayingService, SayingService>()
-                        .AddScoped<ISayingResponse,SayingResponse>();
-        });
+                    services.AddSingleton<ISayingService, SayingService>();
+                    services.AddScoped<ISayingResponse, SayingResponse>();
+                    services.AddHostedService<Worker>();
+                });
     }
 }
