@@ -15,29 +15,28 @@ namespace Magic8HeadService
 {
     public class Worker : BackgroundService
     {
-        private readonly ILogger<Worker> _logger;
+        private readonly ILogger<Worker> logger;
         public readonly IConfiguration config;
-        
+
         int buttonPin = 7;
         GpioController controller;
         List<string> sayings;
         Random random;
-        SayingResponse sayingResponse;
+        ISayingResponse sayingResponse;
 
-        public Worker(ILogger<Worker> logger, IConfiguration config)
+        public Worker(ISayingResponse sayingResponse, IConfiguration config, ILogger<Worker> logger)
         {
-            _logger = logger;
+            this.sayingResponse = sayingResponse;
+            this.logger = logger;
             this.config = config;
 
             var defaultLogLevel = config["Logging:LogLevel:Default"];
-            _logger.LogInformation($"defaultLogLevel = {defaultLogLevel}");
+            logger.LogInformation($"defaultLogLevel = {defaultLogLevel}");
 
             var userName = config["TwitchBotConfiguration:UserName"];
             var accessToken = config["TwitchBotConfiguration:AccessToken"];
 
-            sayingResponse = new SayingResponse(config, _logger);
-
-            var twitchBot = new TwitchBot(userName, accessToken, sayingResponse, _logger);
+            var twitchBot = new TwitchBot(userName, accessToken, sayingResponse, logger);
 
             SetupGPIO();
         }
@@ -47,7 +46,7 @@ namespace Magic8HeadService
             while (!stoppingToken.IsCancellationRequested)
             {
                 var status = controller.Read(buttonPin);
-                
+
                 if (status == PinValue.Low)
                 {
                     await sayingResponse.SaySomethingNice(sayingResponse.PickSaying());
@@ -59,7 +58,7 @@ namespace Magic8HeadService
 
         public void SetupGPIO()
         {
-            _logger.LogInformation("Setiing up GPIO...");
+            logger.LogInformation("Setiing up GPIO...");
             controller = new GpioController(0, new RaspberryPi3Driver());
 
             controller.OpenPin (buttonPin, PinMode.InputPullUp);

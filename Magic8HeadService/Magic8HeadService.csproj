@@ -15,4 +15,9 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
     <PackageReference Include="TwitchLib" Version="3.2.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MrBigHead.Services\MrBigHead.Services.csproj" />
+    <ProjectReference Include="..\MrBigHead.Shared\MrBigHead.Shared.csproj" />
+  </ItemGroup>
 </Project>

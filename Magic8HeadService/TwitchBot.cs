@@ -15,13 +15,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Magic8HeadService
 {
-    public class TwitchBot 
+    public class TwitchBot
     {
         TwitchClient client;
         ILogger<Worker> logger;
-        SayingResponse sayingResponse;
+        ISayingResponse sayingResponse;
 
-        public TwitchBot(string userName, string accessToken, SayingResponse sayingResponse,
+        public TwitchBot(string userName, string accessToken, ISayingResponse sayingResponse,
             ILogger<Worker> logger)
         {
             this.logger = logger;
@@ -35,7 +35,7 @@ namespace Magic8HeadService
                     UseSsl = true
                 };
             var customClient = new WebSocketClient(clientOptions);
-            
+
             client = new TwitchClient(customClient);
             client.Initialize(credentials, "haroldpulcher");
 
@@ -51,17 +51,17 @@ namespace Magic8HeadService
 
             client.Connect();
         }
-  
+
         private void Client_OnLog(object sender, OnLogArgs e)
         {
             logger.LogInformation($"{e.DateTime.ToString()}: {e.BotUsername} - {e.Data}");
         }
-  
+
         private void Client_OnConnected(object sender, OnConnectedArgs e)
         {
             Console.WriteLine($"Connected to {e.AutoJoinChannel}");
         }
-  
+
         private void Client_OnJoinedChannel(object sender, OnJoinedChannelArgs e)
         {
             Console.WriteLine("Hey programs! I am a bot connected via TwitchLib!");
@@ -73,14 +73,14 @@ namespace Magic8HeadService
             if (e.ChatMessage.Message.Contains("badword"))
                 client.TimeoutUser(e.ChatMessage.Channel, e.ChatMessage.Username, TimeSpan.FromMinutes(30), "Bad word! 30 minute timeout!");
         }
-        
+
         private void Client_OnWhisperReceived(object sender, OnWhisperReceivedArgs e)
         {
             //if (e.WhisperMessage.Username == "my_friend")
             //    client.SendWhisper(e.WhisperMessage.Username, "Hey! Whispers are so cool!!");
             client.SendWhisper(e.WhisperMessage.Username, "Hey! Say sweet nothings to me!");
         }
-        
+
         private void Client_OnNewSubscriber(object sender, OnNewSubscriberArgs e)
         {
             var message = $"Welcome {e.Subscriber.DisplayName} to the my lab!";
@@ -94,10 +94,10 @@ namespace Magic8HeadService
 
         }
 
-        private void Client_OnReSubscriber(object sender, OnReSubscriberArgs e) 
+        private void Client_OnReSubscriber(object sender, OnReSubscriberArgs e)
         {
             var message = $"Thanks {e.ReSubscriber.DisplayName} for the re-sub!";
-            
+
             if (e.ReSubscriber.SubscriptionPlan == SubscriptionPlan.Prime)
                 message += " So kind of you to use your Twitch Prime on my channel!";
 
@@ -124,7 +124,7 @@ namespace Magic8HeadService
             var chatSubscription = e.Command.ChatMessage.IsSubscriber;
 
             logger.LogInformation($"command is: {e.Command.CommandText.ToLower()}");
-            logger.LogInformation($"args is null? : '{e.Command.ArgumentsAsList == null}'");             
+            logger.LogInformation($"args is null? : '{e.Command.ArgumentsAsList == null}'");
 
             switch (e.Command.ArgumentsAsList.FirstOrDefault()?.ToLower())
             {
@@ -140,7 +140,7 @@ namespace Magic8HeadService
                     action = new SayCommand(client, sayingResponse, logger);
                     break;
             }
-            
+
             action.Handle(e);
 		}
     }

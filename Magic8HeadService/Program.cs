@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
+using MrBigHead.Services;
 
 namespace Magic8HeadService
 {
@@ -25,7 +21,9 @@ namespace Magic8HeadService
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddHostedService<Worker>();
-                });
+                    services.AddHostedService<Worker>()
+                        .AddScoped<ISayingService, SayingService>()
+                        .AddScoped<ISayingResponse,SayingResponse>();
+        });
     }
 }

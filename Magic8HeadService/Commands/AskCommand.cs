@@ -1,12 +1,6 @@
 using Microsoft.Extensions.Logging;
-using System.Diagnostics;
 using TwitchLib.Client;
-using TwitchLib.Client.Enums;
 using TwitchLib.Client.Events;
-using TwitchLib.Client.Extensions;
-using TwitchLib.Client.Models;
-using TwitchLib.Communication.Clients;
-using TwitchLib.Communication.Models;
 
 namespace Magic8HeadService
 {
@@ -14,12 +8,12 @@ namespace Magic8HeadService
     {
         private ILogger<Worker> logger;
         private TwitchClient client;
-        private SayingResponse sayingResponse;
+        private ISayingResponse sayingResponse;
 
-        public AskCommand(TwitchClient client, SayingResponse sayingResponse, ILogger<Worker> logger)
+        public AskCommand(TwitchClient client, ISayingResponse sayingResponse, ILogger<Worker> logger)
         {
             this.client = client;
-            this.logger = logger;    
+            this.logger = logger;
             this.sayingResponse = sayingResponse;
         }
 
@@ -27,7 +21,7 @@ namespace Magic8HeadService
         {
             var message = GetRandomAnswer();
 
-            client.SendMessage(cmd.Command.ChatMessage.Channel, 
+            client.SendMessage(cmd.Command.ChatMessage.Channel,
                 $"Hey {cmd.Command.ChatMessage.Username}, here is your answer: {message}");
             sayingResponse.SaySomethingNice(message);
         }
