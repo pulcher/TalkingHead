@@ -49,6 +49,7 @@ namespace Magic8HeadService
             random = new Random();
             sayings = sayingsService.GetAllSayings();
 
+            logger.LogInformation($"saying: {sayings}");
             //sayings = new List<string>
             //{
             //    "Greetings Programs!",

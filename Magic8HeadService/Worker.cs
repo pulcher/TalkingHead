@@ -60,6 +60,8 @@ namespace Magic8HeadService
 
             while (!stoppingToken.IsCancellationRequested)
             {
+                logger.LogInformation("looping...");
+
                 var status = controller.Read(buttonPin);
 
                 if (status == PinValue.Low)
