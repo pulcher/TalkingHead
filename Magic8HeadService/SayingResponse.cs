@@ -84,6 +84,8 @@ namespace Magic8HeadService
 
         public async Task SaySomethingNice(string message)
         {
+            logger.LogInformation($"Saying: {message}");
+
             using (var result = await speechSynthesizer.SpeakTextAsync(message))
             {
                 if (result.Reason == ResultReason.SynthesizingAudioCompleted)
