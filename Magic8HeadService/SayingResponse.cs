@@ -29,6 +29,9 @@ namespace Magic8HeadService
             this.sayingsService = sayingsService;
             this.logger = logger;
 
+            var speechSubscription = config["TwitchBotConfiguration:SpeechSubscription"];
+
+            var speechServiceRegion = config["TwitchBotConfiguration:SpeechServiceRegion"];
             // create a new speech synth
             var speechConfig = SpeechConfig
                 .FromSubscription(config["TwitchBotConfiguration:SpeechSubscription"], config["TwitchBotConfiguration:SpeechServiceRegion"]);

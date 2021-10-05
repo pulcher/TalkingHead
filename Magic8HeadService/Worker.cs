@@ -25,7 +25,7 @@ namespace Magic8HeadService
         GpioController controller;
         List<string> sayings;
         Random random;
-        ISayingResponse sayingResponse;
+        ISayingResponse scopedSayingResponse;
 
         public Worker(IServiceProvider service, IConfiguration config, ILogger<Worker> logger)
         {
@@ -45,7 +45,7 @@ namespace Magic8HeadService
             //    scope.ServiceProvider
             //        .GetRequiredService<ISayingService>();
 
-            var scopedSayingResponse =
+            scopedSayingResponse =
                 scope.ServiceProvider
                     .GetRequiredService<ISayingResponse>();
 
@@ -60,16 +60,14 @@ namespace Magic8HeadService
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                var status = controller.Read(buttonPin);
+                var status = controller?.Read(buttonPin);
 
                 if (status == PinValue.Low)
                 {
                     logger.LogInformation("saying words...");
-
-                    var message = sayingResponse.PickSaying();
+                    var message = scopedSayingResponse.PickSaying();
                     logger.LogInformation($"ExecuteAsync: picked saying {message}");
-
-                    await sayingResponse.SaySomethingNice(message);
+                    await scopedSayingResponse.SaySomethingNice(message);
                 }
 
                 await Task.Delay(100, stoppingToken);
@@ -79,9 +77,16 @@ namespace Magic8HeadService
         public void SetupGPIO()
         {
             logger.LogInformation("Setiing up GPIO...");
-            controller = new GpioController(0, new RaspberryPi3Driver());
 
-            controller.OpenPin (buttonPin, PinMode.InputPullUp);
+            try
+            {
+                controller = new GpioController(0, new RaspberryPi3Driver());
+                controller.OpenPin(buttonPin, PinMode.InputPullUp);
+            }
+            catch (Exception e)
+            {
+                logger.LogInformation("GPIO not available");
+            }
         }
     }
 }
