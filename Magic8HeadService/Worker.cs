@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MrBigHead.Services;
 
 namespace Magic8HeadService
 {
@@ -39,6 +40,11 @@ namespace Magic8HeadService
             var accessToken = config["TwitchBotConfiguration:AccessToken"];
 
             using var scope = service.CreateScope();
+
+            var scopedSayingService =
+                scope.ServiceProvider
+                    .GetRequiredService<ISayingService>();
+
             var scopedSayingResponse =
                 scope.ServiceProvider
                     .GetRequiredService<ISayingResponse>();
