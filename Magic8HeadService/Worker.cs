@@ -56,7 +56,7 @@ namespace Magic8HeadService
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            logger.LogDebug("ExecuteAsync fired...");
+            logger.LogInformation("ExecuteAsync fired...");
 
             while (!stoppingToken.IsCancellationRequested)
             {
