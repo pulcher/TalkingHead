@@ -2,6 +2,6 @@
 {
     public class Moods
     {
-        public static string Snarky = "snarky";
+        public const string Snarky = "snarky";
     }
 }

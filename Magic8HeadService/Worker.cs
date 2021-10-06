@@ -1,17 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Device.Gpio;
-using System.Device.Gpio.Drivers;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MrBigHead.Services;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Device.Gpio;
+using System.Device.Gpio.Drivers;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Magic8HeadService
 {
@@ -21,11 +16,9 @@ namespace Magic8HeadService
         private readonly IServiceProvider service;
         public readonly IConfiguration config;
 
-        int buttonPin = 7;
+        readonly int buttonPin = 7;
         GpioController controller;
-        List<string> sayings;
-        Random random;
-        ISayingResponse scopedSayingResponse;
+        readonly ISayingResponse scopedSayingResponse;
 
         public Worker(IServiceProvider service, IConfiguration config, ILogger<Worker> logger)
         {
@@ -40,10 +33,6 @@ namespace Magic8HeadService
             var accessToken = config["TwitchBotConfiguration:AccessToken"];
 
             using var scope = service.CreateScope();
-
-            //var scopedSayingService =
-            //    scope.ServiceProvider
-            //        .GetRequiredService<ISayingService>();
 
             scopedSayingResponse =
                 scope.ServiceProvider

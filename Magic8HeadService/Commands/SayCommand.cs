@@ -6,8 +6,8 @@ namespace Magic8HeadService
 {
     public class SayCommand : IMbhCommand
     {
-        private ILogger<Worker> logger;
-        private TwitchClient client;
+        private readonly ILogger<Worker> logger;
+        private readonly TwitchClient client;
         private ISayingResponse sayingResponse;
 
         public SayCommand(TwitchClient client, ISayingResponse sayingResponse, ILogger<Worker> logger)

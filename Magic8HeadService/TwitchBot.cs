@@ -17,9 +17,9 @@ namespace Magic8HeadService
 {
     public class TwitchBot
     {
-        TwitchClient client;
-        ILogger<Worker> logger;
-        ISayingResponse sayingResponse;
+        private readonly TwitchClient client;
+        private readonly ILogger<Worker> logger;
+        private readonly ISayingResponse sayingResponse;
 
         public TwitchBot(string userName, string accessToken, ISayingResponse sayingResponse,
             ILogger<Worker> logger)

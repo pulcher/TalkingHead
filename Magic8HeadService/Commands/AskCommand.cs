@@ -6,11 +6,11 @@ namespace Magic8HeadService
 {
     public class AskCommand : IMbhCommand
     {
-        private ILogger<Worker> logger;
-        private TwitchClient client;
-        private ISayingResponse sayingResponse;
+        private readonly ILogger logger;
+        private readonly TwitchClient client;
+        private readonly ISayingResponse sayingResponse;
 
-        public AskCommand(TwitchClient client, ISayingResponse sayingResponse, ILogger<Worker> logger)
+        public AskCommand(TwitchClient client, ISayingResponse sayingResponse, ILogger logger)
         {
             this.client = client;
             this.logger = logger;

@@ -3,6 +3,6 @@
     public class Saying
     {
         public string Mood { get; set; }
-        public string Quip { get; set; }
+        public string Phrase { get; set; }
     }
 }
