@@ -39,15 +39,15 @@ namespace Magic8HeadService
 
             speechSynthesizer = new SpeechSynthesizer(speechConfig);
 
-            SetupSayings();
+            SetupSayingsAsync().Wait();
         }
 
-        public void SetupSayings()
+        public async Task SetupSayingsAsync()
         {
             logger.LogInformation("Setiing up Sayings...");
 
             random = new Random();
-            sayings = sayingsService.GetAllSayings();
+            sayings = await sayingsService.GetAllSayingsAsync();
 
             logger.LogInformation($"saying count: {sayings.Count}");
         }

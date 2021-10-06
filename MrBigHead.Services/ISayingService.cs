@@ -1,10 +1,11 @@
 ﻿using MrBigHead.Shared;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MrBigHead.Services
 {
     public interface ISayingService
     {
-        List<Saying> GetAllSayings();
+        Task<List<Saying>> GetAllSayingsAsync();
     }
 }

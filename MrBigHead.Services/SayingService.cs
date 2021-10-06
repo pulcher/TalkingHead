@@ -1,21 +1,39 @@
-﻿using MrBigHead.Shared;
+﻿using Microsoft.Extensions.Logging;
+using MrBigHead.Shared;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace MrBigHead.Services
 {
     public class SayingService : ISayingService
     {
         private List<Saying> sayings;
+        private ILogger logger;
+        private HttpClient client;
+        private readonly IHttpClientFactory httpClientFactory;
 
-        public SayingService()
+        public SayingService(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
         {
             this.sayings = new List<Saying>();
+            this.logger = loggerFactory.CreateLogger("Generic Logger");
+
+            this.client = httpClientFactory.CreateClient();
 
             // do this until the get work from the functions
             this.sayings = GetDefaultSaying();
+            this.httpClientFactory = httpClientFactory;
         }
 
-        public List<Saying> GetAllSayings() => GetDefaultSaying();
+        public async Task<List<Saying>> GetAllSayingsAsync()
+        {
+            var test = await client.GetAsync("https://bigheadfuncs.azurewebsites.net/api/GetAllQuips",
+                                                HttpCompletionOption.ResponseContentRead);
+
+            var something = test.Content.ReadAsStringAsync();
+
+            return GetDefaultSaying();
+        }
 
         private static List<Saying> GetDefaultSaying()
         {
