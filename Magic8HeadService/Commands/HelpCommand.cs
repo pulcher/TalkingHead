@@ -1,27 +1,20 @@
 using Microsoft.Extensions.Logging;
-using System.Diagnostics;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TwitchLib.Client;
-using TwitchLib.Client.Enums;
 using TwitchLib.Client.Events;
-using TwitchLib.Client.Extensions;
-using TwitchLib.Client.Models;
-using TwitchLib.Communication.Clients;
-using TwitchLib.Communication.Models;
 
 namespace Magic8HeadService
 {
     public class HelpCommand : IMbhCommand
     {
-        private ILogger<Worker> logger;
-        private TwitchClient client;
+        private readonly ILogger<Worker> logger;
+        private readonly TwitchClient client;
 
         public HelpCommand(TwitchClient client, ILogger<Worker> logger)
         {
             this.client = client;
-            this.logger = logger;    
+            this.logger = logger;
         }
 
         public void Handle(OnChatCommandReceivedArgs cmd)
@@ -39,7 +32,7 @@ namespace Magic8HeadService
             foreach (var field in fields)
             {
                 var name = field.Name;
-                var description = 
+                var description =
                     field.CustomAttributes.FirstOrDefault()?.ConstructorArguments.FirstOrDefault().Value;
                 result.Append($"{name}: {description}, ");
             }

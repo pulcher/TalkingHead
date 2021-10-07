@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
+using MrBigHead.Services;
+using System.Threading.Tasks;
 
 namespace Magic8HeadService
 {
@@ -13,7 +10,8 @@ namespace Magic8HeadService
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -25,6 +23,9 @@ namespace Magic8HeadService
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddHttpClient();
+                    services.AddScoped<ISayingService, SayingService>();
+                    services.AddScoped<ISayingResponse, SayingResponse>();
                     services.AddHostedService<Worker>();
                 });
     }

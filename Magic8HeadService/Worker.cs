@@ -1,56 +1,62 @@
-using System;
-using System.Collections.Generic;
-using System.Device.Gpio;
-using System.Device.Gpio.Drivers;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
+using System;
+using System.Device.Gpio;
+using System.Device.Gpio.Drivers;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Magic8HeadService
 {
     public class Worker : BackgroundService
     {
-        private readonly ILogger<Worker> _logger;
+        private readonly ILogger<Worker> logger;
+        private readonly IServiceProvider service;
         public readonly IConfiguration config;
-        
-        int buttonPin = 7;
-        GpioController controller;
-        List<string> sayings;
-        Random random;
-        SayingResponse sayingResponse;
 
-        public Worker(ILogger<Worker> logger, IConfiguration config)
+        readonly int buttonPin = 7;
+        GpioController controller;
+        readonly ISayingResponse scopedSayingResponse;
+
+        public Worker(IServiceProvider service, IConfiguration config, ILogger<Worker> logger)
         {
-            _logger = logger;
+            this.logger = logger;
+            this.service = service;
             this.config = config;
 
             var defaultLogLevel = config["Logging:LogLevel:Default"];
-            _logger.LogInformation($"defaultLogLevel = {defaultLogLevel}");
+            logger.LogInformation($"defaultLogLevel = {defaultLogLevel}");
 
             var userName = config["TwitchBotConfiguration:UserName"];
             var accessToken = config["TwitchBotConfiguration:AccessToken"];
 
-            sayingResponse = new SayingResponse(config, _logger);
+            using var scope = service.CreateScope();
 
-            var twitchBot = new TwitchBot(userName, accessToken, sayingResponse, _logger);
+            scopedSayingResponse =
+                scope.ServiceProvider
+                    .GetRequiredService<ISayingResponse>();
+
+            var twitchBot = new TwitchBot(userName, accessToken, scopedSayingResponse, logger);
 
             SetupGPIO();
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            logger.LogInformation("ExecuteAsync fired...");
+
             while (!stoppingToken.IsCancellationRequested)
             {
-                var status = controller.Read(buttonPin);
-                
+                var status = controller?.Read(buttonPin);
+
                 if (status == PinValue.Low)
                 {
-                    await sayingResponse.SaySomethingNice(sayingResponse.PickSaying());
+                    logger.LogInformation("saying words...");
+                    var message = scopedSayingResponse.PickSaying();
+                    logger.LogInformation($"ExecuteAsync: picked saying {message}");
+                    await scopedSayingResponse.SaySomethingNice(message);
                 }
 
                 await Task.Delay(100, stoppingToken);
@@ -59,10 +65,17 @@ namespace Magic8HeadService
 
         public void SetupGPIO()
         {
-            _logger.LogInformation("Setiing up GPIO...");
-            controller = new GpioController(0, new RaspberryPi3Driver());
+            logger.LogInformation("Setiing up GPIO...");
 
-            controller.OpenPin (buttonPin, PinMode.InputPullUp);
+            try
+            {
+                controller = new GpioController(0, new RaspberryPi3Driver());
+                controller.OpenPin(buttonPin, PinMode.InputPullUp);
+            }
+            catch (Exception e)
+            {
+                logger.LogInformation(e, "GPIO not available");
+            }
         }
     }
 }
