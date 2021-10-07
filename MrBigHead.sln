@@ -7,11 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magic8HeadService", "Magic8
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrBigHead.Web", "MrBigHead.Web\MrBigHead.Web.csproj", "{6E03DEC2-443B-49EA-9938-6E79944BC278}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrBigHead_Func", "MrBigHead.Func\MrBigHead_Func.csproj", "{E5BF13AD-FF40-4B3C-8861-6CD141CFBFE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrBigHead.Func", "MrBigHead.Func\MrBigHead.Func.csproj", "{E5BF13AD-FF40-4B3C-8861-6CD141CFBFE1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrBigHead.Shared", "MrBigHead.Shared\MrBigHead.Shared.csproj", "{42817134-6EA9-4311-9588-F3CA2D5C1B2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrBigHead.Shared", "MrBigHead.Shared\MrBigHead.Shared.csproj", "{42817134-6EA9-4311-9588-F3CA2D5C1B2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrBigHead.Services", "MrBigHead.Services\MrBigHead.Services.csproj", "{2417B8C8-8B5E-420F-B017-858488E274B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrBigHead.Services", "MrBigHead.Services\MrBigHead.Services.csproj", "{2417B8C8-8B5E-420F-B017-858488E274B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

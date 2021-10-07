@@ -15,7 +15,7 @@ namespace Magic8HeadService
         private IConfiguration config;
         private readonly ISayingService sayingsService;
         private readonly ILogger<Worker> logger;
-        private List<Saying> sayings;
+        private IList<Saying> sayings;
         private readonly SpeechSynthesizer speechSynthesizer;
 
         public string Attitude { get; set; }

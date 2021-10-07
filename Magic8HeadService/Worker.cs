@@ -74,7 +74,7 @@ namespace Magic8HeadService
             }
             catch (Exception e)
             {
-                logger.LogInformation("GPIO not available");
+                logger.LogInformation(e, "GPIO not available");
             }
         }
     }

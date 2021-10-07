@@ -6,6 +6,6 @@ namespace MrBigHead.Services
 {
     public interface ISayingService
     {
-        Task<List<Saying>> GetAllSayingsAsync();
+        Task<IList<Saying>> GetAllSayingsAsync();
     }
 }
