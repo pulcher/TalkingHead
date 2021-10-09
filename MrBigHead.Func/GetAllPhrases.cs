@@ -1,43 +1,38 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage.Table;
+using MrBigHead.Shared;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using MrBigHead.Shared;
-using System.Net.Http;
-using System.Net;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace MrBigHead.Func
 {
-    public static class GetAllPhrases
+    public static partial class GetAllPhrases
     {
         [FunctionName("GetAllPhrases")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+            [Table("Sayings")] CloudTable cloudTable,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            var sayings = GetDefaultPhrases();
+            var sayings = new List<Saying>(); //GetDefaultPhrases();
 
-            var responseMessage = JsonConvert.SerializeObject(sayings);
+            var cloudQuery = new TableQuery<SayingEntity>();
+
+            foreach (var entity in
+                await cloudTable.ExecuteQuerySegmentedAsync(cloudQuery, null))
+            {
+                log.LogInformation($"entity: {entity.Mood}:{entity.Phrase}");
+                sayings.Add(new Saying { Mood = entity.Mood, Phrase = entity.Phrase });
+            }
 
             return new JsonResult(sayings);
-
-            //return new OkObjectResult(responseMessage);
-
-            //return new JsonResult(responseMessage);
-
-            //return new ObjectResult(HttpStatusCode.OK)
-            //{
-            //    Content = new StringContent(responseMessage, Encoding.UTF8, "application/json")
-            //};
         }
 
         private static List<Saying> GetDefaultPhrases()
