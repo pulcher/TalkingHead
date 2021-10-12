@@ -1,6 +1,7 @@
 ﻿using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using System.Collections.Generic;
+using System;
 
 namespace MrBigHead.Func
 {
@@ -12,7 +13,7 @@ namespace MrBigHead.Func
             public string Phrase { get; set; }
             public string PartitionKey { get => Mood; set => Mood = value; }
             public string RowKey { get; set; }
-            public System.DateTimeOffset Timestamp { get; set; }
+            public DateTimeOffset Timestamp { get; set; }
             public string ETag { get; set; }
 
             public void ReadEntity(IDictionary<string, EntityProperty> properties, OperationContext operationContext)
@@ -22,8 +23,14 @@ namespace MrBigHead.Func
 
             public IDictionary<string, EntityProperty> WriteEntity(OperationContext operationContext)
             {
-                throw new System.NotImplementedException();
-                return new Dictionary<string, EntityProperty>();
+                var results = new Dictionary<string, EntityProperty>();
+
+                results["PartitionKey"].StringValue = Mood;
+                results["Phrase"].StringValue = Phrase;
+                results["RowKey"].StringValue = Guid.NewGuid().ToString();
+                results["TimeStamp"].DateTime = DateTime.Now;
+
+                return results;
             }
         }
 
