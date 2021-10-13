@@ -31,7 +31,7 @@ namespace MrBigHead.Func
                 sayings.Add(new Saying { Mood = entity.Mood, Phrase = entity.Phrase });
             }
 
-            return new JsonResult(sayings);
+            return new JsonResult(GetDefaultPhrases());
         }
 
         private static List<Saying> GetDefaultPhrases()
