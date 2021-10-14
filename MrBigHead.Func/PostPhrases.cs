@@ -46,7 +46,9 @@ namespace MrBigHead.Func
 
                 var tableOps = TableOperation.Insert(sayingEntity);
 
-                await cloudTable.ExecuteAsync(tableOps);
+                var tableResult = await cloudTable.ExecuteAsync(tableOps);
+
+                Console.WriteLine($"tableResult: {tableResult.HttpStatusCode}");
             }
         }
     }

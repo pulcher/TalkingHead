@@ -1,9 +1,9 @@
 ﻿@page "/quips"
 @inject HttpClient Http
 
-<h1>Quips</h1>
+<h1>Phrases</h1>
 
-<p>All the current quips!</p>
+<p>All the current phrases!</p>
 
 @if (sayings == null)
 {
@@ -15,7 +15,7 @@ else
         <thead>
             <tr>
                 <th>Mood</th>
-                <th>Saying</th>
+                <th>Phrase</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -24,7 +24,7 @@ else
             {
             <tr>
                 <td>@quip.Mood</td>
-                <td>@quip.Saying</td>
+                <td>@quip.Phrase</td>
                 <td>
                     <span class="oi oi-icon-name" title="iconic-pencil-sm" aria-hidden="false"></span>
                     <span class="oi oi-icon-name" title="iconic-trash-sm" aria-hidden="false"></span>
@@ -41,12 +41,12 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        sayings = await Http.GetFromJsonAsync<Sayings[]>("sample-data/sayings.json");
+        sayings = await Http.GetFromJsonAsync<Sayings[]>("https://bigheadfuncs.azurewebsites.net/api/getallphrases");
     }
 
     public class Sayings
     {
         public string Mood { get; set; }
-        public string Saying { get; set; }
+        public string Phrase { get; set; }
     }
 }

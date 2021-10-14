@@ -23,6 +23,7 @@ namespace MrBigHead.Func
         {
             var results = new Dictionary<string, EntityProperty>();
 
+            //This don't work...  for now obvious reasons....
             //results["PartitionKey"].StringValue = PartitionKey;
             //results["Phrase"].StringValue = Phrase;
             //results["RowKey"].StringValue = Guid.NewGuid().ToString();
