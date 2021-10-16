@@ -1,17 +1,13 @@
+using Microsoft.Extensions.Logging;
 using System;
-using System.Diagnostics;
-using System.Collections.Generic;
 using System.Linq;
 using TwitchLib.Client;
 using TwitchLib.Client.Enums;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Extensions;
-using TwitchLib.Client.Internal;
 using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
-using TwitchLib.Communication.Events;
 using TwitchLib.Communication.Models;
-using Microsoft.Extensions.Logging;
 
 namespace Magic8HeadService
 {
@@ -136,6 +132,9 @@ namespace Magic8HeadService
                 case AvailableCommands.Ask:
                 	action = new AskCommand(client, sayingResponse, logger);
                 	break;
+                case AvailableCommands.Inspirational:
+                    action = new InspirationalCommand(client, sayingResponse, logger);
+                    break;
                 case AvailableCommands.Say:
                     action = new SayCommand(client, sayingResponse, logger);
                     break;
