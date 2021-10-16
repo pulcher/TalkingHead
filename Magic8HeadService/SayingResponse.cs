@@ -5,6 +5,7 @@ using MrBigHead.Services;
 using MrBigHead.Shared;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Magic8HeadService
@@ -17,8 +18,6 @@ namespace Magic8HeadService
         private readonly ILogger<Worker> logger;
         private IList<Saying> sayings;
         private readonly SpeechSynthesizer speechSynthesizer;
-
-        public string Attitude { get; set; }
 
         public SayingResponse(IConfiguration config, ISayingService sayingsService, ILogger<Worker> logger)
         {
@@ -80,12 +79,23 @@ namespace Magic8HeadService
 
         public string PickSaying()
         {
-            logger.LogInformation("PickSaying: ");
-            var index = random.Next(sayings.Count);
-            logger.LogInformation($"PickSaying: count: {sayings.Count}, random: {index}");
-            var picked = sayings[index];
+            return PickSaying(Moods.Snarky);
+        }
 
-            return picked.Phrase;
+        public string PickSaying(string mood)
+        {
+            logger.LogInformation("PickSaying: ");
+
+            var currentSelectedSayings = sayings.Select(p => p)
+                .Where(m => m.Mood == mood)
+                .ToArray();
+
+            var index = random.Next(currentSelectedSayings.Length);
+
+            logger.LogInformation($"PickSaying: count: {currentSelectedSayings.Length}, random: {index}");
+            var pickedSaying = currentSelectedSayings[index];
+
+            return pickedSaying.Phrase;
         }
     }
 }

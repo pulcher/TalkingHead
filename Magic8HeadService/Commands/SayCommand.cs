@@ -31,10 +31,5 @@ namespace Magic8HeadService
                     $"Hey {cmd.Command.ChatMessage.Username}, the say command is for subscibers and vips only.");
             }
         }
-
-        private string GetRandomAnswer()
-        {
-            return sayingResponse.PickSaying();
-        }
     }
 }
