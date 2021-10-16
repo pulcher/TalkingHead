@@ -4,9 +4,8 @@ namespace Magic8HeadService
 {
     public interface ISayingResponse
     {
-        string Attitude { get; set; }
-
         string PickSaying();
+        string PickSaying(string mood);
         Task SaySomethingNice(string message);
         Task SetupSayingsAsync();
     }

@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using MrBigHead.Shared;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
 
@@ -9,12 +10,19 @@ namespace Magic8HeadService
         private readonly ILogger logger;
         private readonly TwitchClient client;
         private readonly ISayingResponse sayingResponse;
+        private readonly string mood;
 
-        public AskCommand(TwitchClient client, ISayingResponse sayingResponse, ILogger logger)
+        public AskCommand(TwitchClient client, ISayingResponse sayingResponse, string mood, ILogger logger)
         {
+            if (string.IsNullOrEmpty(mood))
+            {
+                mood = Moods.Snarky;
+            }
+
             this.client = client;
             this.logger = logger;
             this.sayingResponse = sayingResponse;
+            this.mood = mood;
         }
 
         public void Handle(OnChatCommandReceivedArgs cmd)
@@ -28,7 +36,7 @@ namespace Magic8HeadService
 
         private string GetRandomAnswer()
         {
-            return sayingResponse.PickSaying();
+            return sayingResponse.PickSaying(mood);
         }
     }
 }

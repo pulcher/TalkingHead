@@ -1,17 +1,14 @@
+using Microsoft.Extensions.Logging;
+using MrBigHead.Shared;
 using System;
-using System.Diagnostics;
-using System.Collections.Generic;
 using System.Linq;
 using TwitchLib.Client;
 using TwitchLib.Client.Enums;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Extensions;
-using TwitchLib.Client.Internal;
 using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
-using TwitchLib.Communication.Events;
 using TwitchLib.Communication.Models;
-using Microsoft.Extensions.Logging;
 
 namespace Magic8HeadService
 {
@@ -20,6 +17,8 @@ namespace Magic8HeadService
         private readonly TwitchClient client;
         private readonly ILogger<Worker> logger;
         private readonly ISayingResponse sayingResponse;
+
+        private string mood = Moods.Snarky;
 
         public TwitchBot(string userName, string accessToken, ISayingResponse sayingResponse,
             ILogger<Worker> logger)
@@ -134,8 +133,11 @@ namespace Magic8HeadService
                     action = new HelpCommand(client, logger);
                     break;
                 case AvailableCommands.Ask:
-                	action = new AskCommand(client, sayingResponse, logger);
+                	action = new AskCommand(client, sayingResponse, mood, logger);
                 	break;
+                case AvailableCommands.Inspire:
+                    action = new InspirationalCommand(client, sayingResponse, logger);
+                    break;
                 case AvailableCommands.Say:
                     action = new SayCommand(client, sayingResponse, logger);
                     break;
