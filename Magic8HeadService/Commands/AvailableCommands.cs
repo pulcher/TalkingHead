@@ -12,7 +12,7 @@ namespace Magic8HeadService
         [Description("Ask Mr. Big Head to say something... he may choose not to say it.")]
         public const string Say = "say";
         [Description("Be inspired by an inspiring quote!")]
-        public const string Inspirational = "inspire";
+        public const string Inspire = "inspire";
 
         // [Description("Just an old fashions shoutout!")]
         // public const string Shoutout = "so";

@@ -90,6 +90,9 @@ namespace Magic8HeadService
                 .Where(m => m.Mood == mood)
                 .ToArray();
 
+            if (currentSelectedSayings.Length == 0)
+                return string.Empty;
+
             var index = random.Next(currentSelectedSayings.Length);
 
             logger.LogInformation($"PickSaying: count: {currentSelectedSayings.Length}, random: {index}");

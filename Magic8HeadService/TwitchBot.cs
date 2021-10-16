@@ -135,7 +135,7 @@ namespace Magic8HeadService
                 case AvailableCommands.Ask:
                 	action = new AskCommand(client, sayingResponse, mood, logger);
                 	break;
-                case AvailableCommands.Inspirational:
+                case AvailableCommands.Inspire:
                     action = new InspirationalCommand(client, sayingResponse, logger);
                     break;
                 case AvailableCommands.Say:
