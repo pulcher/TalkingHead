@@ -17,7 +17,7 @@ namespace MrBigHead.Func
     {
         [FunctionName("PostPhrases")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
             [Table("Sayings")] CloudTable cloudTable,
             ILogger log)
         {
