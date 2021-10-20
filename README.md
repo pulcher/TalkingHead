@@ -10,6 +10,10 @@ This is a creepy talking head with eyes.
 # Getting going:
 Start with a 'dotnet restore'
 
+# Inspirational Quotes:
+- Author: Brandi Mummery
+- Repository: https://github.com/bmumz/inspirational-quotes-api
+
 # Dev steps
 * mkdir Magic8HeadService
 * cd Magic8HeadService
