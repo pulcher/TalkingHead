@@ -13,6 +13,8 @@ namespace Magic8HeadService
         public const string Say = "say";
         [Description("Be inspired by an inspiring quote!")]
         public const string Inspire = "inspire";
+        [Description("Tell a Dad joke")]
+        public const string Dad = "dad";
 
         // [Description("Just an old fashions shoutout!")]
         // public const string Shoutout = "so";

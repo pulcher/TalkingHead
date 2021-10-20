@@ -17,15 +17,15 @@ namespace Magic8HeadService
         private readonly TwitchClient client;
         private readonly ILogger<Worker> logger;
         private readonly ISayingResponse sayingResponse;
-
+        private readonly IDadJokeService dadJokeService;
         private string mood = Moods.Snarky;
 
         public TwitchBot(string userName, string accessToken, ISayingResponse sayingResponse,
-            ILogger<Worker> logger)
+            IDadJokeService dadJokeService, ILogger<Worker> logger)
         {
             this.logger = logger;
             this.sayingResponse = sayingResponse;
-
+            this.dadJokeService = dadJokeService;
             var credentials = new ConnectionCredentials(userName, accessToken);
 	        var clientOptions = new ClientOptions
                 {
@@ -135,6 +135,9 @@ namespace Magic8HeadService
                 case AvailableCommands.Ask:
                 	action = new AskCommand(client, sayingResponse, mood, logger);
                 	break;
+                case AvailableCommands.Dad:
+                    action = new DadCommand(client, sayingResponse, dadJokeService, logger);
+                    break;
                 case AvailableCommands.Inspire:
                     action = new InspirationalCommand(client, sayingResponse, logger);
                     break;
