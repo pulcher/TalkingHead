@@ -19,6 +19,7 @@ namespace Magic8HeadService
         readonly int buttonPin = 7;
         GpioController controller;
         readonly ISayingResponse scopedSayingResponse;
+        readonly IDadJokeService scopedDadJokeService;
 
         public Worker(IServiceProvider service, IConfiguration config, ILogger<Worker> logger)
         {
@@ -37,8 +38,11 @@ namespace Magic8HeadService
             scopedSayingResponse =
                 scope.ServiceProvider
                     .GetRequiredService<ISayingResponse>();
+            scopedDadJokeService =
+                scope.ServiceProvider
+                    .GetRequiredService<IDadJokeService>();
 
-            var twitchBot = new TwitchBot(userName, accessToken, scopedSayingResponse, logger);
+            var twitchBot = new TwitchBot(userName, accessToken, scopedSayingResponse, scopedDadJokeService, logger);
 
             SetupGPIO();
         }

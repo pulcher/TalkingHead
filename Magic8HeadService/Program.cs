@@ -26,6 +26,7 @@ namespace Magic8HeadService
                     services.AddHttpClient();
                     services.AddScoped<ISayingService, SayingService>();
                     services.AddScoped<ISayingResponse, SayingResponse>();
+                    services.AddScoped<IDadJokeService, DadJokeService>();
                     services.AddHostedService<Worker>();
                 });
     }
