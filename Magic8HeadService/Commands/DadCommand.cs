@@ -26,15 +26,23 @@ namespace Magic8HeadService
 
         public void Handle(OnChatCommandReceivedArgs cmd)
         {
-            var dadJoke = dadJokeService.GetDadJoke().Result;
+            try
+            {
+                var dadJoke = dadJokeService.GetDadJoke().Result;
 
-            sayingResponse.SaySomethingNice(dadJoke.Setup);
-            client.SendMessage(cmd.Command.ChatMessage.Channel, $"Q: {dadJoke.Setup}");
+                sayingResponse.SaySomethingNice(dadJoke.Setup);
+                client.SendMessage(cmd.Command.ChatMessage.Channel, $"Q: {dadJoke.Setup}");
 
-            Task .Delay(5000).Wait();
+                Task.Delay(5000).Wait();
 
-            sayingResponse.SaySomethingNice(dadJoke.Punchline);
-            client.SendMessage(cmd.Command.ChatMessage.Channel, $"A: {dadJoke.Punchline}");
+                sayingResponse.SaySomethingNice(dadJoke.Punchline);
+                client.SendMessage(cmd.Command.ChatMessage.Channel, $"A: {dadJoke.Punchline}");
+            }
+            catch (Exception ex)
+            {
+                sayingResponse.SaySomethingNice(ex.Message);
+                client.SendMessage(cmd.Command.ChatMessage.Channel, $"We've got problem {ex.Message}");
+            }
         }
 
     }

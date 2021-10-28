@@ -27,10 +27,10 @@ namespace Magic8HeadService
 
         public void Handle(OnChatCommandReceivedArgs cmd)
         {
-            var message = GetRandomAnswer();
+            var message = GetRandomAnswer().ToLower();
 
             client.SendMessage(cmd.Command.ChatMessage.Channel,
-                $"Hey {cmd.Command.ChatMessage.Username}, here is your answer: {message}");
+                $"Hey {cmd.Command.ChatMessage.Username}, {message}");
             sayingResponse.SaySomethingNice(message);
         }
 
