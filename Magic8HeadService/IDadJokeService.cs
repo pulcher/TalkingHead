@@ -4,6 +4,6 @@ namespace Magic8HeadService
 {
     public interface IDadJokeService
     {
-        Task<DadJoke> GetDadJoke();
+        Task<DadJoke> GetDadJoke(string url);
     }
 }

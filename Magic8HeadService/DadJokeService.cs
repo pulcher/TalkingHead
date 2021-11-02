@@ -20,9 +20,18 @@ namespace Magic8HeadService
             this.httpClientFactory = httpClientFactory;
         }
 
-        public async Task<DadJoke> GetDadJoke()
+        public async Task<DadJoke> GetDadJoke(string url)
         {
-            var dadJoke = await client.GetFromJsonAsync<DadJoke>("https://karljoke.herokuapp.com/jokes/random");
+            var siteUrl = "https://karljoke.herokuapp.com/jokes/random";
+
+            if (!string.IsNullOrEmpty(url))
+                siteUrl = url;
+                
+            //https://dadjoke-2021-1018a.jimf99.repl.co/jokes/random
+
+            var dadJoke = await client.GetFromJsonAsync<DadJoke>(siteUrl);
+
+            dadJoke = await client.GetFromJsonAsync<DadJoke>("https://karljoke.herokuapp.com/jokes/random");
 
             return dadJoke;
         }
