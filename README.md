@@ -1,9 +1,70 @@
 # TalkingHead
 This is a creepy talking head with eyes.
 
+## Requirements
+- Visual Studio Community, Visual Studio Code, or your favorite text editor that understands C#.
+- Minimum Raspberry Pi 3B+ with Raspberry Pi OS 32bit installed.  
+- .NET 6 installed on the RPI.  See the .NET Setup section below
+- [Adafruit Animated Eyes](https://www.adafruit.com/product/3813)
+- Joystick Module
+- [Adafruit lighted arcade button](https://www.adafruit.com/product/3487)
+- Power supply
+- Speakers or Headphones
+- Some PLA if your printing all the models.
+
+## .NET Installation
+
+## Install the needed support packages
+```
+wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+```
+
+## Install the .NET SDK
+You may find running the scripts the best way todo make this happen.  Checkout the [Microsoft Docs on the script.](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script)
+
+Here is the command I used to install the dotnet SDK in the main location for all users:
+```
+chmod +x dotnet-install.sh
+sudo ./dotnet-install.sh --channel 6.0.2xx --install-dir /usr/share/dotnet
+```
+Then add the following to the end of the PATH variable in either your ~/.bashrc file or for the system wide setting use /etc/environment.
+
+Example:
+```
+PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/gam
+es:/snap/bin:/usr/share/dotnet"
+```
+
+Source your .bashrc, or exit and re-logon.  You should not be able to execute the command __dotnet__ and get some output.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# JUNK from the before times....
+
 # Prereqs:
 - .NET 5.0 Framework
-- Flite speech synth: http://www.speech.cs.cmu.edu/flite/doc/flite_toc.html
+- - Need to move to .NET 6
+- Azure Cognitive Services
+- (optional)Flite speech synth: http://www.speech.cs.cmu.edu/flite/doc/flite_toc.html
 - Raspberry Pi 3B+
 - Adafruit Eye Bonnent Kit
 
@@ -55,5 +116,11 @@ Start with a 'dotnet restore'
 *   512  cd ..
 *   513  cd
 *   514  cd repos/TalkingHead/Magic8HeadService/
+
+# To adjust the volume from the command line
+apt-get install alsa-utils
+
+GET volume: "amixer -M sget Headphone"
+SET volume: "amixer -q -M sset Headphone 50%"
 
 
