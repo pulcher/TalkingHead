@@ -63,8 +63,8 @@ namespace Magic8HeadService
 
         private void Client_OnJoinedChannel(object sender, OnJoinedChannelArgs e)
         {
-            Console.WriteLine("Hey programs! I am a bot connected via TwitchLib!");
-            client.SendMessage(e.Channel, "Hey programs! I am a bot connected via TwitchLib!");
+            Console.WriteLine("Hey programs! I am a test bot connected via TwitchLib!");
+            client.SendMessage(e.Channel, "Hey programs! I am a test bot connected via TwitchLib!");
         }
 
         private void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
@@ -128,8 +128,7 @@ namespace Magic8HeadService
             switch (e.Command.ArgumentsAsList.FirstOrDefault()?.ToLower())
             {
                 case AvailableCommands.Help:
-                case "":
-                case null:
+                // case null:
                     action = new HelpCommand(client, logger);
                     break;
                 case AvailableCommands.Ask:
@@ -143,6 +142,8 @@ namespace Magic8HeadService
                     break;
                 case AvailableCommands.Say:
                     action = new SayCommand(client, sayingResponse, logger);
+                    break;
+                default:
                     break;
             }
 

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>dotnet-Magic8HeadService-2622BBB8-6A23-4B11-BC10-1CCBB8C41A58</UserSecretsId>
   </PropertyGroup>
 

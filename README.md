@@ -38,8 +38,16 @@ es:/snap/bin:/usr/share/dotnet"
 
 Source your .bashrc, or exit and re-logon.  You should not be able to execute the command __dotnet__ and get some output.
 
+## Install the code
+Change to your favorite directory.  For me, that is __~/repos__ and enter the following:
 
+```
+ git clone https://github.com/pulcher/TalkingHead.git
+```
+## Setup your own User-secrets
+This project needs a view api keys.  Inorder to keep everyone safe, we are using User-Secrets.  
 
+You can find out how to set them up for your repos at [User-Secrests](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-6.0&tabs=windows)
 
 
 
