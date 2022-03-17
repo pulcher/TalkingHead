@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using MrBigHead.Shared;
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using TwitchLib.Client;
 using TwitchLib.Client.Enums;
 using TwitchLib.Client.Events;
@@ -15,6 +16,9 @@ namespace Magic8HeadService
     public class TwitchBot
     {
         private readonly TwitchClient client;
+        private readonly Dictionary<string, Action<OnChatCommandReceivedArgs>> commands;
+        private readonly Action<OnChatCommandReceivedArgs> HelpCommand = 
+                                                (e) => Console.WriteLine("****** help ******");
         private readonly ILogger<Worker> logger;
         private readonly ISayingResponse sayingResponse;
         private readonly IDadJokeService dadJokeService;
@@ -35,6 +39,9 @@ namespace Magic8HeadService
                 };
             var customClient = new WebSocketClient(clientOptions);
 
+            commands = new Dictionary<string, Action<OnChatCommandReceivedArgs>>();
+            CommandSetup();
+
             client = new TwitchClient(customClient);
             client.Initialize(credentials, "haroldpulcher");
 
@@ -49,6 +56,17 @@ namespace Magic8HeadService
             client.OnRaidNotification += Client_OnRaidNotification;
 
             client.Connect();
+        }
+
+        private void CommandSetup() 
+        {
+            
+
+            var mbhAction = new Action<OnChatCommandReceivedArgs>(x => Console.WriteLine("****** mbh"));
+            var uptimeAction = new Action<OnChatCommandReceivedArgs>(x => Console.WriteLine("****** uptime"));
+            commands.Add(ActionCommands.Mbh, mbhAction);
+            commands.Add(ActionCommands.Uptime, mbhAction);
+            //commands.Add(ActionCommands.HelpCommand, HelpCommand);
         }
 
         private void Client_OnLog(object sender, OnLogArgs e)
@@ -125,12 +143,15 @@ namespace Magic8HeadService
             logger.LogInformation($"command is: {e.Command.CommandText.ToLower()}");
             logger.LogInformation($"args is null? : '{e.Command.ArgumentsAsList == null}'");
 
+            var actionCommand = commands.GetValueOrDefault(e.Command.CommandText.ToLower(), HelpCommand);
+            actionCommand(e);
+
             switch (e.Command.CommandText.ToLower())
             {
-                case "uptime":
+                case ActionCommands.Uptime:
                     logger.LogInformation($"Gotta report some uptime...");
                     return;
-                case "mbh":
+                case ActionCommands.Mbh:
                     switch (e.Command.ArgumentsAsList.FirstOrDefault()?.ToLower())
                         {
                             case AvailableCommands.Help:
