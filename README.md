@@ -49,8 +49,9 @@ This project needs a view api keys.  Inorder to keep everyone safe, we are using
 
 You can find out how to set them up for your repos at [User-Secrests](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-6.0&tabs=windows)
 
-
-
+## Running the service
+1. dotnet restore
+- May need to update all the packages. The Scott Hanselman blog on [dotnet-update](https://www.hanselman.com/blog/your-dotnet-outdated-is-outdated-update-and-help-keep-your-net-projects-up-to-date) or head over the [dont-netupdate repositor](https://github.com/dotnet-outdated/dotnet-outdated), give them a star and check them out.
 
 
 
