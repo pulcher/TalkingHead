@@ -42,7 +42,11 @@ namespace Magic8HeadService
                 scope.ServiceProvider
                     .GetRequiredService<IDadJokeService>();
 
-            var twitchBot = new TwitchBot(userName, accessToken, scopedSayingResponse, scopedDadJokeService, logger);
+            var listOfCommands = scope.ServiceProvider.GetServices<ICommandMbhToTwitch>();
+            var helpCommand = scope.ServiceProvider.GetService<HelpCommandReal>();
+
+            var twitchBot = new TwitchBot(userName, accessToken, scopedSayingResponse, scopedDadJokeService,
+                                    listOfCommands, helpCommand, logger);
 
             SetupGPIO();
         }

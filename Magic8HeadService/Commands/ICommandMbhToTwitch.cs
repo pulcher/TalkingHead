@@ -3,7 +3,7 @@ using TwitchLib.Client.Events;
 
 namespace Magic8HeadService
 {
-    public interface ITwitchCommand
+    public interface ICommandMbhToTwitch
     {
         public string Name { get; }
         public void Handle(OnChatCommandReceivedArgs args);

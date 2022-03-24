@@ -17,6 +17,12 @@ namespace Magic8HeadService
     {
         private readonly TwitchClient client;
         private readonly Dictionary<string, Action<OnChatCommandReceivedArgs>> commands;
+
+        private readonly ICommandMbhToTwitch helpCommandReal;
+        private readonly Dictionary<string, ICommandMbhToTwitch> dictOfCommands;
+        // private readonly ICommandMbhToTwitch CommandMbhHelp = 
+        //                                         (e) => Console.WriteLine("--------- Command Mbh Help -----");
+
         private readonly Action<OnChatCommandReceivedArgs> HelpCommand = 
                                                 (e) => Console.WriteLine("****** help ******");
         private readonly ILogger<Worker> logger;
@@ -25,8 +31,11 @@ namespace Magic8HeadService
         private string mood = Moods.Snarky;
 
         public TwitchBot(string userName, string accessToken, ISayingResponse sayingResponse,
-            IDadJokeService dadJokeService, ILogger<Worker> logger)
+            IDadJokeService dadJokeService, IEnumerable<ICommandMbhToTwitch> listOfCommands,
+            ICommandMbhToTwitch helpCommand,
+            ILogger<Worker> logger)
         {
+            this.helpCommandReal = helpCommand;
             this.logger = logger;
             this.sayingResponse = sayingResponse;
             this.dadJokeService = dadJokeService;
@@ -38,6 +47,11 @@ namespace Magic8HeadService
                     UseSsl = true
                 };
             var customClient = new WebSocketClient(clientOptions);
+
+            var listOfNames = listOfCommands.Select(x => x.Name);
+            Console.WriteLine($"-------------- List of Names :  {string.Join(',', listOfNames)}");
+            dictOfCommands = listOfCommands
+                .ToDictionary(x => x.Name, x => x, StringComparer.OrdinalIgnoreCase);
 
             commands = new Dictionary<string, Action<OnChatCommandReceivedArgs>>();
             CommandSetup();
@@ -142,6 +156,11 @@ namespace Magic8HeadService
 
             logger.LogInformation($"command is: {e.Command.CommandText.ToLower()}");
             logger.LogInformation($"args is null? : '{e.Command.ArgumentsAsList == null}'");
+
+            var dictCommand = dictOfCommands.GetValueOrDefault(e.Command.CommandText, helpCommandReal);
+            dictCommand.Handle(e);
+
+
 
             var actionCommand = commands.GetValueOrDefault(e.Command.CommandText.ToLower(), HelpCommand);
             actionCommand(e);
