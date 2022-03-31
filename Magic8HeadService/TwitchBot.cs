@@ -10,6 +10,7 @@ using TwitchLib.Client.Extensions;
 using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
 using TwitchLib.Communication.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace Magic8HeadService
 {
@@ -30,8 +31,9 @@ namespace Magic8HeadService
         private readonly IDadJokeService dadJokeService;
         private string mood = Moods.Snarky;
 
-        public TwitchBot(string userName, string accessToken, ISayingResponse sayingResponse,
-            IDadJokeService dadJokeService, IEnumerable<ICommandMbhToTwitch> listOfCommands,
+        public TwitchBot(TwitchClient client, ConnectionCredentials clientCredentials, string channelName,
+            IConfiguration config,
+            ISayingResponse sayingResponse, IDadJokeService dadJokeService, IEnumerable<ICommandMbhToTwitch> listOfCommands,
             ICommandMbhTwitchHelp helpCommand,
             ILogger<Worker> logger)
         {
@@ -41,14 +43,14 @@ namespace Magic8HeadService
             this.logger = logger;
             this.sayingResponse = sayingResponse;
             this.dadJokeService = dadJokeService;
-            var credentials = new ConnectionCredentials(userName, accessToken);
-	        var clientOptions = new ClientOptions
-                {
-                    MessagesAllowedInPeriod = 750,
-                    ThrottlingPeriod = TimeSpan.FromSeconds(30),
-                    UseSsl = true
-                };
-            var customClient = new WebSocketClient(clientOptions);
+            // var credentials = new ConnectionCredentials(userName, accessToken);
+	        // var clientOptions = new ClientOptions
+            //     {
+            //         MessagesAllowedInPeriod = 750,
+            //         ThrottlingPeriod = TimeSpan.FromSeconds(30),
+            //         UseSsl = true
+            //     };
+            // var customClient = new WebSocketClient(clientOptions);
 
             var listOfNames = listOfCommands.Select(x => x.Name);
             Console.WriteLine($"-------------- List of Names :  {string.Join(',', listOfNames)}");
@@ -58,8 +60,8 @@ namespace Magic8HeadService
             commands = new Dictionary<string, Action<OnChatCommandReceivedArgs>>();
             CommandSetup();
 
-            client = new TwitchClient(customClient);
-            client.Initialize(credentials, "haroldpulcher");
+            // client = new TwitchClient(customClient);
+            client.Initialize(clientCredentials, channelName);
 
             client.OnLog += Client_OnLog;
             client.OnJoinedChannel += Client_OnJoinedChannel;
@@ -71,7 +73,9 @@ namespace Magic8HeadService
             client.OnChatCommandReceived += Client_OnChatCommandReceived;
             client.OnRaidNotification += Client_OnRaidNotification;
 
-            client.Connect();
+            var clientResult = client.Connect();
+
+            logger.LogInformation($"Yes{clientResult}, Hugo I am getting past all of these.........!!!!!!!!!!!   Really!!!!");
         }
 
         private void CommandSetup() 

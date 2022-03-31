@@ -5,6 +5,10 @@ using MrBigHead.Services;
 using Scrutor;
 using System;
 using System.Threading.Tasks;
+using TwitchLib.Client;
+using TwitchLib.Client.Models;
+using TwitchLib.Communication.Clients;
+using TwitchLib.Communication.Models;
 
 namespace Magic8HeadService
 {
@@ -27,6 +31,24 @@ namespace Magic8HeadService
                 .ConfigureServices((hostContext, services) =>
                 {
                     
+                    var configuration = services.BuildServiceProvider().GetService<IConfiguration>();
+
+                    var userName = configuration["TwitchBotConfiguration:UserName"];
+                    var accessToken = configuration["TwitchBotConfiguration:AccessToken"];
+                    var credentials = new ConnectionCredentials(userName, accessToken);
+
+                    services.AddSingleton(credentials);
+
+                    services.AddSingleton(new ClientOptions
+                        {
+                            MessagesAllowedInPeriod = 750,
+                            ThrottlingPeriod = TimeSpan.FromSeconds(30),
+                            UseSsl = true
+                        });
+
+                    services.AddSingleton<WebSocketClient>();
+                    services.AddTransient<TwitchClient>();
+
                     services.AddHttpClient();
 
                     services.Scan(scan => scan
@@ -54,3 +76,19 @@ namespace Magic8HeadService
                 });
     }
 }
+
+
+/*
+            var credentials = new ConnectionCredentials(userName, accessToken);
+	        var clientOptions = new ClientOptions
+                {
+                    MessagesAllowedInPeriod = 750,
+                    ThrottlingPeriod = TimeSpan.FromSeconds(30),
+                    UseSsl = true
+                };
+            var customClient = new WebSocketClient(clientOptions);
+
+
+            client = new TwitchClient(customClient);
+            client.Initialize(credentials, "haroldpulcher");
+*/
