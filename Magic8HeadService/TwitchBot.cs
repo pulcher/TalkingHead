@@ -32,10 +32,12 @@ namespace Magic8HeadService
 
         public TwitchBot(string userName, string accessToken, ISayingResponse sayingResponse,
             IDadJokeService dadJokeService, IEnumerable<ICommandMbhToTwitch> listOfCommands,
-            ICommandMbhToTwitch helpCommand,
+            ICommandMbhTwitchHelp helpCommand,
             ILogger<Worker> logger)
         {
-            this.helpCommandReal = helpCommand;
+
+            //logger.LogInformation($"helpCommand: {helpCommand?.Name ?? "uggggggggggggggghhhhhhhh!!!!!!1"}");
+            this.helpCommandReal = (ICommandMbhToTwitch)helpCommand;
             this.logger = logger;
             this.sayingResponse = sayingResponse;
             this.dadJokeService = dadJokeService;
@@ -74,8 +76,6 @@ namespace Magic8HeadService
 
         private void CommandSetup() 
         {
-            
-
             var mbhAction = new Action<OnChatCommandReceivedArgs>(x => Console.WriteLine("****** mbh"));
             var uptimeAction = new Action<OnChatCommandReceivedArgs>(x => Console.WriteLine("****** uptime"));
             commands.Add(ActionCommands.Mbh, mbhAction);
@@ -158,46 +158,47 @@ namespace Magic8HeadService
             logger.LogInformation($"args is null? : '{e.Command.ArgumentsAsList == null}'");
 
             var dictCommand = dictOfCommands.GetValueOrDefault(e.Command.CommandText, helpCommandReal);
+
+            // logger.LogInformation($"resolved command: {dictCommand?.Name ?? "BOOOOOOOMMMMM!!!!!"}");
+            // logger.LogInformation($"helpcommand name: {helpCommandReal?.Name ?? "Booooommmmmm Part Duex!"}");
             dictCommand.Handle(e);
 
+            // var actionCommand = commands.GetValueOrDefault(e.Command.CommandText.ToLower(), HelpCommand);
+            // actionCommand(e);
 
-
-            var actionCommand = commands.GetValueOrDefault(e.Command.CommandText.ToLower(), HelpCommand);
-            actionCommand(e);
-
-            switch (e.Command.CommandText.ToLower())
-            {
-                case ActionCommands.Uptime:
-                    logger.LogInformation($"Gotta report some uptime...");
-                    return;
-                case ActionCommands.Mbh:
-                    switch (e.Command.ArgumentsAsList.FirstOrDefault()?.ToLower())
-                        {
-                            case AvailableCommands.Help:
-                            // case null:
-                                action = new HelpCommand(client, logger);
-                                break;
-                            case AvailableCommands.Ask:
-                                action = new AskCommand(client, sayingResponse, mood, logger);
-                                break;
-                            case AvailableCommands.Dad:
-                                action = new DadCommand(client, sayingResponse, dadJokeService, logger);
-                                break;
-                            case AvailableCommands.Inspire:
-                                action = new InspirationalCommand(client, sayingResponse, logger);
-                                break;
-                            case AvailableCommands.Say:
-                                action = new SayCommand(client, sayingResponse, logger);
-                                break;
-                            default:
-                                break;
-                        }
+            // switch (e.Command.CommandText.ToLower())
+            // {
+            //     case ActionCommands.Uptime:
+            //         logger.LogInformation($"Gotta report some uptime...");
+            //         return;
+            //     case ActionCommands.Mbh:
+            //         switch (e.Command.ArgumentsAsList.FirstOrDefault()?.ToLower())
+            //             {
+            //                 case AvailableCommands.Help:
+            //                 // case null:
+            //                     action = new HelpCommand(client, logger);
+            //                     break;
+            //                 case AvailableCommands.Ask:
+            //                     action = new AskCommand(client, sayingResponse, mood, logger);
+            //                     break;
+            //                 case AvailableCommands.Dad:
+            //                     action = new DadCommand(client, sayingResponse, dadJokeService, logger);
+            //                     break;
+            //                 case AvailableCommands.Inspire:
+            //                     action = new InspirationalCommand(client, sayingResponse, logger);
+            //                     break;
+            //                 case AvailableCommands.Say:
+            //                     action = new SayCommand(client, sayingResponse, logger);
+            //                     break;
+            //                 default:
+            //                     break;
+            //             }
                         
-                        action.Handle(e);
-                    return;
-                default:
-                    return;
-            }
+            //             action.Handle(e);
+            //         return;
+            //     default:
+            //         return;
+            // }
 		}
     }
 }

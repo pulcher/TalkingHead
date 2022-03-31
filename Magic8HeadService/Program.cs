@@ -46,6 +46,7 @@ namespace Magic8HeadService
                     services.AddScoped<ISayingService, SayingService>();
                     services.AddScoped<ISayingResponse, SayingResponse>();
                     services.AddScoped<IDadJokeService, DadJokeService>();
+                    services.AddScoped<ICommandMbhTwitchHelp, HelpCommandReal>();
 
                     services.AddHostedService<Worker>();
 
