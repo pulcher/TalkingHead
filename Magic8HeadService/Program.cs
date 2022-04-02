@@ -47,7 +47,7 @@ namespace Magic8HeadService
                         });
 
                     services.AddSingleton<WebSocketClient>();
-                    services.AddTransient<TwitchClient>();
+                    services.AddSingleton<TwitchClient>();
 
                     services.AddHttpClient();
 
