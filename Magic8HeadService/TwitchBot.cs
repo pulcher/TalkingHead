@@ -59,8 +59,6 @@ namespace Magic8HeadService
             this.client.OnRaidNotification += Client_OnRaidNotification;
 
             var clientResult = this.client.Connect();
-
-            logger.LogInformation($"Yes{clientResult}, Hugo I am getting past all of these.........!!!!!!!!!!!   Really!!!!");
         }
 
         public void Client_OnLog(object sender, OnLogArgs e)
@@ -75,8 +73,8 @@ namespace Magic8HeadService
 
         public void Client_OnJoinedChannel(object sender, OnJoinedChannelArgs e)
         {
-            Console.WriteLine("Hey programs! I am a test bot connected via TwitchLib!");
-            this.client.SendMessage(e.Channel, "Hey programs! I am a test bot connected via TwitchLib!");
+            Console.WriteLine("Hey programs! I am a bot connected via TwitchLib!");
+            this.client.SendMessage(e.Channel, "Hey programs! I am a bot connected via TwitchLib!");
         }
 
         public void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
