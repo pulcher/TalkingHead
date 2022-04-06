@@ -44,14 +44,6 @@ namespace Magic8HeadService
             this.logger = logger;
             this.sayingResponse = sayingResponse;
             this.dadJokeService = dadJokeService;
-            // var credentials = new ConnectionCredentials(userName, accessToken);
-	        // var clientOptions = new ClientOptions
-            //     {
-            //         MessagesAllowedInPeriod = 750,
-            //         ThrottlingPeriod = TimeSpan.FromSeconds(30),
-            //         UseSsl = true
-            //     };
-            // var customClient = new WebSocketClient(clientOptions);
 
             var listOfNames = listOfCommands.Select(x => x.Name);
             Console.WriteLine($"-------------- List of Names :  {string.Join(',', listOfNames)}");
@@ -61,7 +53,6 @@ namespace Magic8HeadService
             commands = new Dictionary<string, Action<OnChatCommandReceivedArgs>>();
             CommandSetup();
 
-            // client = new TwitchClient(customClient);
             this.client.Initialize(clientCredentials, channelName);
 
             this.client.OnLog += Client_OnLog;
@@ -167,9 +158,6 @@ namespace Magic8HeadService
             // logger.LogInformation($"resolved command: {dictCommand?.Name ?? "BOOOOOOOMMMMM!!!!!"}");
             // logger.LogInformation($"helpcommand name: {helpCommandReal?.Name ?? "Booooommmmmm Part Duex!"}");
             dictCommand.Handle(e);
-
-            // var actionCommand = commands.GetValueOrDefault(e.Command.CommandText.ToLower(), HelpCommand);
-            // actionCommand(e);
 
             // switch (e.Command.CommandText.ToLower())
             // {
