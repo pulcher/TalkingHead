@@ -20,7 +20,8 @@ namespace Magic8HeadService
         public void Handle(OnChatCommandReceivedArgs cmd)
         {
             if (cmd.Command.ChatMessage.IsSubscriber ||
-                cmd.Command.ChatMessage.IsVip)
+                cmd.Command.ChatMessage.IsVip ||
+                cmd.Command.ChatMessage.IsModerator)
             {
                 var message = cmd.Command.ArgumentsAsString.Split(' ', 2);
                 sayingResponse.SaySomethingNice(message[1]);

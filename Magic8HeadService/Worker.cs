@@ -7,6 +7,8 @@ using System.Device.Gpio;
 using System.Device.Gpio.Drivers;
 using System.Threading;
 using System.Threading.Tasks;
+using TwitchLib.Client;
+using TwitchLib.Client.Models;
 
 namespace Magic8HeadService
 {
@@ -18,6 +20,8 @@ namespace Magic8HeadService
 
         readonly int buttonPin = 7;
         GpioController controller;
+        readonly TwitchClient twitchClient;
+        readonly ConnectionCredentials connectionCredentials;
         readonly ISayingResponse scopedSayingResponse;
         readonly IDadJokeService scopedDadJokeService;
 
@@ -35,6 +39,12 @@ namespace Magic8HeadService
 
             using var scope = service.CreateScope();
 
+            twitchClient =
+                service.GetRequiredService<TwitchClient>();
+
+            connectionCredentials =
+                service.GetRequiredService<ConnectionCredentials>();
+
             scopedSayingResponse =
                 scope.ServiceProvider
                     .GetRequiredService<ISayingResponse>();
@@ -42,7 +52,12 @@ namespace Magic8HeadService
                 scope.ServiceProvider
                     .GetRequiredService<IDadJokeService>();
 
-            var twitchBot = new TwitchBot(userName, accessToken, scopedSayingResponse, scopedDadJokeService, logger);
+            var listOfCommands = scope.ServiceProvider.GetServices<ICommandMbhToTwitch>();
+            var helpCommand = scope.ServiceProvider.GetService<ICommandMbhTwitchHelp>();
+
+            var twitchBot = new TwitchBot(twitchClient, connectionCredentials, "haroldpulcher",
+                 config, scopedSayingResponse, scopedDadJokeService,
+                listOfCommands, helpCommand, logger);
 
             SetupGPIO();
         }

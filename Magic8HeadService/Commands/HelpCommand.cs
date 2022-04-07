@@ -11,6 +11,8 @@ namespace Magic8HeadService
         private readonly ILogger<Worker> logger;
         private readonly TwitchClient client;
 
+        public string Name => "help";
+
         public HelpCommand(TwitchClient client, ILogger<Worker> logger)
         {
             this.client = client;
