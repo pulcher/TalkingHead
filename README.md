@@ -25,6 +25,7 @@ You may find running the scripts the best way todo make this happen.  Checkout t
 
 Here is the command I used to install the dotnet SDK in the main location for all users:
 ```
+wget https://dot.net/v1/dotnet-install.sh
 chmod +x dotnet-install.sh
 sudo ./dotnet-install.sh --channel 6.0.2xx --install-dir /usr/share/dotnet
 ```
