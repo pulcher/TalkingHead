@@ -69,19 +69,3 @@ namespace Magic8HeadService
                 });
     }
 }
-
-
-/*
-            var credentials = new ConnectionCredentials(userName, accessToken);
-	        var clientOptions = new ClientOptions
-                {
-                    MessagesAllowedInPeriod = 750,
-                    ThrottlingPeriod = TimeSpan.FromSeconds(30),
-                    UseSsl = true
-                };
-            var customClient = new WebSocketClient(clientOptions);
-
-
-            client = new TwitchClient(customClient);
-            client.Initialize(credentials, "haroldpulcher");
-*/

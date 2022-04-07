@@ -8,8 +8,6 @@ using TwitchLib.Client.Enums;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Extensions;
 using TwitchLib.Client.Models;
-using TwitchLib.Communication.Clients;
-using TwitchLib.Communication.Models;
 using Microsoft.Extensions.Configuration;
 
 namespace Magic8HeadService
@@ -20,20 +18,14 @@ namespace Magic8HeadService
         private readonly ICommandMbhToTwitch helpCommandReal;
         private readonly Dictionary<string, ICommandMbhToTwitch> dictOfCommands;
 
-        private readonly Action<OnChatCommandReceivedArgs> HelpCommand = 
-                                                (e) => Console.WriteLine("****** help ******");
         private readonly ILogger<Worker> logger;
         private readonly ISayingResponse sayingResponse;
         private readonly IDadJokeService dadJokeService;
-        private string mood = Moods.Snarky;
 
         public TwitchBot(TwitchClient client, ConnectionCredentials clientCredentials, string channelName,
-            IConfiguration config,
-            ISayingResponse sayingResponse, IDadJokeService dadJokeService, IEnumerable<ICommandMbhToTwitch> listOfCommands,
-            ICommandMbhTwitchHelp helpCommand,
-            ILogger<Worker> logger)
+            IConfiguration config, ISayingResponse sayingResponse, IDadJokeService dadJokeService,
+            IEnumerable<ICommandMbhToTwitch> listOfCommands, ICommandMbhTwitchHelp helpCommand, ILogger<Worker> logger)
         {
-
             this.client = client;
 
             this.helpCommandReal = (ICommandMbhToTwitch)helpCommand;
@@ -42,7 +34,7 @@ namespace Magic8HeadService
             this.dadJokeService = dadJokeService;
 
             var listOfNames = listOfCommands.Select(x => x.Name);
-            Console.WriteLine($"-------------- List of Names :  {string.Join(',', listOfNames)}");
+            this.logger.LogInformation($"-------------- List of Names :  {string.Join(',', listOfNames)}");
             dictOfCommands = listOfCommands
                 .ToDictionary(x => x.Name, x => x, StringComparer.OrdinalIgnoreCase);
 
