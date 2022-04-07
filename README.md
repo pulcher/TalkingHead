@@ -134,3 +134,8 @@ GET volume: "amixer -M sget Headphone"
 SET volume: "amixer -q -M sset Headphone 50%"
 
 
+# Stuff for linking:
+
+https://github.com/kritzware/twitch-bot
+
+
