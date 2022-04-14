@@ -5,6 +5,9 @@ using MrBigHead.Services;
 using Scrutor;
 using System;
 using System.Threading.Tasks;
+using TwitchLib.Api;
+using TwitchLib.Api.Core;
+using TwitchLib.Api.Core.Interfaces;
 using TwitchLib.Client;
 using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
@@ -34,7 +37,9 @@ namespace Magic8HeadService
                     var configuration = services.BuildServiceProvider().GetService<IConfiguration>();
 
                     var userName = configuration["TwitchBotConfiguration:UserName"];
+                    var clientId = configuration["TwitchBotConfiguration:ClientId"];
                     var accessToken = configuration["TwitchBotConfiguration:AccessToken"];
+                    var refreshToken = configuration["TwitchBotconfiguration:RefreshToken"];
                     var credentials = new ConnectionCredentials(userName, accessToken);
 
                     services.AddSingleton(credentials);
@@ -48,6 +53,15 @@ namespace Magic8HeadService
 
                     services.AddSingleton<WebSocketClient>();
                     services.AddSingleton<TwitchClient>();
+
+                    // Setup access to the API and register it.
+                    services.AddSingleton<IApiSettings>(new ApiSettings
+                        { 
+                            ClientId = clientId,
+                            AccessToken = accessToken
+                        });
+
+                    services.AddSingleton<TwitchAPI>();
 
                     services.AddHttpClient();
 
