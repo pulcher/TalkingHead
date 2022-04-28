@@ -29,6 +29,8 @@ namespace Magic8HeadService
                 .UseSystemd()
                 .ConfigureAppConfiguration((hostContext, builder) =>
                 {
+                    // Yes, we are using this in production as well.  
+                    // we will change this eventually
                     builder.AddUserSecrets<Program>(optional: true);
                 })
                 .ConfigureServices((hostContext, services) =>
@@ -36,6 +38,7 @@ namespace Magic8HeadService
                     
                     var configuration = services.BuildServiceProvider().GetService<IConfiguration>();
 
+                    // need to add a command here to validate and report on missing configuration entries
                     var userName = configuration["TwitchBotConfiguration:UserName"];
                     var clientId = configuration["TwitchBotConfiguration:ClientId"];
                     var accessToken = configuration["TwitchBotConfiguration:AccessToken"];
@@ -46,7 +49,9 @@ namespace Magic8HeadService
 
                     services.AddSingleton(new ClientOptions
                         {
+                            DisconnectWait = 5000,
                             MessagesAllowedInPeriod = 750,
+                            ReconnectionPolicy = new ReconnectionPolicy(3000, maxAttempts: 50),
                             ThrottlingPeriod = TimeSpan.FromSeconds(30),
                             UseSsl = true
                         });
