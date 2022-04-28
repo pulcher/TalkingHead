@@ -29,6 +29,8 @@ namespace Magic8HeadService
                 .UseSystemd()
                 .ConfigureAppConfiguration((hostContext, builder) =>
                 {
+                    // Yes, we are using this in production as well.  
+                    // we will change this eventually
                     builder.AddUserSecrets<Program>(optional: true);
                 })
                 .ConfigureServices((hostContext, services) =>

@@ -50,12 +50,77 @@ This project needs a view api keys.  Inorder to keep everyone safe, we are using
 
 You can find out how to set them up for your repos at [User-Secrests](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-6.0&tabs=windows)
 
+The project already has user-secrets in it, so you need to provide some data for the stored configuration.  Here is an example of what the configuration currently looks like: 
+```json
+{
+    "TwitchBotConfiguration: {
+        "UserName": "<username of the twitchBot account>",
+        "ClientId": "<some id>",
+        "AccessToken": "<some really long string of seemingly random characters",
+        "RefreshToken": "<some really long string of seemingly random characters",
+        "StreamIds": [ "streamId1", "streamId2"]
+    }
+}
+```
+You can either edit that file with your favorite test editor, or use the __dotnet user-secets set__ command to add and modify entries in the file.  Something like the following:
+```bash
+cd .\Magic8HeadService
+dotnet user-secrets set "TwitchBotConfiguration:AccessToken" "12345"
+```
+Note: We are currently using user-secrest even in production.  A bit lazy I susposed, but it is working for us at the moment.  We will update this eventually.
+
+## Where do you get the stuff to enter into the secrets.json file?
+Head over to the [Twitch Token Generator](https://twitchtokengenerator.com/).  This usually makes my head spin, so if you head is spinning after looking at it.... we are both in the same boat.  It really isn't that bad, but there is a lot of oath and other stuff going on with scopes.  Way too much to get into it here.
+
 ## Running the service
 1. dotnet restore
 - May need to update all the packages. The Scott Hanselman blog on [dotnet-update](https://www.hanselman.com/blog/your-dotnet-outdated-is-outdated-update-and-help-keep-your-net-projects-up-to-date) or head over the [dont-netupdate repositor](https://github.com/dotnet-outdated/dotnet-outdated), give them a star and check them out.
 
 
+# How to add a command
 
+## The command
+Add a new file to the ./Magic8HeadService/Commands folder.  The name really doesn't matter, but for sanity follow the format: <Command_name>Command.cs.
+
+Here is some starter code:
+```csharp
+using Magic8HeadService;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using TwitchLib.Api;
+using TwitchLib.Client;
+using TwitchLib.Client.Events;
+
+public class SomeNewCommandCommand : ICommandMbhToTwitch
+{
+    private readonly TwitchClient client;
+    private readonly TwitchAPI api;
+    private readonly IConfiguration config;
+    private readonly ILogger<Worker> logger;
+
+    public string Name => "<some new command>";
+
+    public SomeNewCommandCommand(TwitchClient client, TwitchAPI api, IConfiguration config, ILogger<Worker> logger)
+    {
+        this.client = client;
+        this.api    = api;
+        this.config = config;
+        this.logger = logger;
+    }
+
+    public async void Handle(OnChatCommandReceivedArgs args)
+    {
+        logger.LogInformation($"handling the <some new command> command");
+
+        client.SendMessage(args.Command.ChatMessage.Channel, "doing the <some new command>");
+    }
+}
+```
+Replace __\<some new command\>__ with the one work command that you will want to invoke.
+
+
+
+## The Unit tests for the command
 
 
 
