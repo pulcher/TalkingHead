@@ -39,6 +39,5 @@ public class UptimeCommand : ICommandMbhToTwitch
 
         client.SendMessage(args.Command.ChatMessage.Channel, 
             $"The stream has been up for {uptime.ToString("hh")} hours, {uptime.ToString("mm")} minutes, and {uptime.ToString("ss")} seconds. But who's counting?");
-        //$"The stream has been online for {uptime.ToString("hh\\:mm\\:ss")}");
     }
 }
