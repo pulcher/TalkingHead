@@ -4,10 +4,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
+using TwitchLib.Client.Interfaces;
 
 public class DiscordCommand : ICommandMbhToTwitch
 {
-    private readonly TwitchClient client;
+    private readonly ITwitchClient client;
     private readonly IConfiguration config;
     private readonly ILogger<Worker> logger;
 

@@ -9,6 +9,7 @@ using TwitchLib.Api;
 using TwitchLib.Api.Core;
 using TwitchLib.Api.Core.Interfaces;
 using TwitchLib.Client;
+using TwitchLib.Client.Interfaces;
 using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
 using TwitchLib.Communication.Models;
