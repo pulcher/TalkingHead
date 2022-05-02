@@ -2,17 +2,18 @@ using Microsoft.Extensions.Logging;
 using MrBigHead.Shared;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
+using TwitchLib.Client.Interfaces;
 
 namespace Magic8HeadService
 {
     public class AskCommand : IMbhCommand
     {
         private readonly ILogger logger;
-        private readonly TwitchClient client;
+        private readonly ITwitchClient client;
         private readonly ISayingResponse sayingResponse;
         private readonly string mood;
 
-        public AskCommand(TwitchClient client, ISayingResponse sayingResponse, string mood, ILogger logger)
+        public AskCommand(ITwitchClient client, ISayingResponse sayingResponse, string mood, ILogger logger)
         {
             if (string.IsNullOrEmpty(mood))
             {

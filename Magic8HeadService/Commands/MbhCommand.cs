@@ -7,10 +7,11 @@ using Microsoft.Extensions.Logging;
 using MrBigHead.Shared;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
+using TwitchLib.Client.Interfaces;
 
 public class MbhCommand : ICommandMbhToTwitch
 {
-    private TwitchClient client;
+    private ITwitchClient client;
     private readonly IConfiguration config;
     private readonly ISayingResponse sayingResponse;
     private readonly IDadJokeService dadJokeService;
@@ -20,7 +21,7 @@ public class MbhCommand : ICommandMbhToTwitch
 
     public string Name => "mbh";
 
-    public MbhCommand(TwitchClient client, IConfiguration config, ISayingResponse sayingResponse,
+    public MbhCommand(ITwitchClient client, IConfiguration config, ISayingResponse sayingResponse,
         IDadJokeService dadJokeService, ILogger<Worker> logger)
     {
         this.client         = client;

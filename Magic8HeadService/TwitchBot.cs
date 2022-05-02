@@ -9,12 +9,13 @@ using TwitchLib.Client.Events;
 using TwitchLib.Client.Extensions;
 using TwitchLib.Client.Models;
 using Microsoft.Extensions.Configuration;
+using TwitchLib.Client.Interfaces;
 
 namespace Magic8HeadService
 {
     public class TwitchBot
     {
-        private readonly TwitchClient client;
+        private readonly ITwitchClient client;
         private readonly ICommandMbhToTwitch helpCommandReal;
         private readonly Dictionary<string, ICommandMbhToTwitch> dictOfCommands;
 
@@ -22,7 +23,7 @@ namespace Magic8HeadService
         private readonly ISayingResponse sayingResponse;
         private readonly IDadJokeService dadJokeService;
 
-        public TwitchBot(TwitchClient client, ConnectionCredentials clientCredentials, string channelName,
+        public TwitchBot(ITwitchClient client, ConnectionCredentials clientCredentials, string channelName,
             IConfiguration config, ISayingResponse sayingResponse, IDadJokeService dadJokeService,
             IEnumerable<ICommandMbhToTwitch> listOfCommands, ICommandMbhTwitchHelp helpCommand, ILogger<Worker> logger)
         {
@@ -51,6 +52,9 @@ namespace Magic8HeadService
             this.client.OnRaidNotification += Client_OnRaidNotification;
 
             var clientResult = this.client.Connect();
+
+            var testDiscord = dictOfCommands.GetValueOrDefault("discord", helpCommandReal);
+            testDiscord.Handle(new OnChatCommandReceivedArgs());
         }
 
         public void Client_OnLog(object sender, OnLogArgs e)
