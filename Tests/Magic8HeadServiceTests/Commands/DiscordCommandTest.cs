@@ -5,6 +5,10 @@ using TwitchLib.Client;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using TwitchLib.Client.Interfaces;
+using FakeItEasy;
+using TwitchLib.Client.Events;
+using TwitchLib.Client.Models;
+using TwitchLib.Client.Models.Internal;
 
 namespace Magic8HeadServiceTests;
 
@@ -13,7 +17,7 @@ public class DiscordCommandTest
 {
     private IConfiguration configuration;
     private ILogger<Magic8HeadService.Worker> logger;
-    private ITwitchClient twitchClient;
+    private ITwitchClient twitchFake;
 
     [TestInitialize]
     public void Setup() 
@@ -36,12 +40,30 @@ public class DiscordCommandTest
 
         logger = factory.CreateLogger<Magic8HeadService.Worker>();
 
-        twitchClient = new TwitchClient();
+        twitchFake = A.Fake<ITwitchClient>();
     }
 
     [TestMethod]
     public void CanInstance()
     {
-        var command = new DiscordCommand(twitchClient, configuration, logger);
+        var command = new DiscordCommand(twitchFake, configuration, logger);
+    }
+
+    [TestMethod]
+    public void GivenCommandArgsMessageSent()
+    {
+        // assemble
+        var ircMessage = new IrcMessage("theUser");
+
+        var commandEventArgs = new OnChatCommandReceivedArgs();
+        commandEventArgs.Command = new Chatcommand(new ChatMessage("theBot", ircMessage, ref new MessageEmoteCollection(), false));
+
+        var command = new DiscordCommand(twitchFake, configuration, logger);
+
+        // act
+        command.Handle(commandEventArgs);
+
+        // assert
+        A.CallTo(() => twitchFake.SendMessage(A<string>.Ignored, A<string>.Ignored)).MustHaveHappened();
     }
 }

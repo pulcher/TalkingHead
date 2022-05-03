@@ -52,9 +52,6 @@ namespace Magic8HeadService
             this.client.OnRaidNotification += Client_OnRaidNotification;
 
             var clientResult = this.client.Connect();
-
-            // var testDiscord = dictOfCommands.GetValueOrDefault("discord", helpCommandReal);
-            // testDiscord.Handle(new OnChatCommandReceivedArgs());
         }
 
         public void Client_OnLog(object sender, OnLogArgs e)
