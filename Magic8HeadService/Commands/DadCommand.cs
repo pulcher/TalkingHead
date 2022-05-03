@@ -3,18 +3,19 @@ using System;
 using System.Threading.Tasks;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
+using TwitchLib.Client.Interfaces;
 
 namespace Magic8HeadService
 {
     internal class DadCommand : IMbhCommand
     {
-        private TwitchClient client;
+        private ITwitchClient client;
         private ISayingResponse sayingResponse;
         private readonly IDadJokeService dadJokeService;
         private ILogger<Worker> logger;
         private string alternateSite = "https://karljoke.herokuapp.com/jokes/random"; //= string.Empty;
 
-        public DadCommand(TwitchClient client, ISayingResponse sayingResponse, IDadJokeService dadJokeService, ILogger<Worker> logger)
+        public DadCommand(ITwitchClient client, ISayingResponse sayingResponse, IDadJokeService dadJokeService, ILogger<Worker> logger)
         {
             this.client = client;
             this.sayingResponse = sayingResponse;

@@ -14,7 +14,7 @@ public class DiscordCommand : ICommandMbhToTwitch
 
     public string Name => "discord";
 
-    public DiscordCommand(TwitchClient client, IConfiguration config, ILogger<Worker> logger)
+    public DiscordCommand(ITwitchClient client, IConfiguration config, ILogger<Worker> logger)
     {
         this.client = client;
         this.config = config;
@@ -24,5 +24,6 @@ public class DiscordCommand : ICommandMbhToTwitch
     public void Handle(OnChatCommandReceivedArgs args)
     {
         client.SendMessage(args.Command.ChatMessage.Channel, "https://discord.gg/4X6SSpJNEW");
+        //client.SendMessage("haroldpulcher", "https://discord.gg/4X6SSpJNEW");
     }
 }

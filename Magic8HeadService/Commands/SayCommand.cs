@@ -1,16 +1,17 @@
 using Microsoft.Extensions.Logging;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
+using TwitchLib.Client.Interfaces;
 
 namespace Magic8HeadService
 {
     public class SayCommand : IMbhCommand
     {
         private readonly ILogger<Worker> logger;
-        private readonly TwitchClient client;
+        private readonly ITwitchClient client;
         private ISayingResponse sayingResponse;
 
-        public SayCommand(TwitchClient client, ISayingResponse sayingResponse, ILogger<Worker> logger)
+        public SayCommand(ITwitchClient client, ISayingResponse sayingResponse, ILogger<Worker> logger)
         {
             this.client = client;
             this.logger = logger;

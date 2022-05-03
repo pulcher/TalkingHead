@@ -2,16 +2,17 @@
 using MrBigHead.Shared;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
+using TwitchLib.Client.Interfaces;
 
 namespace Magic8HeadService
 {
     internal class InspirationalCommand : IMbhCommand
     {
-        private TwitchClient client;
+        private ITwitchClient client;
         private ISayingResponse sayingResponse;
         private ILogger<Worker> logger;
 
-        public InspirationalCommand(TwitchClient client, ISayingResponse sayingResponse, ILogger<Worker> logger)
+        public InspirationalCommand(ITwitchClient client, ISayingResponse sayingResponse, ILogger<Worker> logger)
         {
             this.client = client;
             this.sayingResponse = sayingResponse;

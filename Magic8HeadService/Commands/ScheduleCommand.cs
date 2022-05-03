@@ -4,19 +4,21 @@ using Magic8HeadService;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using TwitchLib.Api;
+using TwitchLib.Api.Interfaces;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
+using TwitchLib.Client.Interfaces;
 
 public class ScheduleCommand : ICommandMbhToTwitch
 {
-    private readonly TwitchClient client;
-    private readonly TwitchAPI api;
+    private readonly ITwitchClient client;
+    private readonly ITwitchAPI api;
     private readonly IConfiguration config;
     private readonly ILogger<Worker> logger;
 
     public string Name => "schedule";
 
-    public ScheduleCommand(TwitchClient client, TwitchAPI api, IConfiguration config, ILogger<Worker> logger)
+    public ScheduleCommand(ITwitchClient client, ITwitchAPI api, IConfiguration config, ILogger<Worker> logger)
     {
         this.client = client;
         this.api    = api;
