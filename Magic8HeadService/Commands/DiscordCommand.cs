@@ -23,7 +23,7 @@ public class DiscordCommand : ICommandMbhToTwitch
 
     public void Handle(OnChatCommandReceivedArgs args)
     {
-        //client.SendMessage(args.Command.ChatMessage.Channel, "https://discord.gg/4X6SSpJNEW");
-        client.SendMessage("haroldpulcher", "https://discord.gg/4X6SSpJNEW");
+        client.SendMessage(args.Command.ChatMessage.Channel, "https://discord.gg/4X6SSpJNEW");
+        //client.SendMessage("haroldpulcher", "https://discord.gg/4X6SSpJNEW");
     }
 }

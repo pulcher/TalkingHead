@@ -53,8 +53,8 @@ namespace Magic8HeadService
 
             var clientResult = this.client.Connect();
 
-            var testDiscord = dictOfCommands.GetValueOrDefault("discord", helpCommandReal);
-            testDiscord.Handle(new OnChatCommandReceivedArgs());
+            // var testDiscord = dictOfCommands.GetValueOrDefault("discord", helpCommandReal);
+            // testDiscord.Handle(new OnChatCommandReceivedArgs());
         }
 
         public void Client_OnLog(object sender, OnLogArgs e)
