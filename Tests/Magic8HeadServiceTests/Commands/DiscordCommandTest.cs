@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using TwitchLib.Client.Interfaces;
 using FakeItEasy;
+using TwitchLib.Client.Enums.Internal;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Models;
 using TwitchLib.Client.Models.Internal;
@@ -53,10 +54,14 @@ public class DiscordCommandTest
     public void GivenCommandArgsMessageSent()
     {
         // assemble
-        var ircMessage = new IrcMessage("theUser");
+        var ircParameters = new string[] {};
+        var ircMessage = new IrcMessage(IrcCommand.Unknown, ircParameters, "theUser", null);
 
-        var commandEventArgs = new OnChatCommandReceivedArgs();
-        commandEventArgs.Command = new Chatcommand(new ChatMessage("theBot", ircMessage, ref new MessageEmoteCollection(), false));
+        var messageEmoteCollection = new MessageEmoteCollection();
+        var commandEventArgs = new OnChatCommandReceivedArgs
+        {
+            Command = new ChatCommand(new ChatMessage("theBot", ircMessage, ref messageEmoteCollection, false))
+        };
 
         var command = new DiscordCommand(twitchFake, configuration, logger);
 
@@ -64,6 +69,6 @@ public class DiscordCommandTest
         command.Handle(commandEventArgs);
 
         // assert
-        A.CallTo(() => twitchFake.SendMessage(A<string>.Ignored, A<string>.Ignored)).MustHaveHappened();
+        A.CallTo(() => twitchFake.SendMessage(A<string>.Ignored, A<string>.Ignored, A<bool>.Ignored)).MustHaveHappened();
     }
 }
