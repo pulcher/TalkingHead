@@ -48,19 +48,26 @@ public class DiscordCommandTest
     public void CanInstance()
     {
         var command = new DiscordCommand(twitchFake, configuration, logger);
+
+        Assert.IsNotNull(command);
     }
 
     [TestMethod]
     public void GivenCommandArgsMessageSent()
     {
         // assemble
+        // _mockClient.ReceiveMessage($"@badges=subscriber/0,premium/1;color=#005C0B;display-name=KIJUI;emotes=30259:0-6;id=fefffeeb-1e87-4adf-9912-ca371a18cbfd;mod=0;room-id=22510310;subscriber=1;tmi-sent-ts=1530128909202;turbo=0;user-id=25517628;user-type= :kijui!kijui@kijui.tmi.twitch.tv PRIVMSG #testchannel :TEST MESSAGE");
         var ircParameters = new string[] {};
-        var ircMessage = new IrcMessage(IrcCommand.Unknown, ircParameters, "theUser", null);
+        var ircMessage = new IrcMessage(IrcCommand.Unknown, ircParameters, "!theUser", new Dictionary<string, string>());
 
         var messageEmoteCollection = new MessageEmoteCollection();
+
+        var chatMessage = new ChatMessage("theBot", ircMessage, ref messageEmoteCollection, false);
+        var chatCommand = new ChatCommand(chatMessage);
+
         var commandEventArgs = new OnChatCommandReceivedArgs
         {
-            Command = new ChatCommand(new ChatMessage("theBot", ircMessage, ref messageEmoteCollection, false))
+            Command = chatCommand
         };
 
         var command = new DiscordCommand(twitchFake, configuration, logger);
