@@ -10,12 +10,14 @@ namespace Magic8HeadService
         private readonly ILogger<Worker> logger;
         private readonly ITwitchClient client;
         private ISayingResponse sayingResponse;
+        private IMessageChecker messageChecker;
 
-        public SayCommand(ITwitchClient client, ISayingResponse sayingResponse, ILogger<Worker> logger)
+        public SayCommand(ITwitchClient client, ISayingResponse sayingResponse, IMessageChecker messageChecker, ILogger<Worker> logger)
         {
             this.client = client;
             this.logger = logger;
             this.sayingResponse = sayingResponse;
+            this.messageChecker = messageChecker;
         }
 
         public void Handle(OnChatCommandReceivedArgs cmd)
@@ -25,12 +27,12 @@ namespace Magic8HeadService
                 cmd.Command.ChatMessage.IsModerator)
             {
                 var message = cmd.Command.ArgumentsAsString.Split(' ', 2);
-                sayingResponse.SaySomethingNice(message[1]);
+                sayingResponse.SaySomethingNice(messageChecker.CheckMessage(message[1]));
             }
             else
             {
                 client.SendMessage(cmd.Command.ChatMessage.Channel,
-                    $"Hey {cmd.Command.ChatMessage.Username}, the say command is for subscibers and vips only.");
+                    $"Hey {cmd.Command.ChatMessage.Username}, the say command is for subscribers and vips only.");
             }
         }
     }
