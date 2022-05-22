@@ -83,6 +83,7 @@ namespace Magic8HeadService
                                 .AsImplementedInterfaces()
                                 .WithTransientLifetime());
 
+                    services.AddScoped<IMessageChecker, MessageChecker>();
                     services.AddScoped<ISayingService, SayingService>();
                     services.AddScoped<ISayingResponse, SayingResponse>();
                     services.AddScoped<IDadJokeService, DadJokeService>();

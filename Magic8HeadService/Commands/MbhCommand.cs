@@ -15,6 +15,7 @@ public class MbhCommand : ICommandMbhToTwitch
     private readonly IConfiguration config;
     private readonly ISayingResponse sayingResponse;
     private readonly IDadJokeService dadJokeService;
+    private readonly IMessageChecker messageChecker;
     private ILogger<Worker> logger;
     private IMbhCommand action;
     private string mood= Moods.Snarky;
@@ -22,12 +23,13 @@ public class MbhCommand : ICommandMbhToTwitch
     public string Name => "mbh";
 
     public MbhCommand(ITwitchClient client, IConfiguration config, ISayingResponse sayingResponse,
-        IDadJokeService dadJokeService, ILogger<Worker> logger)
+        IDadJokeService dadJokeService, IMessageChecker messageChecker, ILogger<Worker> logger)
     {
         this.client         = client;
         this.config         = config;
         this.sayingResponse = sayingResponse;
         this.dadJokeService = dadJokeService;
+        this.messageChecker = messageChecker;
         this.logger         = logger;
     }
 
@@ -51,7 +53,7 @@ public class MbhCommand : ICommandMbhToTwitch
                 action = new InspirationalCommand(client, sayingResponse, logger);
                 break;
             case AvailableCommands.Say:
-                action = new SayCommand(client, sayingResponse, logger);
+                action = new SayCommand(client, sayingResponse, messageChecker, logger);
                 break;
             default:
                 break;
