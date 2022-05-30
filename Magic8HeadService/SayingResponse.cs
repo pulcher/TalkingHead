@@ -13,24 +13,21 @@ namespace Magic8HeadService
     public class SayingResponse : ISayingResponse
     {
         private Random random;
-        private IConfiguration config;
+        private TwitchBotConfiguration twitchBotConfiguration;
         private readonly ISayingService sayingsService;
         private readonly ILogger<Worker> logger;
         private IList<Saying> sayings;
         private readonly SpeechSynthesizer speechSynthesizer;
 
-        public SayingResponse(IConfiguration config, ISayingService sayingsService, ILogger<Worker> logger)
+        public SayingResponse(TwitchBotConfiguration twitchBotConfiguration, ISayingService sayingsService, ILogger<Worker> logger)
         {
-            this.config = config;
+            this.twitchBotConfiguration = twitchBotConfiguration;
             this.sayingsService = sayingsService;
             this.logger = logger;
 
-            var speechSubscription = config["TwitchBotConfiguration:SpeechSubscription"];
-
-            var speechServiceRegion = config["TwitchBotConfiguration:SpeechServiceRegion"];
             // create a new speech synth
             var speechConfig = SpeechConfig
-                .FromSubscription(config["TwitchBotConfiguration:SpeechSubscription"], config["TwitchBotConfiguration:SpeechServiceRegion"]);
+                .FromSubscription(twitchBotConfiguration.SpeechSubscription, twitchBotConfiguration.SpeechServiceRegion);
             speechConfig.SpeechSynthesisLanguage = "en-GB";
             speechConfig.SpeechSynthesisVoiceName = "en-GB-RyanNeural";
             logger.LogInformation($"Here is the SpeechSynthesisLanguage: {speechConfig.SpeechSynthesisLanguage}");
