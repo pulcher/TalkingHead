@@ -48,8 +48,9 @@ namespace Magic8HeadService
                     services.AddSingleton(credentials);
 
                     // probably could convert this into a bind and only need to pass around this object
-                    // well, I believe Huga may have a better idea. :)  He usually does!
-                    var twitchBotConfiguration = configuration.Get<TwitchBotConfiguration>();
+                    // well, I believe Huga may have a better idea. :) aka IOptions<T>
+                    var twitchBotConfiguration = new TwitchBotConfiguration();
+                    configuration.GetSection("TwitchBotConfiguration").Bind(twitchBotConfiguration);
 
                     services.AddSingleton(twitchBotConfiguration);
 
