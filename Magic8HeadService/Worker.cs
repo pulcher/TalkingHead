@@ -35,10 +35,6 @@ namespace Magic8HeadService
             var defaultLogLevel = config["Logging:LogLevel:Default"];
             logger.LogInformation($"defaultLogLevel = {defaultLogLevel}");
 
-            var userName = twitchBotConfiguration.UserName;
-            var accessToken = twitchBotConfiguration.AccessToken;
-            var channelName = twitchBotConfiguration.ChannelName;
-
             using var scope = service.CreateScope();
 
             twitchClient =
@@ -57,8 +53,8 @@ namespace Magic8HeadService
             var listOfCommands = scope.ServiceProvider.GetServices<ICommandMbhToTwitch>();
             var helpCommand = scope.ServiceProvider.GetService<ICommandMbhTwitchHelp>();
 
-            var twitchBot = new TwitchBot(twitchClient, connectionCredentials, channelName,
-                 config, scopedSayingResponse, scopedDadJokeService,
+            var twitchBot = new TwitchBot(twitchClient, connectionCredentials, twitchBotConfiguration,
+                scopedSayingResponse, scopedDadJokeService,
                 listOfCommands, helpCommand, logger);
 
             SetupGPIO();
