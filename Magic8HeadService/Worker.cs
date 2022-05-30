@@ -25,7 +25,8 @@ namespace Magic8HeadService
         readonly ISayingResponse scopedSayingResponse;
         readonly IDadJokeService scopedDadJokeService;
 
-        public Worker(IServiceProvider service, IConfiguration config, ILogger<Worker> logger)
+        public Worker(IServiceProvider service, IConfiguration config, TwitchBotConfiguration twitchBotConfiguration,
+             ILogger<Worker> logger)
         {
             this.logger = logger;
             this.service = service;
@@ -33,9 +34,6 @@ namespace Magic8HeadService
 
             var defaultLogLevel = config["Logging:LogLevel:Default"];
             logger.LogInformation($"defaultLogLevel = {defaultLogLevel}");
-
-            var userName = config["TwitchBotConfiguration:UserName"];
-            var accessToken = config["TwitchBotConfiguration:AccessToken"];
 
             using var scope = service.CreateScope();
 
@@ -55,8 +53,8 @@ namespace Magic8HeadService
             var listOfCommands = scope.ServiceProvider.GetServices<ICommandMbhToTwitch>();
             var helpCommand = scope.ServiceProvider.GetService<ICommandMbhTwitchHelp>();
 
-            var twitchBot = new TwitchBot(twitchClient, connectionCredentials, "haroldpulcher",
-                 config, scopedSayingResponse, scopedDadJokeService,
+            var twitchBot = new TwitchBot(twitchClient, connectionCredentials, twitchBotConfiguration,
+                scopedSayingResponse, scopedDadJokeService,
                 listOfCommands, helpCommand, logger);
 
             SetupGPIO();

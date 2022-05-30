@@ -22,9 +22,9 @@ namespace Magic8HeadService
         private readonly ISayingResponse sayingResponse;
         private readonly IDadJokeService dadJokeService;
 
-        public TwitchBot(TwitchClient client, ConnectionCredentials clientCredentials, string channelName,
-            IConfiguration config, ISayingResponse sayingResponse, IDadJokeService dadJokeService,
-            IEnumerable<ICommandMbhToTwitch> listOfCommands, ICommandMbhTwitchHelp helpCommand, ILogger<Worker> logger)
+        public TwitchBot(TwitchClient client, ConnectionCredentials clientCredentials, TwitchBotConfiguration twitchBotConfiguration,
+            ISayingResponse sayingResponse, IDadJokeService dadJokeService, IEnumerable<ICommandMbhToTwitch> listOfCommands, 
+            ICommandMbhTwitchHelp helpCommand, ILogger<Worker> logger)
         {
             this.client = client;
 
@@ -38,7 +38,7 @@ namespace Magic8HeadService
             dictOfCommands = listOfCommands
                 .ToDictionary(x => x.Name, x => x, StringComparer.OrdinalIgnoreCase);
 
-            this.client.Initialize(clientCredentials, channelName);
+            this.client.Initialize(clientCredentials, twitchBotConfiguration.ChannelName);
 
             this.client.OnLog += Client_OnLog;
             this.client.OnJoinedChannel += Client_OnJoinedChannel;

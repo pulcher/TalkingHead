@@ -38,13 +38,14 @@ namespace Magic8HeadService
                     
                     var configuration = services.BuildServiceProvider().GetService<IConfiguration>();
 
-                    // need to add a command here to validate and report on missing configuration entries
-                    var userName = configuration["TwitchBotConfiguration:UserName"];
-                    var clientId = configuration["TwitchBotConfiguration:ClientId"];
-                    var accessToken = configuration["TwitchBotConfiguration:AccessToken"];
-                    var refreshToken = configuration["TwitchBotconfiguration:RefreshToken"];
-                    var credentials = new ConnectionCredentials(userName, accessToken);
+                    // probably could convert this into a bind and only need to pass around this object
+                    // well, I believe Huga may have a better idea. :) aka IOptions<T>
+                    var twitchBotConfiguration = new TwitchBotConfiguration();
+                    configuration.GetSection("TwitchBotConfiguration").Bind(twitchBotConfiguration);
 
+                    services.AddSingleton(twitchBotConfiguration);
+
+                    var credentials = new ConnectionCredentials(twitchBotConfiguration.UserName, twitchBotConfiguration.AccessToken);
                     services.AddSingleton(credentials);
 
                     services.AddSingleton(new ClientOptions
@@ -62,8 +63,8 @@ namespace Magic8HeadService
                     // Setup access to the API and register it.
                     services.AddSingleton<IApiSettings>(new ApiSettings
                         { 
-                            ClientId = clientId,
-                            AccessToken = accessToken
+                            ClientId = twitchBotConfiguration.ClientId,
+                            AccessToken = twitchBotConfiguration.AccessToken
                         });
 
                     services.AddSingleton<TwitchAPI>();
