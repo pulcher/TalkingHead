@@ -56,8 +56,13 @@ The project already has user-secrets in it, so you need to provide some data for
     "TwitchBotConfiguration: {
         "UserName": "<username of the twitchBot account>",
         "ClientId": "<some id>",
+<<<<<<< HEAD
         "AccessToken": "<some really long string of seemingly random characters>",
         "RefreshToken": "<some really long string of seemingly random characters>",
+=======
+        "AccessToken": "<some really long string of seemingly random characters",
+        "RefreshToken": "<some really long string of seemingly random characters",
+>>>>>>> main
         "StreamIds": [ "streamId1", "streamId2"]
     }
 }

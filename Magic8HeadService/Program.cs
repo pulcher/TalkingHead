@@ -31,6 +31,8 @@ namespace Magic8HeadService
                 .UseSystemd()
                 .ConfigureAppConfiguration((hostContext, builder) =>
                 {
+                    // Yes, we are using this in production as well.  
+                    // we will change this eventually
                     builder.AddUserSecrets<Program>(optional: true);
                 })
                 .ConfigureServices((hostContext, services) =>
@@ -38,17 +40,21 @@ namespace Magic8HeadService
                     
                     var configuration = services.BuildServiceProvider().GetService<IConfiguration>();
 
-                    var userName = configuration["TwitchBotConfiguration:UserName"];
-                    var clientId = configuration["TwitchBotConfiguration:ClientId"];
-                    var accessToken = configuration["TwitchBotConfiguration:AccessToken"];
-                    var refreshToken = configuration["TwitchBotconfiguration:RefreshToken"];
-                    var credentials = new ConnectionCredentials(userName, accessToken);
+                    // probably could convert this into a bind and only need to pass around this object
+                    // well, I believe Huga may have a better idea. :) aka IOptions<T>
+                    var twitchBotConfiguration = new TwitchBotConfiguration();
+                    configuration.GetSection("TwitchBotConfiguration").Bind(twitchBotConfiguration);
 
+                    services.AddSingleton(twitchBotConfiguration);
+
+                    var credentials = new ConnectionCredentials(twitchBotConfiguration.UserName, twitchBotConfiguration.AccessToken);
                     services.AddSingleton(credentials);
 
                     services.AddSingleton(new ClientOptions
                         {
+                            DisconnectWait = 5000,
                             MessagesAllowedInPeriod = 750,
+                            ReconnectionPolicy = new ReconnectionPolicy(3000, maxAttempts: 50),
                             ThrottlingPeriod = TimeSpan.FromSeconds(30),
                             UseSsl = true
                         });
@@ -58,8 +64,8 @@ namespace Magic8HeadService
                     // Setup access to the API and register it.
                     services.AddSingleton<IApiSettings>(new ApiSettings
                         { 
-                            ClientId = clientId,
-                            AccessToken = accessToken
+                            ClientId = twitchBotConfiguration.ClientId,
+                            AccessToken = twitchBotConfiguration.AccessToken
                         });
 
                     //services.AddSingleton<TwitchAPI>();
