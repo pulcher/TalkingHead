@@ -53,7 +53,7 @@ You can find out how to set them up for your repos at [User-Secrests](https://do
 The project already has user-secrets in it, so you need to provide some data for the stored configuration.  Here is an example of what the configuration currently looks like: 
 ```json
 {
-    "TwitchBotConfiguration: {
+    "TwitchBotConfiguration": {
         "UserName": "<username of the twitchBot account>",
         "ClientId": "<some id>",
         "AccessToken": "<some really long string of seemingly random characters",
