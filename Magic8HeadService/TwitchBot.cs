@@ -23,7 +23,7 @@ namespace Magic8HeadService
         private readonly ISayingResponse sayingResponse;
         private readonly IDadJokeService dadJokeService;
 
-        public TwitchBot(TwitchClient client, ConnectionCredentials clientCredentials, TwitchBotConfiguration twitchBotConfiguration,
+        public TwitchBot(ITwitchClient client, ConnectionCredentials clientCredentials, TwitchBotConfiguration twitchBotConfiguration,
             ISayingResponse sayingResponse, IDadJokeService dadJokeService, IEnumerable<ICommandMbhToTwitch> listOfCommands, 
             ICommandMbhTwitchHelp helpCommand, ILogger<Worker> logger)
         {

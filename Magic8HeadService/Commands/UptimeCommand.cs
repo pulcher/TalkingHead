@@ -4,20 +4,22 @@ using Magic8HeadService;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using TwitchLib.Api;
+using TwitchLib.Api.Interfaces;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
+using TwitchLib.Client.Interfaces;
 
 public class UptimeCommand : ICommandMbhToTwitch
 {
-    private readonly TwitchClient client;
-    private readonly TwitchAPI api;
+    private readonly ITwitchClient client;
+    private readonly ITwitchAPI api;
     private readonly IConfiguration config;
     private readonly ILogger<Worker> logger;
 
     public string Name => "uptime";
 
 
-    public UptimeCommand(TwitchClient client, TwitchAPI api, IConfiguration config, ILogger<Worker> logger)
+    public UptimeCommand(ITwitchClient client, ITwitchAPI api, IConfiguration config, ILogger<Worker> logger)
     {
         this.client = client;
         this.api = api;
