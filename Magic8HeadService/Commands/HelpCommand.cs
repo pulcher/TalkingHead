@@ -3,17 +3,18 @@ using System.Linq;
 using System.Text;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
+using TwitchLib.Client.Interfaces;
 
 namespace Magic8HeadService
 {
     public class HelpCommand : IMbhCommand
     {
         private readonly ILogger<Worker> logger;
-        private readonly TwitchClient client;
+        private readonly ITwitchClient client;
 
         public string Name => "help";
 
-        public HelpCommand(TwitchClient client, ILogger<Worker> logger)
+        public HelpCommand(ITwitchClient client, ILogger<Worker> logger)
         {
             this.client = client;
             this.logger = logger;

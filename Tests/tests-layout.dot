@@ -1,0 +1,15 @@
+digraph {
+
+
+    thing_to_test
+
+    input -> thing_to_test
+
+    fake_input -> thing_to_test
+
+
+
+    thing_to_test -> output
+
+    thing_to_test -> fake_output
+}

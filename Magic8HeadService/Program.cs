@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 using TwitchLib.Api;
 using TwitchLib.Api.Core;
 using TwitchLib.Api.Core.Interfaces;
+using TwitchLib.Api.Interfaces;
 using TwitchLib.Client;
+using TwitchLib.Client.Interfaces;
 using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
 using TwitchLib.Communication.Models;
@@ -58,7 +60,6 @@ namespace Magic8HeadService
                         });
 
                     services.AddSingleton<WebSocketClient>();
-                    services.AddSingleton<TwitchClient>();
 
                     // Setup access to the API and register it.
                     services.AddSingleton<IApiSettings>(new ApiSettings
@@ -67,9 +68,13 @@ namespace Magic8HeadService
                             AccessToken = twitchBotConfiguration.AccessToken
                         });
 
-                    services.AddSingleton<TwitchAPI>();
+                    //services.AddSingleton<TwitchAPI>();
+                    services.AddSingleton<ITwitchAPI, TwitchAPI>();
 
                     services.AddHttpClient();
+
+                    //services.AddSingleton<TwitchClient>();
+                    services.AddSingleton<ITwitchClient, TwitchClient>();
 
                     // adding the ICommandMbhToTwitch main series of commands
                     services.Scan(scan => scan

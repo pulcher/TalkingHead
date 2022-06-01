@@ -9,12 +9,13 @@ using TwitchLib.Client.Events;
 using TwitchLib.Client.Extensions;
 using TwitchLib.Client.Models;
 using Microsoft.Extensions.Configuration;
+using TwitchLib.Client.Interfaces;
 
 namespace Magic8HeadService
 {
     public class TwitchBot
     {
-        private readonly TwitchClient client;
+        private readonly ITwitchClient client;
         private readonly ICommandMbhToTwitch helpCommandReal;
         private readonly Dictionary<string, ICommandMbhToTwitch> dictOfCommands;
 
@@ -22,7 +23,7 @@ namespace Magic8HeadService
         private readonly ISayingResponse sayingResponse;
         private readonly IDadJokeService dadJokeService;
 
-        public TwitchBot(TwitchClient client, ConnectionCredentials clientCredentials, TwitchBotConfiguration twitchBotConfiguration,
+        public TwitchBot(ITwitchClient client, ConnectionCredentials clientCredentials, TwitchBotConfiguration twitchBotConfiguration,
             ISayingResponse sayingResponse, IDadJokeService dadJokeService, IEnumerable<ICommandMbhToTwitch> listOfCommands, 
             ICommandMbhTwitchHelp helpCommand, ILogger<Worker> logger)
         {
