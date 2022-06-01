@@ -20,4 +20,10 @@
     <ProjectReference Include="..\..\Magic8HeadService\Magic8HeadService.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>$(AssemblyName)</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
 </Project>
