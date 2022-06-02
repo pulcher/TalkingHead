@@ -13,3 +13,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - run: dotnet publish Magic8HeadService/Magic8HeadService.csproj -c Release -o /srv/Magic8HeadService/
+    - run: sudo systemctl restart Magic8HeadService
