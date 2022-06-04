@@ -69,8 +69,8 @@ namespace Magic8HeadService
 
         public void Client_OnJoinedChannel(object sender, OnJoinedChannelArgs e)
         {
-            Console.WriteLine("Hey programs! I am a bot. Let's talk!");
-            this.client.SendMessage(e.Channel, "Hey programs! I am a bot. Let's talk!");
+            Console.WriteLine("Hey programs! Let's talk!");
+            this.client.SendMessage(e.Channel, "Hey programs! Let's talk!");
         }
 
         public void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
