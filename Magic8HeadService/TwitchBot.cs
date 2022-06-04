@@ -39,6 +39,8 @@ namespace Magic8HeadService
             dictOfCommands = listOfCommands
                 .ToDictionary(x => x.Name, x => x, StringComparer.OrdinalIgnoreCase);
 
+	    this.logger.LogInformation($"================== dictOfCommand Count: {dictOfCommands.Count}");
+
             this.client.Initialize(clientCredentials, twitchBotConfiguration.ChannelName);
 
             this.client.OnLog += Client_OnLog;
@@ -52,6 +54,7 @@ namespace Magic8HeadService
             this.client.OnRaidNotification += Client_OnRaidNotification;
 
             var clientResult = this.client.Connect();
+	    this.logger.LogInformation($"============ client connected");
         }
 
         public void Client_OnLog(object sender, OnLogArgs e)
@@ -66,8 +69,8 @@ namespace Magic8HeadService
 
         public void Client_OnJoinedChannel(object sender, OnJoinedChannelArgs e)
         {
-            Console.WriteLine("Hey programs! I am a bot connected via TwitchLib!");
-            this.client.SendMessage(e.Channel, "Hey programs! I am a bot connected via TwitchLib!");
+            Console.WriteLine("Hey programs! I am a bot. Let's talk!");
+            this.client.SendMessage(e.Channel, "Hey programs! I am a bot. Let's talk!");
         }
 
         public void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
