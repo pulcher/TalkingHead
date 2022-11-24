@@ -10,6 +10,7 @@ using TwitchLib.Client.Extensions;
 using TwitchLib.Client.Models;
 using Microsoft.Extensions.Configuration;
 using TwitchLib.Client.Interfaces;
+using TwitchLib.Communication.Events;
 
 namespace Magic8HeadService
 {
@@ -39,7 +40,7 @@ namespace Magic8HeadService
             dictOfCommands = listOfCommands
                 .ToDictionary(x => x.Name, x => x, StringComparer.OrdinalIgnoreCase);
 
-	    this.logger.LogInformation($"================== dictOfCommand Count: {dictOfCommands.Count}");
+	        this.logger.LogInformation($"================== dictOfCommand Count: {dictOfCommands.Count}");
 
             this.client.Initialize(clientCredentials, twitchBotConfiguration.ChannelName);
 
@@ -50,11 +51,12 @@ namespace Magic8HeadService
             this.client.OnNewSubscriber += Client_OnNewSubscriber;
             this.client.OnReSubscriber += Client_OnReSubscriber;
             this.client.OnConnected += Client_OnConnected;
+            this.client.OnDisconnected += Client_OnDisconnected;
             this.client.OnChatCommandReceived += Client_OnChatCommandReceived;
             this.client.OnRaidNotification += Client_OnRaidNotification;
 
             var clientResult = this.client.Connect();
-	    this.logger.LogInformation($"============ client connected");
+	        this.logger.LogInformation($"============ client connected");
         }
 
         public void Client_OnLog(object sender, OnLogArgs e)
@@ -64,7 +66,13 @@ namespace Magic8HeadService
 
         public void Client_OnConnected(object sender, OnConnectedArgs e)
         {
-            Console.WriteLine($"Connected to {e.AutoJoinChannel}");
+            logger.LogInformation($"Connected to {e.AutoJoinChannel}");
+            logger.LogInformation($"Connected as {e.BotUsername}");
+        }
+
+        public void Client_OnDisconnected(object sender, OnDisconnectedEventArgs e)
+        {
+            logger.LogInformation($"======== Disconnected ===================");
         }
 
         public void Client_OnJoinedChannel(object sender, OnJoinedChannelArgs e)

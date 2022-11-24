@@ -353,3 +353,7 @@ appsettings.json
 appsettings.development.json
 
 local.settings.json
+
+# upgrade-assistant
+**/*.sarif
+**/*.clef
