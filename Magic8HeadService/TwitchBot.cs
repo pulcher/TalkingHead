@@ -44,19 +44,36 @@ namespace Magic8HeadService
 
             this.client.Initialize(clientCredentials, twitchBotConfiguration.ChannelName);
 
-            this.client.OnLog += Client_OnLog;
-            this.client.OnJoinedChannel += Client_OnJoinedChannel;
-            this.client.OnMessageReceived += Client_OnMessageReceived;
-            this.client.OnWhisperReceived += Client_OnWhisperReceived;
-            this.client.OnNewSubscriber += Client_OnNewSubscriber;
-            this.client.OnReSubscriber += Client_OnReSubscriber;
-            this.client.OnConnected += Client_OnConnected;
-            this.client.OnDisconnected += Client_OnDisconnected;
             this.client.OnChatCommandReceived += Client_OnChatCommandReceived;
+            this.client.OnConnected           += Client_OnConnected;
+            this.client.OnDisconnected        += Client_OnDisconnected;
+            this.client.OnJoinedChannel       += Client_OnJoinedChannel;
+            this.client.OnLog += Client_OnLog;
+            this.client.OnMessageReceived += Client_OnMessageReceived;
+            this.client.OnModeratorJoined += Client_OnModeratorJoined;
+            this.client.OnModeratorLeft += Client_OnModeratorLeft;
+            this.client.OnNewSubscriber += Client_OnNewSubscriber;
             this.client.OnRaidNotification += Client_OnRaidNotification;
+            this.client.OnReSubscriber += Client_OnReSubscriber;
+            this.client.OnWhisperReceived += Client_OnWhisperReceived;
 
             var clientResult = this.client.Connect();
 	        this.logger.LogInformation($"============ client connected");
+        }
+
+        private void Client_OnModeratorLeft(object sender, OnModeratorLeftArgs e)
+        {
+            logger.LogInformation("Moderator {moderator} left the channel. ", e.Username);
+        }
+
+        public void Client_OnModeratorJoined(object sender, OnModeratorJoinedArgs e)
+        {
+            var message = $"Hey programs, sword-bearing moderator {e.Username} has joined! Hide yo' bugs, hide yo' bits!";
+            logger.LogInformation(message);
+
+            sayingResponse.SaySomethingNice(message).Wait();
+
+            this.client.SendMessage(e.Channel, message);
         }
 
         public void Client_OnLog(object sender, OnLogArgs e)
@@ -77,7 +94,7 @@ namespace Magic8HeadService
 
         public void Client_OnJoinedChannel(object sender, OnJoinedChannelArgs e)
         {
-            Console.WriteLine("Hey programs! Let's talk!");
+            logger.LogInformation("Hey programs! Let's talk!");
             this.client.SendMessage(e.Channel, "Hey programs! Let's talk!");
         }
 
