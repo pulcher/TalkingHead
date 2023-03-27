@@ -94,8 +94,8 @@ namespace Magic8HeadService
 
         public void Client_OnJoinedChannel(object sender, OnJoinedChannelArgs e)
         {
-            logger.LogInformation("Hey programs! Let's talk!");
-            this.client.SendMessage(e.Channel, "Hey programs! Let's talk!");
+            logger.LogInformation("Hey programs! Let's talk and make stuff, break stuff, and learn stuff!");
+            this.client.SendMessage(e.Channel, "Hey programs! Let's talk and make stuff, break stuff, and learn stuff!");
         }
 
         public void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
