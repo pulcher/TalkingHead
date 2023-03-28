@@ -1,3 +1,4 @@
+using Magic8HeadService.Services;
 using Microsoft.Extensions.Logging;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
@@ -11,13 +12,17 @@ namespace Magic8HeadService
         private readonly ITwitchClient client;
         private ISayingResponse sayingResponse;
         private IMessageChecker messageChecker;
+        private readonly ICommandTracker commandTracker;
 
-        public SayCommand(ITwitchClient client, ISayingResponse sayingResponse, IMessageChecker messageChecker, ILogger<Worker> logger)
+        public SayCommand(ITwitchClient client, ISayingResponse sayingResponse,
+                          IMessageChecker messageChecker, ICommandTracker commandTracker,
+                          ILogger<Worker> logger)
         {
             this.client = client;
             this.logger = logger;
             this.sayingResponse = sayingResponse;
             this.messageChecker = messageChecker;
+            this.commandTracker = commandTracker;
         }
 
         public void Handle(OnChatCommandReceivedArgs cmd)
@@ -27,6 +32,10 @@ namespace Magic8HeadService
                 cmd.Command.ChatMessage.IsModerator)
             {
                 var message = cmd.Command.ArgumentsAsString.Split(' ', 2);
+                var username = cmd.Command.ChatMessage.Username;
+
+                commandTracker.Add(username, "say");
+
                 sayingResponse.SaySomethingNice(messageChecker.CheckMessage(message[1]));
             }
             else
@@ -34,6 +43,10 @@ namespace Magic8HeadService
                 client.SendMessage(cmd.Command.ChatMessage.Channel,
                     $"Hey {cmd.Command.ChatMessage.Username}, the say command is for subscribers and vips only.");
             }
+
+            var currentSessionCommands = commandTracker.GetSessionCommands("say");
+            
+            var check = string.Empty;
         }
     }
 }

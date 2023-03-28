@@ -1,3 +1,4 @@
+using Magic8HeadService.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -85,6 +86,7 @@ namespace Magic8HeadService
 
                     services.AddScoped<IMessageChecker, MessageChecker>();
                     services.AddScoped<ISayingService, SayingService>();
+                    services.AddScoped<ICommandTracker, CommandTracker>();
                     services.AddScoped<ISayingResponse, SayingResponse>();
                     services.AddScoped<IDadJokeService, DadJokeService>();
                     services.AddScoped<ICommandMbhTwitchHelp, HelpCommandReal>();

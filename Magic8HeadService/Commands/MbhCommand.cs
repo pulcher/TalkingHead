@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Magic8HeadService;
+using Magic8HeadService.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MrBigHead.Shared;
@@ -19,17 +20,19 @@ public class MbhCommand : ICommandMbhToTwitch
     private ILogger<Worker> logger;
     private IMbhCommand action;
     private string mood= Moods.Snarky;
+    private ICommandTracker commandTracker;
 
     public string Name => "mbh";
 
     public MbhCommand(ITwitchClient client, IConfiguration config, ISayingResponse sayingResponse,
-        IDadJokeService dadJokeService, IMessageChecker messageChecker, ILogger<Worker> logger)
+        IDadJokeService dadJokeService, IMessageChecker messageChecker, ICommandTracker commandTracker, ILogger<Worker> logger)
     {
         this.client         = client;
         this.config         = config;
         this.sayingResponse = sayingResponse;
         this.dadJokeService = dadJokeService;
         this.messageChecker = messageChecker;
+        this.commandTracker = commandTracker;
         this.logger         = logger;
     }
 
@@ -53,7 +56,7 @@ public class MbhCommand : ICommandMbhToTwitch
                 action = new InspirationalCommand(client, sayingResponse, logger);
                 break;
             case AvailableCommands.Say:
-                action = new SayCommand(client, sayingResponse, messageChecker, logger);
+                action = new SayCommand(client, sayingResponse, messageChecker, commandTracker, logger);
                 break;
             default:
                 break;
