@@ -136,6 +136,10 @@ namespace Magic8HeadService
         private SpeechSynthesizer GetSpeechSynthizer()
         {
             var index = random.Next(speechConfigs.Count);
+
+            logger.LogInformation("Language in use: {language}", speechConfigs[index].SpeechSynthesisLanguage);
+            logger.LogInformation("Voice in use: {voice}", speechConfigs[index].SpeechSynthesisVoiceName);
+
             return speechSynthesizers[speechConfigs[index].SpeechSynthesisVoiceName];
         }
 
