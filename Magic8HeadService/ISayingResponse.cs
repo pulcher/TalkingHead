@@ -8,5 +8,6 @@ namespace Magic8HeadService
         string PickSaying(string mood);
         Task SaySomethingNice(string message);
         Task SetupSayingsAsync();
+        Task SetupVoiceListAsync();
     }
 }

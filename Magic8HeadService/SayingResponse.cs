@@ -12,12 +12,14 @@ namespace Magic8HeadService
 {
     public class SayingResponse : ISayingResponse
     {
-        private Random random;
+        private Random random = new();
         private TwitchBotConfiguration twitchBotConfiguration;
         private readonly ISayingService sayingsService;
         private readonly ILogger<Worker> logger;
         private IList<Saying> sayings;
+        private IList<SpeechConfig> speechConfigs;
         private readonly SpeechSynthesizer speechSynthesizer;
+        private readonly Dictionary<string, SpeechSynthesizer> speechSynthesizers = new Dictionary<string, SpeechSynthesizer>();
 
         public SayingResponse(TwitchBotConfiguration twitchBotConfiguration, ISayingService sayingsService, ILogger<Worker> logger)
         {
@@ -27,22 +29,77 @@ namespace Magic8HeadService
 
             // create a new speech synth
             var speechConfig = SpeechConfig
-                .FromSubscription(twitchBotConfiguration.SpeechSubscription, twitchBotConfiguration.SpeechServiceRegion);
-            speechConfig.SpeechSynthesisLanguage = "en-GB";
-            speechConfig.SpeechSynthesisVoiceName = "en-GB-RyanNeural";
-            logger.LogInformation($"Here is the SpeechSynthesisLanguage: {speechConfig.SpeechSynthesisLanguage}");
-            logger.LogInformation($"Here is the SpeechSynthesisVoiceName: {speechConfig.SpeechSynthesisVoiceName}");
+                .FromSubscription(twitchBotConfiguration.SpeechSubscription, 
+                twitchBotConfiguration.SpeechServiceRegion);
+
+            SetupVoiceListAsync().Wait();
+            SetupSpeechSynthizersAsync().Wait();
 
             speechSynthesizer = new SpeechSynthesizer(speechConfig);
 
             SetupSayingsAsync().Wait();
         }
 
+        public async Task SetupSpeechSynthizersAsync()
+        {
+            foreach (var voice in speechConfigs)
+            {
+                if (!speechSynthesizers.ContainsKey(voice.SpeechSynthesisVoiceName))
+                {
+                    speechSynthesizers.Add(voice.SpeechSynthesisVoiceName, new SpeechSynthesizer(voice));
+                }
+            }
+        }
+
+        public async Task SetupVoiceListAsync()
+        {
+            speechConfigs = new List<SpeechConfig>();
+
+            foreach (var voice in GetVoices())
+            {
+                // create a new speech synth
+                var speechConfig = SpeechConfig
+                    .FromSubscription(twitchBotConfiguration.SpeechSubscription,
+                    twitchBotConfiguration.SpeechServiceRegion);
+
+                speechConfig.SpeechSynthesisLanguage = voice.Language;
+                speechConfig.SpeechSynthesisVoiceName = voice.Name;
+
+                speechConfigs.Add(speechConfig);
+            }
+
+            //speechConfig = SpeechConfig
+            //    .FromSubscription(twitchBotConfiguration.SpeechSubscription,
+            //    twitchBotConfiguration.SpeechServiceRegion);
+
+            //speechConfig.SpeechSynthesisLanguage = "en-US";
+            //speechConfig.SpeechSynthesisVoiceName = "en-US-JennyNeural";
+
+            //speechConfigs.Add(speechConfig);
+        }
+
+        private IEnumerable<voice> GetVoices()
+        {
+            return new List<voice>
+            {
+                new voice {Language = "en-GB", Name = "en-GB-RyanNeural"},
+                new voice {Language = "en-US", Name = "ru-RU-SvetlanaNeural"},
+                new voice {Language = "en-PH", Name = "en-PH-RosaNeural"},
+                new voice {Language = "en-US", Name = "en-US-JennyNeural"},
+                new voice {Language = "en-US", Name = "cy-GB-AledNeural"},
+                new voice {Language = "en-US", Name = "es-MX-LibertoNeural"},
+                new voice {Language = "en-US", Name = "fr-CA-SylvieNeural"},
+                new voice {Language = "en-US", Name = "fr-CA-JeanNeural"},
+                new voice {Language = "en-US", Name = "fil-PH-AngeloNeural"},
+                new voice {Language = "en-US", Name = "kk-KZ-DauletNeural"},
+                new voice {Language = "en-US", Name = "sl-SI-PetraNeural"}
+            };
+        }
+
         public async Task SetupSayingsAsync()
         {
             logger.LogInformation("Setiing up Sayings...");
 
-            random = new Random();
             sayings = await sayingsService.GetAllSayingsAsync();
 
             logger.LogInformation($"saying count: {sayings.Count}");
@@ -51,6 +108,8 @@ namespace Magic8HeadService
         public async Task SaySomethingNice(string message)
         {
             logger.LogInformation($"Saying: {message}");
+
+            var speechSynthesizer = GetSpeechSynthizer();
 
             using (var result = await speechSynthesizer.SpeakTextAsync(message))
             {
@@ -72,6 +131,12 @@ namespace Magic8HeadService
                 }
             }
             return;
+        }
+
+        private SpeechSynthesizer GetSpeechSynthizer()
+        {
+            var index = random.Next(speechConfigs.Count);
+            return speechSynthesizers[speechConfigs[index].SpeechSynthesisVoiceName];
         }
 
         public string PickSaying()
@@ -97,5 +162,11 @@ namespace Magic8HeadService
 
             return pickedSaying.Phrase;
         }
+    }
+
+    internal class voice
+    {
+        public string Language { get; set; }
+        public string Name { get; set; }
     }
 }
