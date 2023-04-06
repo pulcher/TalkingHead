@@ -83,15 +83,15 @@ namespace Magic8HeadService
             return new List<voice>
             {
                 new voice {Language = "en-GB", Name = "en-GB-RyanNeural"},
-                new voice {Language = "en-US", Name = "ru-RU-SvetlanaNeural"},
-                new voice {Language = "en-PH", Name = "en-PH-RosaNeural"},
-                new voice {Language = "en-US", Name = "en-US-JennyNeural"},
-                new voice {Language = "en-US", Name = "cy-GB-AledNeural"},
-                new voice {Language = "en-US", Name = "fr-CA-SylvieNeural"},
-                new voice {Language = "en-US", Name = "fr-CA-JeanNeural"},
-                new voice {Language = "en-US", Name = "fil-PH-AngeloNeural"},
-                new voice {Language = "en-US", Name = "kk-KZ-DauletNeural"},
-                new voice {Language = "en-US", Name = "sl-SI-PetraNeural"}
+                //new voice {Language = "en-US", Name = "ru-RU-SvetlanaNeural"},
+                //new voice {Language = "en-PH", Name = "en-PH-RosaNeural"},
+                //new voice {Language = "en-US", Name = "en-US-JennyNeural"},
+                //new voice {Language = "en-US", Name = "cy-GB-AledNeural"},
+                //new voice {Language = "en-US", Name = "fr-CA-SylvieNeural"},
+                //new voice {Language = "en-US", Name = "fr-CA-JeanNeural"},
+                //new voice {Language = "en-US", Name = "fil-PH-AngeloNeural"},
+                //new voice {Language = "en-US", Name = "kk-KZ-DauletNeural"},
+                //new voice {Language = "en-US", Name = "sl-SI-PetraNeural"}
             };
         }
 
