@@ -87,7 +87,6 @@ namespace Magic8HeadService
                 new voice {Language = "en-PH", Name = "en-PH-RosaNeural"},
                 new voice {Language = "en-US", Name = "en-US-JennyNeural"},
                 new voice {Language = "en-US", Name = "cy-GB-AledNeural"},
-                new voice {Language = "en-US", Name = "es-MX-LibertoNeural"},
                 new voice {Language = "en-US", Name = "fr-CA-SylvieNeural"},
                 new voice {Language = "en-US", Name = "fr-CA-JeanNeural"},
                 new voice {Language = "en-US", Name = "fil-PH-AngeloNeural"},
