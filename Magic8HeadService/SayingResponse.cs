@@ -112,6 +112,7 @@ namespace Magic8HeadService
 
             using (var result = await speechSynthesizer.SpeakTextAsync(message))
             {
+                logger.LogError($"Speech synthesized result: [{result.Reason}]");
                 if (result.Reason == ResultReason.SynthesizingAudioCompleted)
                 {
                     logger.LogInformation($"Speech synthesized to speaker for text [{message}]");
