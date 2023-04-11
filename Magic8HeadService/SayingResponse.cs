@@ -1,4 +1,5 @@
 using Microsoft.CognitiveServices.Speech;
+using Microsoft.CognitiveServices.Speech.Audio;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MrBigHead.Services;
@@ -33,22 +34,12 @@ namespace Magic8HeadService
                 twitchBotConfiguration.SpeechServiceRegion);
 
             SetupVoiceListAsync().Wait();
-            SetupSpeechSynthizersAsync().Wait();
 
-            speechSynthesizer = new SpeechSynthesizer(speechConfig);
+            //speechSynthesizer = new SpeechSynthesizer(speechConfig);
+
+            speechSynthesizer = new SpeechSynthesizer(speechConfigs[0]);
 
             SetupSayingsAsync().Wait();
-        }
-
-        public async Task SetupSpeechSynthizersAsync()
-        {
-            foreach (var voice in speechConfigs)
-            {
-                if (!speechSynthesizers.ContainsKey(voice.SpeechSynthesisVoiceName))
-                {
-                    speechSynthesizers.Add(voice.SpeechSynthesisVoiceName, new SpeechSynthesizer(voice));
-                }
-            }
         }
 
         public async Task SetupVoiceListAsync()
@@ -65,17 +56,10 @@ namespace Magic8HeadService
                 speechConfig.SpeechSynthesisLanguage = voice.Language;
                 speechConfig.SpeechSynthesisVoiceName = voice.Name;
 
+                //speechConfig.SetProperty(PropertyId.SpeechServiceResponse_RequestSentenceBoundary, "true");
+
                 speechConfigs.Add(speechConfig);
             }
-
-            //speechConfig = SpeechConfig
-            //    .FromSubscription(twitchBotConfiguration.SpeechSubscription,
-            //    twitchBotConfiguration.SpeechServiceRegion);
-
-            //speechConfig.SpeechSynthesisLanguage = "en-US";
-            //speechConfig.SpeechSynthesisVoiceName = "en-US-JennyNeural";
-
-            //speechConfigs.Add(speechConfig);
         }
 
         private IEnumerable<voice> GetVoices()
@@ -83,15 +67,15 @@ namespace Magic8HeadService
             return new List<voice>
             {
                 new voice {Language = "en-GB", Name = "en-GB-RyanNeural"},
-                //new voice {Language = "en-US", Name = "ru-RU-SvetlanaNeural"},
-                //new voice {Language = "en-PH", Name = "en-PH-RosaNeural"},
-                //new voice {Language = "en-US", Name = "en-US-JennyNeural"},
-                //new voice {Language = "en-US", Name = "cy-GB-AledNeural"},
-                //new voice {Language = "en-US", Name = "fr-CA-SylvieNeural"},
-                //new voice {Language = "en-US", Name = "fr-CA-JeanNeural"},
-                //new voice {Language = "en-US", Name = "fil-PH-AngeloNeural"},
-                //new voice {Language = "en-US", Name = "kk-KZ-DauletNeural"},
-                //new voice {Language = "en-US", Name = "sl-SI-PetraNeural"}
+                new voice {Language = "en-US", Name = "ru-RU-SvetlanaNeural"},
+                new voice {Language = "en-PH", Name = "en-PH-RosaNeural"},
+                new voice {Language = "en-US", Name = "en-US-JennyNeural"},
+                new voice {Language = "en-US", Name = "cy-GB-AledNeural"},
+                new voice {Language = "en-US", Name = "fr-CA-SylvieNeural"},
+                new voice {Language = "en-US", Name = "fr-CA-JeanNeural"},
+                new voice {Language = "en-US", Name = "fil-PH-AngeloNeural"},
+                new voice {Language = "en-US", Name = "kk-KZ-DauletNeural"},
+                new voice {Language = "en-US", Name = "sl-SI-PetraNeural"}
             };
         }
 
@@ -108,14 +92,16 @@ namespace Magic8HeadService
         {
             logger.LogInformation($"Saying: {message}");
 
-            var speechSynthesizer = GetSpeechSynthizer();
+            var speechConfig = GetSpeechConfig();
 
-            using (var result = await speechSynthesizer.SpeakTextAsync(message))
+            var ssmlMessage = ConvertToSsml(speechConfig, message);
+
+            using (var result = await speechSynthesizer.StartSpeakingSsmlAsync(ssmlMessage))
             {
                 logger.LogError($"Speech synthesized result: [{result.Reason}]");
                 if (result.Reason == ResultReason.SynthesizingAudioCompleted)
                 {
-                    logger.LogInformation($"Speech synthesized to speaker for text [{message}]");
+                    logger.LogInformation($"Speech synthesized to speaker for text [{ssmlMessage}]");
                 }
                 else if (result.Reason == ResultReason.Canceled)
                 {
@@ -131,6 +117,26 @@ namespace Magic8HeadService
                 }
             }
             return;
+        }
+
+        private string ConvertToSsml(SpeechConfig speechConfig, string message)
+        {
+            return @$"<speak version='1.0' xml:lang='en-US' xmlns='http://www.w3.org/2001/10/synthesis' xmlns:mstts='http://www.w3.org/2001/mstts'>
+                        <voice name='{speechConfig.SpeechSynthesisVoiceName}'>
+                            <mstts:viseme type='redlips_front'/>
+                            {message}
+                        </voice>
+                    </speak>";
+        }
+
+        private SpeechConfig GetSpeechConfig()
+        {
+            var index = random.Next(speechConfigs.Count);
+
+            logger.LogInformation("Language in use: {language}", speechConfigs[index].SpeechSynthesisLanguage);
+            logger.LogInformation("Voice in use: {voice}", speechConfigs[index].SpeechSynthesisVoiceName);
+
+            return speechConfigs[index];
         }
 
         private SpeechSynthesizer GetSpeechSynthizer()
