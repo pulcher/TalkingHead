@@ -39,6 +39,18 @@ namespace Magic8HeadService
 
             speechSynthesizer = new SpeechSynthesizer(speechConfigs[0]);
 
+            speechSynthesizer.WordBoundary += (s, e) =>
+            {
+                logger.LogInformation($"WordBoundary event:" +
+                    // Word, Punctuation, or Sentence
+                    $"\r\n\tBoundaryType: {e.BoundaryType}" +
+                    $"\r\n\tAudioOffset: {(e.AudioOffset + 5000) / 10000}ms" +
+                    $"\r\n\tDuration: {e.Duration}" +
+                    $"\r\n\tText: \"{e.Text}\"" +
+                    $"\r\n\tTextOffset: {e.TextOffset}" +
+                    $"\r\n\tWordLength: {e.WordLength}");
+            };
+
             SetupSayingsAsync().Wait();
         }
 
@@ -56,7 +68,7 @@ namespace Magic8HeadService
                 speechConfig.SpeechSynthesisLanguage = voice.Language;
                 speechConfig.SpeechSynthesisVoiceName = voice.Name;
 
-                //speechConfig.SetProperty(PropertyId.SpeechServiceResponse_RequestSentenceBoundary, "true");
+                //speechConfig.SetProperty(PropertyId.SpeechServiceResponse_RequestWordBoundary, "true");
 
                 speechConfigs.Add(speechConfig);
             }
