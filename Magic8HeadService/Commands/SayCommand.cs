@@ -34,9 +34,9 @@ namespace Magic8HeadService
                 var message = cmd.Command.ArgumentsAsString.Split(' ', 2);
                 var username = cmd.Command.ChatMessage.Username;
 
-                commandTracker.Add(username, "say");
+                var commandTrackerEntity = commandTracker.Add(username, "say");
 
-                sayingResponse.SaySomethingNice(messageChecker.CheckMessage(message[1]));
+                sayingResponse.SaySomethingNice(messageChecker.CheckMessage(message[1]), commandTrackerEntity);
             }
             else
             {

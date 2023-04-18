@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Magic8HeadService.Services
+namespace MrBigHead.Shared
 {
     public class CommandTrackerEntry
     {

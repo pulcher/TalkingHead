@@ -4,10 +4,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MrBigHead.Services;
 using MrBigHead.Shared;
+using Magic8HeadService.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Magic8HeadService
 {
@@ -19,6 +21,7 @@ namespace Magic8HeadService
         private readonly ILogger<Worker> logger;
         private IList<Saying> sayings;
         private IList<SpeechConfig> speechConfigs;
+        private string defaultSpeechConfigVoiceName;
         private readonly SpeechSynthesizer speechSynthesizer;
         private readonly Dictionary<string, SpeechSynthesizer> speechSynthesizers = new Dictionary<string, SpeechSynthesizer>();
 
@@ -68,26 +71,31 @@ namespace Magic8HeadService
                 speechConfig.SpeechSynthesisLanguage = voice.Language;
                 speechConfig.SpeechSynthesisVoiceName = voice.Name;
 
+                if (voice.IsDefault)
+                {
+                    defaultSpeechConfigVoiceName = voice.Name;
+                }
+
                 //speechConfig.SetProperty(PropertyId.SpeechServiceResponse_RequestWordBoundary, "true");
 
                 speechConfigs.Add(speechConfig);
             }
         }
 
-        private IEnumerable<voice> GetVoices()
+        private IEnumerable<Voice> GetVoices()
         {
-            return new List<voice>
+            return new List<Voice>
             {
-                new voice {Language = "en-GB", Name = "en-GB-RyanNeural"},
-                new voice {Language = "en-US", Name = "ru-RU-SvetlanaNeural"},
-                new voice {Language = "en-PH", Name = "en-PH-RosaNeural"},
-                new voice {Language = "en-US", Name = "en-US-JennyNeural"},
-                new voice {Language = "en-US", Name = "cy-GB-AledNeural"},
-                new voice {Language = "en-US", Name = "fr-CA-SylvieNeural"},
-                new voice {Language = "en-US", Name = "fr-CA-JeanNeural"},
-                new voice {Language = "en-US", Name = "fil-PH-AngeloNeural"},
-                new voice {Language = "en-US", Name = "kk-KZ-DauletNeural"},
-                new voice {Language = "en-US", Name = "sl-SI-PetraNeural"}
+                new Voice {Language = "en-GB", Name = "en-GB-RyanNeural", IsDefault = true},
+                new Voice {Language = "en-US", Name = "ru-RU-SvetlanaNeural"},
+                new Voice {Language = "en-PH", Name = "en-PH-RosaNeural"},
+                new Voice {Language = "en-US", Name = "en-US-JennyNeural"},
+                new Voice {Language = "en-US", Name = "cy-GB-AledNeural"},
+                new Voice {Language = "en-US", Name = "fr-CA-SylvieNeural"},
+                new Voice {Language = "en-US", Name = "fr-CA-JeanNeural"},
+                new Voice {Language = "en-US", Name = "fil-PH-AngeloNeural"},
+                new Voice {Language = "en-US", Name = "kk-KZ-DauletNeural"},
+                new Voice {Language = "en-US", Name = "sl-SI-PetraNeural"}
             };
         }
 
@@ -100,11 +108,11 @@ namespace Magic8HeadService
             logger.LogInformation($"saying count: {sayings.Count}");
         }
 
-        public async Task SaySomethingNice(string message)
+        public async Task SaySomethingNice(string message, CommandTrackerEntry commandTrackerEntity = null)
         {
             logger.LogInformation($"Saying: {message}");
 
-            var speechConfig = GetSpeechConfig();
+            var speechConfig = GetSpeechConfig(commandTrackerEntity);
 
             var ssmlMessage = ConvertToSsml(speechConfig, message);
 
@@ -141,24 +149,34 @@ namespace Magic8HeadService
                     </speak>";
         }
 
-        private SpeechConfig GetSpeechConfig()
+        private SpeechConfig GetSpeechConfig(CommandTrackerEntry commandTrackerEntity)
         {
-            var index = random.Next(speechConfigs.Count);
+            // check the command 
+            //  if null
+            //      give the classic MBH voice config
+            //  if "say"
+            //      if voiceConfig exists
+            //          return the voice confige that was already assigned
+            //      else
+            //          assign a new random voice
 
-            logger.LogInformation("Language in use: {language}", speechConfigs[index].SpeechSynthesisLanguage);
-            logger.LogInformation("Voice in use: {voice}", speechConfigs[index].SpeechSynthesisVoiceName);
+            SpeechConfig result = null;
 
-            return speechConfigs[index];
-        }
+            if (commandTrackerEntity == null)
+            {
+                result = speechConfigs.FirstOrDefault(s => s.SpeechSynthesisVoiceName == defaultSpeechConfigVoiceName);
+            }
+            else
+            {
+                var avaialableConfigs = speechConfigs.Where(s => s.SpeechSynthesisVoiceName != defaultSpeechConfigVoiceName);
+                
+                result = avaialableConfigs.Skip(random.Next(avaialableConfigs.Count())).First();
+            }
 
-        private SpeechSynthesizer GetSpeechSynthizer()
-        {
-            var index = random.Next(speechConfigs.Count);
+            logger.LogInformation("Language in use: {language}", result.SpeechSynthesisLanguage);
+            logger.LogInformation("Voice in use: {voice}", result.SpeechSynthesisVoiceName);
 
-            logger.LogInformation("Language in use: {language}", speechConfigs[index].SpeechSynthesisLanguage);
-            logger.LogInformation("Voice in use: {voice}", speechConfigs[index].SpeechSynthesisVoiceName);
-
-            return speechSynthesizers[speechConfigs[index].SpeechSynthesisVoiceName];
+            return result;
         }
 
         public string PickSaying()
@@ -186,9 +204,10 @@ namespace Magic8HeadService
         }
     }
 
-    internal class voice
+    public class Voice
     {
         public string Language { get; set; }
         public string Name { get; set; }
+        public bool IsDefault { get; set; }
     }
 }
