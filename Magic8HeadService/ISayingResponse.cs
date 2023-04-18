@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using MrBigHead.Shared;
+using System.Threading.Tasks;
 
 namespace Magic8HeadService
 {
@@ -6,7 +7,7 @@ namespace Magic8HeadService
     {
         string PickSaying();
         string PickSaying(string mood);
-        Task SaySomethingNice(string message);
+        Task SaySomethingNice(string message, CommandTrackerEntry commandTrackerEntity = null);
         Task SetupSayingsAsync();
         Task SetupVoiceListAsync();
     }

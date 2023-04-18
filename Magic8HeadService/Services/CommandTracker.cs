@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using MrBigHead.Shared;
 
 namespace Magic8HeadService.Services
 {
@@ -12,7 +8,7 @@ namespace Magic8HeadService.Services
     {
         private List<CommandTrackerEntry> trackedCommands = new();
 
-        public void Add(string username, string commandCalled, string commandDetails)
+        public CommandTrackerEntry Add(string username, string commandCalled, string  commandDetails)
         {
             var entry = new CommandTrackerEntry
             {
@@ -23,6 +19,8 @@ namespace Magic8HeadService.Services
             };
 
             trackedCommands.Add(entry);
+
+            return entry;
         }
 
         public List<CommandTrackerEntry> GetSessionCommands(string command)
