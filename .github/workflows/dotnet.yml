@@ -3,6 +3,8 @@ name: .NET
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'Magic8HeadService/**'
 
 jobs:
   build:
