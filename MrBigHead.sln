@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31624.102
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magic8HeadService", "Magic8HeadService\Magic8HeadService.csproj", "{8DB118B3-75B8-456F-83C0-165AC5826ED6}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrBigHead.Shared", "MrBigHead.Shared\MrBigHead.Shared.csproj", "{42817134-6EA9-4311-9588-F3CA2D5C1B2F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrBigHead.Services", "MrBigHead.Services\MrBigHead.Services.csproj", "{2417B8C8-8B5E-420F-B017-858488E274B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrBigHead.VoiceChecker", "MrBigHead.VoiceChecker\MrBigHead.VoiceChecker.csproj", "{8DDE5BFD-B979-450A-9CDE-9D4BF0BBCF96}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{2417B8C8-8B5E-420F-B017-858488E274B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2417B8C8-8B5E-420F-B017-858488E274B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2417B8C8-8B5E-420F-B017-858488E274B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DDE5BFD-B979-450A-9CDE-9D4BF0BBCF96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DDE5BFD-B979-450A-9CDE-9D4BF0BBCF96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DDE5BFD-B979-450A-9CDE-9D4BF0BBCF96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DDE5BFD-B979-450A-9CDE-9D4BF0BBCF96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,15 +1,11 @@
 using Microsoft.CognitiveServices.Speech;
-using Microsoft.CognitiveServices.Speech.Audio;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MrBigHead.Services;
 using MrBigHead.Shared;
-using Magic8HeadService.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Reflection.Metadata.Ecma335;
 
 namespace Magic8HeadService
 {
@@ -87,15 +83,30 @@ namespace Magic8HeadService
             return new List<Voice>
             {
                 new Voice {Language = "en-GB", Name = "en-GB-RyanNeural", IsDefault = true},
-                new Voice {Language = "en-US", Name = "ru-RU-SvetlanaNeural"},
+
+                new Voice {Language = "en-US", Name = "cy-GB-AledNeural"},
+
                 new Voice {Language = "en-PH", Name = "en-PH-RosaNeural"},
                 new Voice {Language = "en-US", Name = "en-US-JennyNeural"},
-                new Voice {Language = "en-US", Name = "cy-GB-AledNeural"},
+                new Voice {Language = "en-PH", Name = "es-CU-BelkysNeural"},
+                new Voice {Language = "en-US", Name = "es-CU-ManuelNeural"},
+
+                new Voice {Language = "en-US", Name = "fil-PH-AngeloNeural"},
                 new Voice {Language = "en-US", Name = "fr-CA-SylvieNeural"},
                 new Voice {Language = "en-US", Name = "fr-CA-JeanNeural"},
-                new Voice {Language = "en-US", Name = "fil-PH-AngeloNeural"},
+
+                new Voice {Language = "en-US", Name = "it-IT-BenignoNeural"},
+                new Voice {Language = "en-US", Name = "it-IT-FabiolaNeural"},
+                new Voice {Language = "en-US", Name = "it-IT-IsabellaNeural"},
+
                 new Voice {Language = "en-US", Name = "kk-KZ-DauletNeural"},
-                new Voice {Language = "en-US", Name = "sl-SI-PetraNeural"}
+                new Voice {Language = "en-US", Name = "ru-RU-DmitryNeural"},
+                new Voice {Language = "en-US", Name = "ru-RU-SvetlanaNeural"},
+                new Voice {Language = "en-US", Name = "sl-SI-PetraNeural"},
+
+                new Voice {Language = "en-US", Name = "sw-TZ-RehemaNeural"},
+                new Voice {Language = "en-US", Name = "sw-TZ-DaudiNeural"}
+
             };
         }
 
