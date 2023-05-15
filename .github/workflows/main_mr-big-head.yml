@@ -9,6 +9,7 @@ on:
       - main
     paths:
       - 'MrBigHead.Web/**'
+  workflow_dispatch:
 
 jobs:
   build:
