@@ -25,7 +25,7 @@ namespace Magic8HeadService
 
             client.SendMessage(cmd.Command.ChatMessage.Channel,
                 $"Be inspired {cmd.Command.ChatMessage.Username}: {message}");
-            sayingResponse.SaySomethingNice(message);
+            sayingResponse.SaySomethingNiceAsync(message, client, cmd.Command.ChatMessage.Channel, cmd.Command.ChatMessage.Username);
         }
 
         private string GetRandomAnswer()

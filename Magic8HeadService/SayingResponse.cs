@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TwitchLib.Client.Interfaces;
 
 namespace Magic8HeadService
 {
@@ -17,6 +18,7 @@ namespace Magic8HeadService
         private readonly ILogger<Worker> logger;
         private IList<Saying> sayings;
         private IList<SpeechConfig> speechConfigs;
+        private IList<SpeechConfigAssociated> speechConfigAssociated = new List<SpeechConfigAssociated>();
         private string defaultSpeechConfigVoiceName;
         private readonly SpeechSynthesizer speechSynthesizer;
         private readonly Dictionary<string, SpeechSynthesizer> speechSynthesizers = new Dictionary<string, SpeechSynthesizer>();
@@ -119,17 +121,25 @@ namespace Magic8HeadService
             logger.LogInformation($"saying count: {sayings.Count}");
         }
 
-        public async Task SaySomethingNice(string message, CommandTrackerEntry commandTrackerEntity = null)
+        public async Task SaySomethingNiceAsync(string message, ITwitchClient client, string channel, string username,
+            CommandTrackerEntry commandTrackerEntity = null)
         {
             logger.LogInformation($"Saying: {message}");
 
-            var speechConfig = GetSpeechConfig(commandTrackerEntity);
+            var speechConfig = GetSpeechConfig(commandTrackerEntity, username);
+
+            if (client != null)
+            {
+                client.SendMessage(channel,
+                    $"Hey {username}, you are using {speechConfig.SpeechSynthesisVoiceName}");
+            }
 
             var ssmlMessage = ConvertToSsml(speechConfig, message);
 
             using (var result = await speechSynthesizer.StartSpeakingSsmlAsync(ssmlMessage))
             {
                 logger.LogError($"Speech synthesized result: [{result.Reason}]");
+
                 if (result.Reason == ResultReason.SynthesizingAudioCompleted)
                 {
                     logger.LogInformation($"Speech synthesized to speaker for text [{ssmlMessage}]");
@@ -160,17 +170,8 @@ namespace Magic8HeadService
                     </speak>";
         }
 
-        private SpeechConfig GetSpeechConfig(CommandTrackerEntry commandTrackerEntity)
+        private SpeechConfig GetSpeechConfig(CommandTrackerEntry commandTrackerEntity, string username)
         {
-            // check the command 
-            //  if null
-            //      give the classic MBH voice config
-            //  if "say"
-            //      if voiceConfig exists
-            //          return the voice confige that was already assigned
-            //      else
-            //          assign a new random voice
-
             SpeechConfig result = null;
 
             if (commandTrackerEntity == null)
@@ -179,9 +180,24 @@ namespace Magic8HeadService
             }
             else
             {
-                var avaialableConfigs = speechConfigs.Where(s => s.SpeechSynthesisVoiceName != defaultSpeechConfigVoiceName);
-                
-                result = avaialableConfigs.Skip(random.Next(avaialableConfigs.Count())).First();
+                var userSpeechConfigs = speechConfigAssociated.Where(u => u.Username == username).FirstOrDefault();
+
+                if (userSpeechConfigs != null)
+                {
+                    result = userSpeechConfigs.SpeechConfig;
+                }
+                else
+                {
+                    var usedSpeechConfigs = speechConfigAssociated.Select(x => x.SpeechConfig.SpeechSynthesisVoiceName).ToList();
+
+                    var avaialableConfigs = speechConfigs.Where(s =>
+                        s.SpeechSynthesisVoiceName != defaultSpeechConfigVoiceName
+                        && !usedSpeechConfigs.Contains(s.SpeechSynthesisVoiceName));
+
+                    result = avaialableConfigs.Skip(random.Next(avaialableConfigs.Count())).First();
+
+                    speechConfigAssociated.Add(new SpeechConfigAssociated { Username = username, SpeechConfig = result });
+                }
             }
 
             logger.LogInformation("Language in use: {language}", result.SpeechSynthesisLanguage);

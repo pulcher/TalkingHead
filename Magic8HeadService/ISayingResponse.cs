@@ -1,5 +1,6 @@
 ﻿using MrBigHead.Shared;
 using System.Threading.Tasks;
+using TwitchLib.Client.Interfaces;
 
 namespace Magic8HeadService
 {
@@ -7,7 +8,8 @@ namespace Magic8HeadService
     {
         string PickSaying();
         string PickSaying(string mood);
-        Task SaySomethingNice(string message, CommandTrackerEntry commandTrackerEntity = null);
+        Task SaySomethingNiceAsync(string message, ITwitchClient client, string channel, 
+            string username, CommandTrackerEntry commandTrackerEntity = null);
         Task SetupSayingsAsync();
         Task SetupVoiceListAsync();
     }
