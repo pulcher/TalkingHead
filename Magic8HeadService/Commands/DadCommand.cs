@@ -29,19 +29,19 @@ namespace Magic8HeadService
             {
                 var dadJoke = dadJokeService.GetDadJoke(alternateSite).Result;
 
-                sayingResponse.SaySomethingNice(dadJoke.Setup);
+                sayingResponse.SaySomethingNiceAsync(dadJoke.Setup, client, cmd.Command.ChatMessage.Channel, cmd.Command.ChatMessage.Username);
                 client.SendMessage(cmd.Command.ChatMessage.Channel, $"Q: {dadJoke.Setup}");
 
                 Task.Delay(5000).Wait();
 
-                sayingResponse.SaySomethingNice(dadJoke.Punchline);
+                sayingResponse.SaySomethingNiceAsync(dadJoke.Punchline, client, cmd.Command.ChatMessage.Channel, cmd.Command.ChatMessage.Username);
                 client.SendMessage(cmd.Command.ChatMessage.Channel, $"A: {dadJoke.Punchline}");
             }
             catch (Exception ex)
             {
                 alternateSite = "https://karljoke.herokuapp.com/jokes/random";
 
-                sayingResponse.SaySomethingNice(ex.Message);
+                sayingResponse.SaySomethingNiceAsync(ex.Message, client, cmd.Command.ChatMessage.Channel, cmd.Command.ChatMessage.Username);
                 client.SendMessage(cmd.Command.ChatMessage.Channel, $"We've got problem {ex.Message}");
             }
         }

@@ -71,7 +71,7 @@ namespace Magic8HeadService
             var message = $"Hey programs, sword-bearing moderator {e.Username} has joined! Hide yo' bugs, hide yo' bits!";
             logger.LogInformation(message);
 
-            sayingResponse.SaySomethingNice(message).Wait();
+            sayingResponse.SaySomethingNiceAsync(message, client, e.Channel, e.Username).Wait();
 
             this.client.SendMessage(e.Channel, message);
         }
@@ -118,7 +118,7 @@ namespace Magic8HeadService
             if (e.Subscriber.SubscriptionPlan == SubscriptionPlan.Prime)
                 message += " So kind of you to use your Twitch Prime on my channel!";
 
-            sayingResponse.SaySomethingNice(message).Wait();
+            sayingResponse.SaySomethingNiceAsync(message, client, e.Channel, string.Empty).Wait();
 
             this.client.SendMessage(e.Channel, message);
 
@@ -131,7 +131,7 @@ namespace Magic8HeadService
             if (e.ReSubscriber.SubscriptionPlan == SubscriptionPlan.Prime)
                 message += " So kind of you to use your Twitch Prime on my channel!";
 
-            sayingResponse.SaySomethingNice(message).Wait();
+            sayingResponse.SaySomethingNiceAsync(message, client, e.Channel, string.Empty).Wait();
 
             this.client.SendMessage(e.Channel, message);
         }
@@ -140,7 +140,7 @@ namespace Magic8HeadService
         {
             var message = $"Thanks for the RAID {e.RaidNotification.DisplayName}!  How was your stream?";
 
-            sayingResponse.SaySomethingNice(message).Wait();
+            sayingResponse.SaySomethingNiceAsync(message, client, e.Channel, string.Empty).Wait();
 
             this.client.SendMessage(e.Channel, message);
         }

@@ -74,7 +74,7 @@ namespace Magic8HeadService
                     logger.LogInformation("saying words...");
                     var message = scopedSayingResponse.PickSaying();
                     logger.LogInformation($"ExecuteAsync: picked saying {message}");
-                    await scopedSayingResponse.SaySomethingNice(message);
+                    await scopedSayingResponse.SaySomethingNiceAsync(message, null, string.Empty, string.Empty);
                 }
 
                 await Task.Delay(100, stoppingToken);

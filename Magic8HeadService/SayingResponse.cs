@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TwitchLib.Client.Interfaces;
 
 namespace Magic8HeadService
 {
@@ -119,17 +120,25 @@ namespace Magic8HeadService
             logger.LogInformation($"saying count: {sayings.Count}");
         }
 
-        public async Task SaySomethingNice(string message, CommandTrackerEntry commandTrackerEntity = null)
+        public async Task SaySomethingNiceAsync(string message, ITwitchClient client, string channel, string username,
+            CommandTrackerEntry commandTrackerEntity = null)
         {
             logger.LogInformation($"Saying: {message}");
 
             var speechConfig = GetSpeechConfig(commandTrackerEntity);
+
+            if (client != null)
+            {
+                client.SendMessage(channel,
+                    $"Hey {username}, you are using {speechConfig.SpeechSynthesisVoiceName}");
+            }
 
             var ssmlMessage = ConvertToSsml(speechConfig, message);
 
             using (var result = await speechSynthesizer.StartSpeakingSsmlAsync(ssmlMessage))
             {
                 logger.LogError($"Speech synthesized result: [{result.Reason}]");
+
                 if (result.Reason == ResultReason.SynthesizingAudioCompleted)
                 {
                     logger.LogInformation($"Speech synthesized to speaker for text [{ssmlMessage}]");
