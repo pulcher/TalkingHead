@@ -37,7 +37,8 @@ namespace Magic8HeadService
 
                 var commandTrackerEntity = commandTracker.Add(username, "say");
 
-                sayingResponse.SaySomethingNiceAsync(messageChecker.CheckMessage(message[1]), client, channel, username, commandTrackerEntity);
+                sayingResponse.SaySomethingNiceAsync(messageChecker.CheckMessage(message[1]), client, channel, username, commandTrackerEntity)
+                    .Wait();
             }
             else
             {
