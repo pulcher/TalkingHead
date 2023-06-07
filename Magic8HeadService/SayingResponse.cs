@@ -230,11 +230,4 @@ namespace Magic8HeadService
             return pickedSaying.Phrase;
         }
     }
-
-    public class Voice
-    {
-        public string Language { get; set; }
-        public string Name { get; set; }
-        public bool IsDefault { get; set; }
-    }
 }
