@@ -1,0 +1,55 @@
+﻿@page "/voices"
+@inject HttpClient Http
+
+<h1>Voices</h1>
+
+<p>All the current voices!</p>
+
+@if (voices == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Language</th>
+                <th>Name</th>
+                <th>Is Default</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var voice in voices)
+            {
+            <tr>
+                <td>@voice.Language</td>
+                <td>@voice.Name</td>
+                <td>@voice.IsDefault</td>
+                <td>
+                    <span class="oi oi-icon-name" title="iconic-pencil-sm" aria-hidden="false"></span>
+                    <span class="oi oi-icon-name" title="iconic-trash-sm" aria-hidden="false"></span>
+                    <span class="iconic" data-glyph="trash" title="trash" aria-hidden="false"></span>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Voice[] voices;
+
+    protected override async Task OnInitializedAsync()
+    {
+        voices = await Http.GetFromJsonAsync<Voice[]>("https://bigheadfuncs.azurewebsites.net/api/getallvoices");
+    }
+
+    public class Voice
+    {
+        public string Language { get; set; }
+        public string Name { get; set; }
+        public string PrettyName { get; set; }  // do something fun to make the Pretty name look nicer
+        public bool IsDefault { get; set; }
+    }
+}
