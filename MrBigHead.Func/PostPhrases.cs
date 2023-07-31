@@ -9,8 +9,9 @@ using System.Collections.Generic;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Azure;
+using Azure.Data.Tables;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.WindowsAzure.Storage.Table;
+using Microsoft.Azure.Functions.Worker.Extensions.Tables;
 
 namespace MrBigHead.Func
 {
@@ -23,41 +24,41 @@ namespace MrBigHead.Func
             _logger = loggerFactory.CreateLogger<PostPhrases>();
         }
 
-        [Function("PostPhrases")]
-        public async Task<HttpResponseData> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req,
-            [TableInput("Sayings")] CloudTable cloudTable)
-        {
-            //_logger.LogInformation("C# HTTP trigger function processed a request.");
+        //[Function("PostPhrases")]
+        //public async Task<HttpResponseData> Run(
+        //    [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req,
+        //    [TableInput("Sayings")] CloudTable cloudTable)
+        //{
+        //    //_logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            //string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            //var data = JsonSerializer.Deserialize<List<Saying>>(requestBody);
+        //    //string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+        //    //var data = JsonSerializer.Deserialize<List<Saying>>(requestBody);
 
-            //await InsertRecordsAsync(cloudTable, data);
+        //    //await InsertRecordsAsync(cloudTable, data);
 
-            var response = req.CreateResponse(System.Net.HttpStatusCode.OK);
-            return response;
-        }
+        //    var response = req.CreateResponse(System.Net.HttpStatusCode.OK);
+        //    return response;
+        //}
 
-        private static async Task InsertRecordsAsync(CloudTable cloudTable, List<Saying> data)
-        {
-            //foreach (var phrase in data)
-            //{
-            //    var sayingEntity = new SayingEntity
-            //    {
-            //        PartitionKey = phrase.Mood,
-            //        Phrase = phrase.Phrase,
-            //        RowKey = Guid.NewGuid().ToString()
-            //    };
+        //private static async Task InsertRecordsAsync(CloudTable cloudTable, List<Saying> data)
+        //{
+        //    //foreach (var phrase in data)
+        //    //{
+        //    //    var sayingEntity = new SayingEntity
+        //    //    {
+        //    //        PartitionKey = phrase.Mood,
+        //    //        Phrase = phrase.Phrase,
+        //    //        RowKey = Guid.NewGuid().ToString()
+        //    //    };
 
-            //    Console.WriteLine($"{sayingEntity.Phrase}");
+        //    //    Console.WriteLine($"{sayingEntity.Phrase}");
 
-            //    var tableOps = TableOperation.Insert(sayingEntity);
+        //    //    var tableOps = TableOperation.Insert(sayingEntity);
 
-            //    var tableResult = await cloudTable.ExecuteAsync(tableOps);
+        //    //    var tableResult = await cloudTable.ExecuteAsync(tableOps);
 
-            //    Console.WriteLine($"tableResult: {tableResult.HttpStatusCode}");
-            //}
-        }
+        //    //    Console.WriteLine($"tableResult: {tableResult.HttpStatusCode}");
+        //    //}
+        //}
     }
 }
