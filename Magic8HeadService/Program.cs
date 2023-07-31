@@ -88,6 +88,7 @@ namespace Magic8HeadService
                     services.AddScoped<ISayingService, SayingService>();
                     services.AddScoped<ICommandTracker, CommandTracker>();
                     services.AddScoped<ISayingResponse, SayingResponse>();
+                    services.AddScoped<IVoiceService, VoiceService>();
                     services.AddScoped<IDadJokeService, DadJokeService>();
                     services.AddScoped<ICommandMbhTwitchHelp, HelpCommandReal>();
 

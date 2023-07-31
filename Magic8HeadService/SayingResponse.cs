@@ -15,6 +15,7 @@ namespace Magic8HeadService
         private Random random = new();
         private TwitchBotConfiguration twitchBotConfiguration;
         private readonly ISayingService sayingsService;
+        private readonly IVoiceService voiceService;
         private readonly ILogger<Worker> logger;
         private IList<Saying> sayings;
         private IList<SpeechConfig> speechConfigs;
@@ -23,10 +24,11 @@ namespace Magic8HeadService
         private readonly SpeechSynthesizer speechSynthesizer;
         private readonly Dictionary<string, SpeechSynthesizer> speechSynthesizers = new Dictionary<string, SpeechSynthesizer>();
 
-        public SayingResponse(TwitchBotConfiguration twitchBotConfiguration, ISayingService sayingsService, ILogger<Worker> logger)
+        public SayingResponse(TwitchBotConfiguration twitchBotConfiguration, ISayingService sayingsService, IVoiceService voicesService, ILogger<Worker> logger)
         {
             this.twitchBotConfiguration = twitchBotConfiguration;
             this.sayingsService = sayingsService;
+            this.voiceService = voicesService;
             this.logger = logger;
 
             // create a new speech synth
@@ -59,7 +61,7 @@ namespace Magic8HeadService
         {
             speechConfigs = new List<SpeechConfig>();
 
-            foreach (var voice in GetVoices())
+            foreach (var voice in await GetVoices())
             {
                 // create a new speech synth
                 var speechConfig = SpeechConfig
@@ -80,36 +82,43 @@ namespace Magic8HeadService
             }
         }
 
-        private IEnumerable<Voice> GetVoices()
+        private async Task<IEnumerable<Voice>> GetVoices()
         {
-            return new List<Voice>
-            {
-                new Voice {Language = "en-GB", Name = "en-GB-RyanNeural", IsDefault = true},
+            logger.LogInformation("Setiing up Voices...");
 
-                new Voice {Language = "en-US", Name = "cy-GB-AledNeural"},
+            var voices = await voiceService.GetAllVoicesAsync();
 
-                new Voice {Language = "en-PH", Name = "en-PH-RosaNeural"},
-                new Voice {Language = "en-US", Name = "en-US-JennyNeural"},
-                new Voice {Language = "en-PH", Name = "es-CU-BelkysNeural"},
-                new Voice {Language = "en-US", Name = "es-CU-ManuelNeural"},
+            logger.LogInformation($"voices count: {voices.Count}");
 
-                new Voice {Language = "en-US", Name = "fil-PH-AngeloNeural"},
-                new Voice {Language = "en-US", Name = "fr-CA-SylvieNeural"},
-                new Voice {Language = "en-US", Name = "fr-CA-JeanNeural"},
+            return voices;
 
-                new Voice {Language = "en-US", Name = "it-IT-BenignoNeural"},
-                new Voice {Language = "en-US", Name = "it-IT-FabiolaNeural"},
-                new Voice {Language = "en-US", Name = "it-IT-IsabellaNeural"},
+            //return new List<Voice>
+            //{
+            //    new Voice {Language = "en-GB", Name = "en-GB-RyanNeural", IsDefault = true},
 
-                new Voice {Language = "en-US", Name = "kk-KZ-DauletNeural"},
-                new Voice {Language = "en-US", Name = "ru-RU-DmitryNeural"},
-                new Voice {Language = "en-US", Name = "ru-RU-SvetlanaNeural"},
-                new Voice {Language = "en-US", Name = "sl-SI-PetraNeural"},
+            //    new Voice {Language = "en-US", Name = "cy-GB-AledNeural"},
 
-                new Voice {Language = "en-US", Name = "sw-TZ-RehemaNeural"},
-                new Voice {Language = "en-US", Name = "sw-TZ-DaudiNeural"}
+            //    new Voice {Language = "en-PH", Name = "en-PH-RosaNeural"},
+            //    new Voice {Language = "en-US", Name = "en-US-JennyNeural"},
+            //    new Voice {Language = "en-PH", Name = "es-CU-BelkysNeural"},
+            //    new Voice {Language = "en-US", Name = "es-CU-ManuelNeural"},
 
-            };
+            //    new Voice {Language = "en-US", Name = "fil-PH-AngeloNeural"},
+            //    new Voice {Language = "en-US", Name = "fr-CA-SylvieNeural"},
+            //    new Voice {Language = "en-US", Name = "fr-CA-JeanNeural"},
+
+            //    new Voice {Language = "en-US", Name = "it-IT-BenignoNeural"},
+            //    new Voice {Language = "en-US", Name = "it-IT-FabiolaNeural"},
+            //    new Voice {Language = "en-US", Name = "it-IT-IsabellaNeural"},
+
+            //    new Voice {Language = "en-US", Name = "kk-KZ-DauletNeural"},
+            //    new Voice {Language = "en-US", Name = "ru-RU-DmitryNeural"},
+            //    new Voice {Language = "en-US", Name = "ru-RU-SvetlanaNeural"},
+            //    new Voice {Language = "en-US", Name = "sl-SI-PetraNeural"},
+
+            //    new Voice {Language = "en-US", Name = "sw-TZ-RehemaNeural"}
+
+            //};
         }
 
         public async Task SetupSayingsAsync()
