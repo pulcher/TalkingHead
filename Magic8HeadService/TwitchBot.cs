@@ -11,12 +11,18 @@ using TwitchLib.Client.Models;
 using Microsoft.Extensions.Configuration;
 using TwitchLib.Client.Interfaces;
 using TwitchLib.Communication.Events;
+using MQTTnet.Client;
+using MQTTnet;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Text;
 
 namespace Magic8HeadService
 {
     public class TwitchBot
     {
         private readonly ITwitchClient client;
+        private readonly IMqttClient mqttClient;
         private readonly ICommandMbhToTwitch helpCommandReal;
         private readonly Dictionary<string, ICommandMbhToTwitch> dictOfCommands;
 
@@ -26,7 +32,7 @@ namespace Magic8HeadService
 
         public TwitchBot(ITwitchClient client, ConnectionCredentials clientCredentials, TwitchBotConfiguration twitchBotConfiguration,
             ISayingResponse sayingResponse, IDadJokeService dadJokeService, IEnumerable<ICommandMbhToTwitch> listOfCommands, 
-            ICommandMbhTwitchHelp helpCommand, ILogger<Worker> logger)
+            ICommandMbhTwitchHelp helpCommand, MqttFactory mqttFactory, ILogger<Worker> logger)
         {
             this.client = client;
 
@@ -40,14 +46,54 @@ namespace Magic8HeadService
             dictOfCommands = listOfCommands
                 .ToDictionary(x => x.Name, x => x, StringComparer.OrdinalIgnoreCase);
 
-	        this.logger.LogInformation($"================== dictOfCommand Count: {dictOfCommands.Count}");
+            this.logger.LogInformation($"================== dictOfCommand Count: {dictOfCommands.Count}");
 
+            SetupTwitchClient(clientCredentials, twitchBotConfiguration);
+
+            mqttClient = mqttFactory.CreateMqttClient();
+
+            var mqttCreds = new MqttClientCredentials("mbh", Encoding.ASCII.GetBytes("mbh"));
+
+            var mqttClientOptions = new MqttClientOptionsBuilder()
+                .WithTcpServer("broker1.killercomputing.com")
+                .WithCredentials(mqttCreds)
+                .Build();
+
+            // Setup message handling before connecting so that queued messages
+            // are also handled properly. When there is no event handler attached all
+            // received messages get lost.
+            mqttClient.ApplicationMessageReceivedAsync += e =>
+            {
+                Console.WriteLine("Received application message.");
+                //e.DumpToConsole();
+                e.IsHandled = true;
+
+                return Task.CompletedTask;
+            };
+
+            mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None).Wait();
+
+            var mqttSubscribeOptions = mqttFactory.CreateSubscribeOptionsBuilder()
+                .WithTopicFilter(
+                    f =>
+                    {
+                        f.WithTopic("mbh/#");
+                    })
+                .Build();
+
+            mqttClient.SubscribeAsync(mqttSubscribeOptions, CancellationToken.None).Wait();
+
+            Console.WriteLine("MQTT client subscribed to topic.");
+        }
+
+        private void SetupTwitchClient(ConnectionCredentials clientCredentials, TwitchBotConfiguration twitchBotConfiguration)
+        {
             this.client.Initialize(clientCredentials, twitchBotConfiguration.ChannelName);
 
             this.client.OnChatCommandReceived += Client_OnChatCommandReceived;
-            this.client.OnConnected           += Client_OnConnected;
-            this.client.OnDisconnected        += Client_OnDisconnected;
-            this.client.OnJoinedChannel       += Client_OnJoinedChannel;
+            this.client.OnConnected += Client_OnConnected;
+            this.client.OnDisconnected += Client_OnDisconnected;
+            this.client.OnJoinedChannel += Client_OnJoinedChannel;
             this.client.OnLog += Client_OnLog;
             this.client.OnMessageReceived += Client_OnMessageReceived;
             this.client.OnModeratorJoined += Client_OnModeratorJoined;
@@ -58,7 +104,7 @@ namespace Magic8HeadService
             this.client.OnWhisperReceived += Client_OnWhisperReceived;
 
             var clientResult = this.client.Connect();
-	        this.logger.LogInformation($"============ client connected");
+            this.logger.LogInformation($"============ client connected");
         }
 
         private void Client_OnModeratorLeft(object sender, OnModeratorLeftArgs e)

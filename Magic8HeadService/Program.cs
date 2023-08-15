@@ -2,6 +2,7 @@ using Magic8HeadService.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MQTTnet;
 using MrBigHead.Services;
 using Scrutor;
 using System;
@@ -61,6 +62,7 @@ namespace Magic8HeadService
                         });
 
                     services.AddSingleton<WebSocketClient>();
+                    services.AddSingleton<MqttFactory>();
 
                     // Setup access to the API and register it.
                     services.AddSingleton<IApiSettings>(new ApiSettings
