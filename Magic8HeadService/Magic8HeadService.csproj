@@ -21,4 +21,7 @@
     <ProjectReference Include="..\MrBigHead.Services\MrBigHead.Services.csproj" />
     <ProjectReference Include="..\MrBigHead.Shared\MrBigHead.Shared.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="MqttHandlers\" />
+  </ItemGroup>
 </Project>
