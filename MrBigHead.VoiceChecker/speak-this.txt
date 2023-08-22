@@ -2,17 +2,10 @@
     <voice name="en-GB-RyanNeural" style="newscast">
         <p>
             <prosody volume="+30%">
-                Greetings Programs!
+                Me!
             </prosody>
-            <prosody rate="+25%">
-                So who is Harold Pulcher and what does he do in his Lab!
-                He combines software and hardware in fun projects like... <prosody volume="+100%">Me!</prosody>  I was built in Harold's lab and he works on me every week.
-                He builds robots, makes art, 3D models, prints all sorts of stuff, does some solderin', assembling, and brings everyone watching along with him as new hardware comes into the Lab. 
-                By day he is a full stack .Net developer, so he brings all of his professional practices into the lab.
-                Most importantly he shares both his failures and his successes!
-                He firmly believes you learn by sharing and fully lives into the motto:  Make Stuff, Break Stuff, and Learn Stuff!
-                So click the subscribe/follow/or whatever button you need to be notified every time he goes online!
-            </prosody>
+            My name is Mr. Big Head.
+            I was built in Harold's Lab and he works on me every week.
         </p>
     </voice>
 </speak>

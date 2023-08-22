@@ -1,3 +1,4 @@
+using Magic8HeadService.MqttHandlers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -59,10 +60,12 @@ namespace Magic8HeadService
 
             var listOfCommands = scope.ServiceProvider.GetServices<ICommandMbhToTwitch>();
             var helpCommand = scope.ServiceProvider.GetService<ICommandMbhTwitchHelp>();
+            var mqttHandlers = scope.ServiceProvider.GetServices<IMqttHandler>();
 
             var twitchBot = new TwitchBot(twitchClient, connectionCredentials, twitchBotConfiguration,
-                scopedSayingResponse, scopedDadJokeService,
-                listOfCommands, helpCommand, scopedMqttFactory, logger);
+                scopedSayingResponse, scopedDadJokeService, listOfCommands, 
+                helpCommand, scopedMqttFactory, mqttHandlers,
+                logger);
 
             SetupGPIO();
         }
