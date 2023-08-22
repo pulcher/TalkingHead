@@ -16,6 +16,7 @@ using MQTTnet;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Text;
+using Magic8HeadService.MqttHandlers;
 
 namespace Magic8HeadService
 {
@@ -25,6 +26,7 @@ namespace Magic8HeadService
         private readonly IMqttClient mqttClient;
         private readonly ICommandMbhToTwitch helpCommandReal;
         private readonly Dictionary<string, ICommandMbhToTwitch> dictOfCommands;
+        private readonly List<IMqttHandler> mqttHandlers1= new List<IMqttHandler>();
 
         private readonly ILogger<Worker> logger;
         private readonly ISayingResponse sayingResponse;
@@ -32,7 +34,7 @@ namespace Magic8HeadService
 
         public TwitchBot(ITwitchClient client, ConnectionCredentials clientCredentials, TwitchBotConfiguration twitchBotConfiguration,
             ISayingResponse sayingResponse, IDadJokeService dadJokeService, IEnumerable<ICommandMbhToTwitch> listOfCommands, 
-            ICommandMbhTwitchHelp helpCommand, MqttFactory mqttFactory, ILogger<Worker> logger)
+            ICommandMbhTwitchHelp helpCommand, MqttFactory mqttFactory, IEnumerable<IMqttHandler> mqttHandlers, ILogger<Worker> logger)
         {
             this.client = client;
 
@@ -59,13 +61,28 @@ namespace Magic8HeadService
                 .WithCredentials(mqttCreds)
                 .Build();
 
-            // Setup message handling before connecting so that queued messages
+            // Setup mqttMessageWrapper handling before connecting so that queued messages
             // are also handled properly. When there is no event handler attached all
             // received messages get lost.
             mqttClient.ApplicationMessageReceivedAsync += e =>
             {
-                Console.WriteLine("Received application message.");
+                Console.WriteLine("Received application mqttMessageWrapper.");
                 //e.DumpToConsole();
+
+                var mqttMessageWrapper = new MqttHandlerMessage(e.ApplicationMessage.Topic.ToString(), 
+                    e.ApplicationMessage.PayloadSegment);
+
+                var handlers = mqttHandlers.Where(h => h.CanHandle(mqttMessageWrapper));
+                foreach (var handler in handlers)
+                {
+                    handler.Handle(mqttMessageWrapper);
+                }
+                
+                if (mqttMessageWrapper.Errors.Any())
+                {
+                    Console.WriteLine("something blew up.");
+                }
+
                 e.IsHandled = true;
 
                 return Task.CompletedTask;

@@ -1,3 +1,4 @@
+using Magic8HeadService.MqttHandlers;
 using Magic8HeadService.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -83,6 +84,13 @@ namespace Magic8HeadService
                     services.Scan(scan => scan
                         .FromAssemblyOf<ICommandMbhToTwitch>()
                             .AddClasses(classes => classes.AssignableTo<ICommandMbhToTwitch>())
+                                .AsImplementedInterfaces()
+                                .WithTransientLifetime());
+
+                    // adding the IMqttHandlers
+                    services.Scan(scan => scan
+                        .FromAssemblyOf<IMqttHandler>()
+                            .AddClasses(classes => classes.AssignableTo<IMqttHandler>())
                                 .AsImplementedInterfaces()
                                 .WithTransientLifetime());
 
