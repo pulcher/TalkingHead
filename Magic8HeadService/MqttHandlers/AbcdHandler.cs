@@ -1,9 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TwitchLib.Client.Interfaces;
 
 namespace Magic8HeadService.MqttHandlers
@@ -23,9 +19,9 @@ namespace Magic8HeadService.MqttHandlers
         {
             if(message == null) return false;
 
-            if(message.Topic.Contains("mbh/redeem"))
-                return true;
-            else 
+            //if(message.Topic.Contains("mbh/redeem"))
+            //    return true;
+            //else 
                 return false;
         }
 
