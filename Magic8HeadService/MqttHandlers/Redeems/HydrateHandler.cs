@@ -9,11 +9,13 @@ namespace Magic8HeadService.MqttHandlers.Redeems
     public class HydrateHandler : IMqttHandler
     {
         private ITwitchClient client;
+        private readonly ISayingResponse sayingResponse;
         private ILogger<Worker> logger;
 
-        public HydrateHandler(ITwitchClient client, ILogger<Worker> logger)
+        public HydrateHandler(ITwitchClient client, ISayingResponse sayingResponse, ILogger<Worker> logger)
         {
             this.client = client;
+            this.sayingResponse = sayingResponse;
             this.logger = logger;
         }
 
@@ -33,8 +35,12 @@ namespace Magic8HeadService.MqttHandlers.Redeems
 
         public void Handle(MqttHandlerMessage message)
         {
-            // Encoding.ASCII.GetString(message.Payload)
-            client.SendMessage(client.JoinedChannels.FirstOrDefault(), "!mbh say Yo time for some hydration!");
+            var payloadString = Encoding.ASCII.GetString(message.Payload);
+            var redeem = JsonSerializer.Deserialize<MqttRedeemPayload>(payloadString);
+            var messageToSay = $"Hey {redeem.UserName} your are correct!  It is time for some hydration";
+
+            sayingResponse.SaySomethingNiceAsync(messageToSay, client, 
+                client.JoinedChannels.FirstOrDefault().ToString(), string.Empty).Wait();
         }
     }
 }
