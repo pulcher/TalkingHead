@@ -72,7 +72,7 @@ namespace Magic8HeadService
                 var mqttMessageWrapper = new MqttHandlerMessage(e.ApplicationMessage.Topic.ToString(), 
                     e.ApplicationMessage.PayloadSegment);
 
-                var handlers = mqttHandlers.Where(h => h.CanHandle(mqttMessageWrapper));
+                var handlers = mqttHandlers.Where(h => h.CanHandle(mqttMessageWrapper)).ToList();
                 foreach (var handler in handlers)
                 {
                     handler.Handle(mqttMessageWrapper);
