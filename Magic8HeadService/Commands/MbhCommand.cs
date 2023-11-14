@@ -1,12 +1,9 @@
-
-using System.Collections.Generic;
-using System.Linq;
 using Magic8HeadService;
 using Magic8HeadService.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MrBigHead.Shared;
-using TwitchLib.Client;
+using System.Linq;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Interfaces;
 

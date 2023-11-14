@@ -1,22 +1,19 @@
+using Magic8HeadService.MqttHandlers;
 using Microsoft.Extensions.Logging;
-using MrBigHead.Shared;
+using MQTTnet;
+using MQTTnet.Client;
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using TwitchLib.Client;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using TwitchLib.Client.Enums;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Extensions;
-using TwitchLib.Client.Models;
-using Microsoft.Extensions.Configuration;
 using TwitchLib.Client.Interfaces;
+using TwitchLib.Client.Models;
 using TwitchLib.Communication.Events;
-using MQTTnet.Client;
-using MQTTnet;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Text;
-using Magic8HeadService.MqttHandlers;
 
 namespace Magic8HeadService
 {
@@ -31,10 +28,12 @@ namespace Magic8HeadService
         private readonly ILogger<Worker> logger;
         private readonly ISayingResponse sayingResponse;
         private readonly IDadJokeService dadJokeService;
+        private readonly IMessageStackService messageStackService;
 
         public TwitchBot(ITwitchClient client, ConnectionCredentials clientCredentials, TwitchBotConfiguration twitchBotConfiguration,
             ISayingResponse sayingResponse, IDadJokeService dadJokeService, IEnumerable<ICommandMbhToTwitch> listOfCommands, 
-            ICommandMbhTwitchHelp helpCommand, MqttFactory mqttFactory, IEnumerable<IMqttHandler> mqttHandlers, ILogger<Worker> logger)
+            ICommandMbhTwitchHelp helpCommand, MqttFactory mqttFactory, IEnumerable<IMqttHandler> mqttHandlers, 
+            IMessageStackService messageStackService, ILogger<Worker> logger)
         {
             this.client = client;
 
@@ -42,7 +41,7 @@ namespace Magic8HeadService
             this.logger = logger;
             this.sayingResponse = sayingResponse;
             this.dadJokeService = dadJokeService;
-
+            this.messageStackService = messageStackService;
             var listOfNames = listOfCommands.Select(x => x.Name);
             this.logger.LogInformation($"-------------- List of Names :  {string.Join(',', listOfNames)}");
             dictOfCommands = listOfCommands
@@ -163,6 +162,16 @@ namespace Magic8HeadService
 
         public void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
+            if (!e.ChatMessage.IsVip 
+                && !e.ChatMessage.IsModerator
+                && !e.ChatMessage.IsSubscriber
+                && !e.ChatMessage.IsMe
+                && !e.ChatMessage.IsStaff
+                && !e.ChatMessage.Message.StartsWith('!'))
+            {
+                messageStackService.PutMessage(e.ChatMessage);
+            }
+
             if (e.ChatMessage.Message.Contains("badword"))
                 this.client.TimeoutUser(e.ChatMessage.Channel, e.ChatMessage.Username, TimeSpan.FromMinutes(30), "Bad word! 30 minute timeout!");
         }

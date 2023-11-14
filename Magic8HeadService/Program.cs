@@ -101,6 +101,7 @@ namespace Magic8HeadService
                     services.AddScoped<IVoiceService, VoiceService>();
                     services.AddScoped<IDadJokeService, DadJokeService>();
                     services.AddScoped<ICommandMbhTwitchHelp, HelpCommandReal>();
+                    services.AddScoped<IMessageStackService, MessageStackService>();
 
                     services.AddHostedService<Worker>();
 
