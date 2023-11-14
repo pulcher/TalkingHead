@@ -137,12 +137,6 @@ namespace Magic8HeadService
 
             var speechConfig = GetSpeechConfig(commandTrackerEntity, username);
 
-            //if (client != null)
-            //{
-            //    client.SendMessage(channel,
-            //        $"Hey {username}, you are using {speechConfig.SpeechSynthesisVoiceName}");
-            //}
-
             var ssmlMessage = ConvertToSsml(speechConfig, message);
 
             using (var result = await speechSynthesizer.StartSpeakingSsmlAsync(ssmlMessage))

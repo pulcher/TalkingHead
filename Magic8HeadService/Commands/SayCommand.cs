@@ -1,6 +1,5 @@
 using Magic8HeadService.Services;
 using Microsoft.Extensions.Logging;
-using TwitchLib.Client;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Interfaces;
 

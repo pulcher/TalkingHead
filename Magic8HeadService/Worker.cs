@@ -28,6 +28,7 @@ namespace Magic8HeadService
         readonly ISayingResponse scopedSayingResponse;
         readonly IDadJokeService scopedDadJokeService;
         readonly MqttFactory scopedMqttFactory;
+        readonly IMessageStackService scopedMessageStackService;
 
         public Worker(IServiceProvider service, IConfiguration config, TwitchBotConfiguration twitchBotConfiguration,
              ILogger<Worker> logger)
@@ -58,13 +59,17 @@ namespace Magic8HeadService
                 scope.ServiceProvider
                     .GetRequiredService<MqttFactory>();
 
+            scopedMessageStackService =
+                scope.ServiceProvider
+                .GetRequiredService<IMessageStackService>();
+
             var listOfCommands = scope.ServiceProvider.GetServices<ICommandMbhToTwitch>();
             var helpCommand = scope.ServiceProvider.GetService<ICommandMbhTwitchHelp>();
             var mqttHandlers = scope.ServiceProvider.GetServices<IMqttHandler>();
 
             var twitchBot = new TwitchBot(twitchClient, connectionCredentials, twitchBotConfiguration,
                 scopedSayingResponse, scopedDadJokeService, listOfCommands, 
-                helpCommand, scopedMqttFactory, mqttHandlers,
+                helpCommand, scopedMqttFactory, mqttHandlers, scopedMessageStackService,
                 logger);
 
             SetupGPIO();
