@@ -6,6 +6,7 @@ namespace Magic8HeadService
     {
         ChatMessage GetNextMessage();
         ChatMessage GetPreviousMessage(int previousIndex);
+        ChatMessage PeekNextMessage();
         void PutMessage(ChatMessage message);
     }
 }

@@ -22,6 +22,12 @@ namespace Magic8HeadService
             throw new System.NotImplementedException();
         }
 
+        public ChatMessage PeekNextMessage()
+        {
+            messageStack.TryPeek(out var result);
+            return result;
+        }
+
         public void PutMessage(ChatMessage message)
         {
             if (message == null) return;

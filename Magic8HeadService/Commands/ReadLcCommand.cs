@@ -34,28 +34,31 @@ public class ReadLcCommand : ICommandMbhToTwitch
 
     public void Handle(OnChatCommandReceivedArgs args)
     {
-        var lastMessage = messageStackService.GetNextMessage();
+        var peekMessage = messageStackService.PeekNextMessage();
+        //var lastMessage = messageStackService.GetNextMessage();
 
-        if (lastMessage is not null)
+        if (peekMessage is not null)
         {
-            if (lastMessage.IsSubscriber
-            || lastMessage.IsVip
-            || lastMessage.IsModerator)
+            if (args.Command.ChatMessage.IsSubscriber
+            || args.Command.ChatMessage.IsVip
+            || args.Command.ChatMessage.IsModerator)
             {
-                var username = lastMessage.Username;
-                var channel = lastMessage.Channel;
+                var username = peekMessage.Username;
+                var channel = peekMessage.Channel;
 
                 var commandTrackerEntity = commandTracker.Add(username, "readlc");
 
-                var message = $"Speaking for {username}: who typed {messageChecker.CheckMessage(lastMessage.Message)}";
+                var message = $"Speaking for {username}: who typed {messageChecker.CheckMessage(peekMessage.Message)}";
 
                 sayingResponse.SaySomethingNiceAsync(message, client, channel, null)
                     .Wait();
+
+                messageStackService.GetNextMessage();
             }
             else
             {
-                client.SendMessage(lastMessage.Channel,
-                    $"Hey {lastMessage.Username}, subscribe now for the readlc command as well as many other benefits!");
+                client.SendMessage(peekMessage.Channel,
+                    $"Hey {peekMessage.Username}, subscribe now for the readlc command as well as many other benefits!");
             }
         }
     }
