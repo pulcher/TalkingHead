@@ -162,7 +162,7 @@ namespace Magic8HeadService
 
         public void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
-            if (!e.ChatMessage.IsVip 
+            if (!e.ChatMessage.IsVip
                 && !e.ChatMessage.IsModerator
                 && !e.ChatMessage.IsSubscriber
                 && !e.ChatMessage.IsMe

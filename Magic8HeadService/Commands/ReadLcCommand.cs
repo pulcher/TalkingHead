@@ -49,13 +49,13 @@ public class ReadLcCommand : ICommandMbhToTwitch
 
                 var message = $"Speaking for {username}: who typed {messageChecker.CheckMessage(lastMessage.Message)}";
 
-                sayingResponse.SaySomethingNiceAsync(message, client, channel, username)
+                sayingResponse.SaySomethingNiceAsync(message, client, channel, null)
                     .Wait();
             }
             else
             {
                 client.SendMessage(lastMessage.Channel,
-                    $"Hey {lastMessage.Username}, the readlc command is for subscribers and vips only.");
+                    $"Hey {lastMessage.Username}, subscribe now for the readlc command as well as many other benefits!");
             }
         }
     }
