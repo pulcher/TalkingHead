@@ -34,32 +34,36 @@ public class ReadLcCommand : ICommandMbhToTwitch
 
     public void Handle(OnChatCommandReceivedArgs args)
     {
-        var peekMessage = messageStackService.PeekNextMessage();
-        //var lastMessage = messageStackService.GetNextMessage();
-
-        if (peekMessage is not null)
-        {
-            if (args.Command.ChatMessage.IsSubscriber
+        if (args.Command.ChatMessage.IsSubscriber
             || args.Command.ChatMessage.IsVip
             || args.Command.ChatMessage.IsModerator)
+        {
+            var peekMessage = messageStackService.PeekNextMessage();
+
+            if (peekMessage is not null)
             {
-                var username = peekMessage.Username;
-                var channel = peekMessage.Channel;
+                var lastMessage = messageStackService.GetNextMessage();
+                //var username = lastMessage.Username;
+                //var channel = lastMessage.Channel;
+                var commandTrackerEntity = commandTracker.Add(args.Command.ChatMessage.Username, "readlc");
 
-                var commandTrackerEntity = commandTracker.Add(username, "readlc");
+                var message = $"Speaking for {lastMessage.Username}: who typed {messageChecker.CheckMessage(lastMessage.Message)}";
 
-                var message = $"Speaking for {username}: who typed {messageChecker.CheckMessage(peekMessage.Message)}";
-
-                sayingResponse.SaySomethingNiceAsync(message, client, channel, null)
+                sayingResponse.SaySomethingNiceAsync(message, client, lastMessage.Channel, null)
                     .Wait();
-
-                messageStackService.GetNextMessage();
             }
             else
             {
-                client.SendMessage(peekMessage.Channel,
-                    $"Hey {peekMessage.Username}, subscribe now for the readlc command as well as many other benefits!");
+                var message = $"Sorry {args.Command.ChatMessage.Username}, there I don't have anything else interesting to repeat.";
+                sayingResponse.SaySomethingNiceAsync(message, client, args.Command.ChatMessage.Channel, null)
+                    .Wait();
             }
+        }
+        else
+        {
+            client.SendMessage(args.Command.ChatMessage.Channel,
+                $"Hey {args.Command.ChatMessage.Username}, subscribe now for the readlc command as well as many other benefits!");
+
         }
     }
 }
