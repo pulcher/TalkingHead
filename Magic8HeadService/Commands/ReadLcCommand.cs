@@ -43,8 +43,7 @@ public class ReadLcCommand : ICommandMbhToTwitch
             if (peekMessage is not null)
             {
                 var lastMessage = messageStackService.GetNextMessage();
-                //var username = lastMessage.Username;
-                //var channel = lastMessage.Channel;
+
                 var commandTrackerEntity = commandTracker.Add(args.Command.ChatMessage.Username, "readlc");
 
                 var message = $"Speaking for {lastMessage.Username}: who typed {messageChecker.CheckMessage(lastMessage.Message)}";
@@ -54,7 +53,7 @@ public class ReadLcCommand : ICommandMbhToTwitch
             }
             else
             {
-                var message = $"Sorry {args.Command.ChatMessage.Username}, there I don't have anything else interesting to repeat.";
+                var message = $"Sorry {args.Command.ChatMessage.Username}, I don't have anything else interesting to repeat.";
                 sayingResponse.SaySomethingNiceAsync(message, client, args.Command.ChatMessage.Channel, null)
                     .Wait();
             }
