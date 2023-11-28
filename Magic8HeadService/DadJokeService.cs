@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using MrBigHead.Shared;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -7,33 +8,23 @@ namespace Magic8HeadService
 {
     public class DadJokeService : IDadJokeService
     {
+        private readonly ISayingResponse sayingResponse;
         private ILogger logger;
-        private HttpClient client;
-        private IHttpClientFactory httpClientFactory;
 
-        public DadJokeService(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
+        public DadJokeService(ISayingResponse sayingResponse, ILoggerFactory loggerFactory)
         {
             this.logger = loggerFactory.CreateLogger("Generic Logger");
-
-            this.client = httpClientFactory.CreateClient();
-
-            this.httpClientFactory = httpClientFactory;
+            this.sayingResponse = sayingResponse;
         }
 
-        public async Task<DadJoke> GetDadJoke(string url)
+        public string GetDadJoke()
         {
-            var siteUrl = "https://karljoke.herokuapp.com/jokes/random";
+            return GetRandomAnswer();
+        }
 
-            if (!string.IsNullOrEmpty(url))
-                siteUrl = url;
-                
-            //https://dadjoke-2021-1018a.jimf99.repl.co/jokes/random
-
-            var dadJoke = await client.GetFromJsonAsync<DadJoke>(siteUrl);
-
-            dadJoke = await client.GetFromJsonAsync<DadJoke>("https://karljoke.herokuapp.com/jokes/random");
-
-            return dadJoke;
+        private string GetRandomAnswer()
+        {
+            return sayingResponse.PickSaying("dad");
         }
     }
 }
