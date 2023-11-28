@@ -25,26 +25,10 @@ namespace Magic8HeadService
 
         public void Handle(OnChatCommandReceivedArgs cmd)
         {
-            try
-            {
-                var dadJoke = dadJokeService.GetDadJoke(alternateSite).Result;
+            var dadJoke = dadJokeService.GetDadJoke();
 
-                sayingResponse.SaySomethingNiceAsync(dadJoke.Setup, client, cmd.Command.ChatMessage.Channel, cmd.Command.ChatMessage.Username);
-                client.SendMessage(cmd.Command.ChatMessage.Channel, $"Q: {dadJoke.Setup}");
-
-                Task.Delay(5000).Wait();
-
-                sayingResponse.SaySomethingNiceAsync(dadJoke.Punchline, client, cmd.Command.ChatMessage.Channel, cmd.Command.ChatMessage.Username);
-                client.SendMessage(cmd.Command.ChatMessage.Channel, $"A: {dadJoke.Punchline}");
-            }
-            catch (Exception ex)
-            {
-                alternateSite = "https://karljoke.herokuapp.com/jokes/random";
-
-                sayingResponse.SaySomethingNiceAsync(ex.Message, client, cmd.Command.ChatMessage.Channel, cmd.Command.ChatMessage.Username);
-                client.SendMessage(cmd.Command.ChatMessage.Channel, $"We've got problem {ex.Message}");
-            }
+            sayingResponse.SaySomethingNiceAsync(dadJoke, client, cmd.Command.ChatMessage.Channel, cmd.Command.ChatMessage.Username);
+            client.SendMessage(cmd.Command.ChatMessage.Channel, $"Q: {dadJoke}");
         }
-
     }
 }
