@@ -1,4 +1,5 @@
 ﻿@page "/quips"
+@using Microsoft.AspNetCore.Components.QuickGrid
 @inject HttpClient Http
 
 <h1>Phrases</h1>
@@ -11,37 +12,29 @@
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Mood</th>
-                <th>Phrase</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var quip in sayings)
-            {
-            <tr>
-                <td>@quip.Mood</td>
-                <td>@quip.Phrase</td>
-                <td>
-                    <span class="oi oi-icon-name" title="iconic-pencil-sm" aria-hidden="false"></span>
-                    <span class="oi oi-icon-name" title="iconic-trash-sm" aria-hidden="false"></span>
-                    <span class="iconic" data-glyph="trash" title="trash" aria-hidden="false"></span>
-                </td>
-            </tr>
-            }
-        </tbody>
-    </table>
+    <QuickGrid Items="@sayings.AsQueryable()" Pagination="@pagination">
+        <PropertyColumn Property="@(m => m.Mood)" Sortable="true" />
+        <PropertyColumn Property="@(p => p.Phrase)" Sortable="true" />
+        @if (isAdmin)
+        {
+        <TemplateColumn Title="Actions">
+            <button>Edit</button>
+            <button>Delete</button>
+        </TemplateColumn>
+        }
+    </QuickGrid>
+
+    <Paginator State="@pagination" />
 }
 
 @code {
-    private Sayings[] sayings;
+    private IEnumerable<Sayings> sayings;
+    PaginationState pagination = new PaginationState { ItemsPerPage = 20 };
+    bool isAdmin { get; set; } = true;
 
     protected override async Task OnInitializedAsync()
     {
-        sayings = await Http.GetFromJsonAsync<Sayings[]>("https://bigheadfuncs.azurewebsites.net/api/getallphrases");
+        sayings = await Http.GetFromJsonAsync<IEnumerable<Sayings>>("https://bigheadfuncs.azurewebsites.net/api/getallphrases");
     }
 
     public class Sayings
