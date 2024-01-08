@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrBigHead.Shared", "MrBigHe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrBigHead.Services", "MrBigHead.Services\MrBigHead.Services.csproj", "{2417B8C8-8B5E-420F-B017-858488E274B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrBigHead.VoiceChecker", "MrBigHead.VoiceChecker\MrBigHead.VoiceChecker.csproj", "{8DDE5BFD-B979-450A-9CDE-9D4BF0BBCF96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrBigHead.VoiceChecker", "MrBigHead.VoiceChecker\MrBigHead.VoiceChecker.csproj", "{8DDE5BFD-B979-450A-9CDE-9D4BF0BBCF96}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

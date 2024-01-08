@@ -21,6 +21,11 @@ namespace MrBigHead.Web
                 builder.Configuration.Bind("AzureAdB2C", options.ProviderOptions.Authentication);
             });
 
+            builder.Services.AddLogging(options =>
+            {
+                builder.Configuration.Bind("Logging");
+            });
+
             await builder.Build().RunAsync();
         }
     }
