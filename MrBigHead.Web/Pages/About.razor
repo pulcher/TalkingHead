@@ -1,0 +1,49 @@
+﻿@page "/about"
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using System.Security.Claims
+@using System.Text.Json
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+<h1>About</h1>
+<p>Some stuff about the user</p>
+
+<h1>YO - @AuthenticatedUser?.Identity?.Name</h1>
+
+<h2>Claims</h2>
+
+@foreach (var claim in AuthenticatedClaims)
+{
+    <p class="claim">@(claim.Type): @claim.Value</p>
+}
+
+@code {
+    public ClaimsPrincipal AuthenticatedUser { get; set; }
+    public List<Claim> AuthenticatedClaims = new List<Claim>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        var authState = await AuthenticationStateProvider
+            .GetAuthenticationStateAsync();
+
+        var user = authState.User;
+
+        if (user.Identity is not null && user.Identity.IsAuthenticated)
+        {
+            AuthenticatedUser = user;
+
+            foreach (var claim in AuthenticatedUser.Claims)
+            {
+                if ( claim.Type.StartsWith("iss") ) continue;
+                if ( claim.Type == "sub" ) continue;
+                if ( claim.Type == "aud" ) continue;
+                if ( claim.Type == "nonce" ) continue;
+
+                AuthenticatedClaims.Add(claim);
+            }
+        }
+    }
+}
