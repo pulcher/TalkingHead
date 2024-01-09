@@ -3,63 +3,47 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using System.Security.Claims
 @using System.Text.Json
-@inject IAccessTokenProvider AuthorizationService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 
 <h1>About</h1>
 <p>Some stuff about the user</p>
 
-<h1>@AuthenticatedUser?.Identity?.Name</h1>
+<h1>YO - @AuthenticatedUser?.Identity?.Name</h1>
 
 <h2>Claims</h2>
 
-@foreach (var claim in AuthenticatedUser?.Claims ?? Array.Empty<Claim>())
+@foreach (var claim in AuthenticatedClaims)
 {
     <p class="claim">@(claim.Type): @claim.Value</p>
 }
 
 @code {
-    [CascadingParameter]
-    private Task<AuthenticationState> AuthenticationState { get; set; }
-
     public ClaimsPrincipal AuthenticatedUser { get; set; }
-    public AccessToken AccessToken { get; set; }
+    public List<Claim> AuthenticatedClaims = new List<Claim>();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
-        var state = await AuthenticationState;
-        var accessTokenResult = await AuthorizationService.RequestAccessToken();
+        var authState = await AuthenticationStateProvider
+            .GetAuthenticationStateAsync();
 
-        if (!accessTokenResult.TryGetToken(out var token))
+        var user = authState.User;
+
+        if (user.Identity is not null && user.Identity.IsAuthenticated)
         {
-            throw new InvalidOperationException(
-                "Failed to provision the access token.");
+            AuthenticatedUser = user;
+
+            foreach (var claim in AuthenticatedUser.Claims)
+            {
+                if ( claim.Type.StartsWith("iss") ) continue;
+                if ( claim.Type == "sub" ) continue;
+                if ( claim.Type == "aud" ) continue;
+                if ( claim.Type == "nonce" ) continue;
+
+                AuthenticatedClaims.Add(claim);
+            }
         }
-
-        AccessToken = token;
-
-        AuthenticatedUser = state.User;
-         //authState = await authStateProvidor.GetAuthenticatedStateAsync();
-        // claimsCount = authState.User.Claims.Count();
-    }
-
-    protected IDictionary<string, object> GetAccessTokenClaims()
-    {
-        if (AccessToken == null)
-        {
-            return new Dictionary<string, object>();
-        }
-
-        // header.payload.signature
-        var payload = AccessToken.Value.Split(".")[1];
-        var base64Payload = payload.Replace('-', '+').Replace('_', '/')
-            .PadRight(payload.Length + (4 - payload.Length % 4) % 4, '=');
-
-        return JsonSerializer.Deserialize<IDictionary<string, object>>(
-            Convert.FromBase64String(base64Payload));
     }
 }
-
-
