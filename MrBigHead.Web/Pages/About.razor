@@ -3,15 +3,17 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using System.Security.Claims
 @using System.Text.Json
+@using Microsoft.Extensions.Configuration
 @using MrBigHead.Web.Services
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject UserInformationProvider UserInformationProvider
+@inject IConfiguration Configuration
 
 
 <h1>About</h1>
 <p>Some stuff about the user</p>
 
-<h1>YO - @AuthenticatedUser?.Identity?.Name</h1>
+<h1>YO - @AuthenticatedUser?.Identity?.Name  -  @twitchClientId</h1>
 
 <h2>Hey - @UserInformation.UserName --- @UserInformation.Junk</h2>
 
@@ -26,6 +28,8 @@
     public ClaimsPrincipal AuthenticatedUser { get; set; }
     public UserInformation UserInformation { get; set; }
     public List<Claim> AuthenticatedClaims = new List<Claim>();
+    public string twitchClientId { get; set; }
+    public IConfiguration configStuff { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -35,7 +39,9 @@
             .GetAuthenticationStateAsync();
 
         var user = authState.User;
-        UserInformation = await UserInformationProvider.GetUserInformation(user);
+        twitchClientId = Configuration.GetSection("TwitchAPI").GetValue<string>("ClientId");
+
+        UserInformation = await UserInformationProvider.GetUserInformation(user, twitchClientId);
 
         if (user.Identity is not null && user.Identity.IsAuthenticated)
         {
