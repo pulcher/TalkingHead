@@ -1,10 +1,16 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using Azure.Core;
+using System.Net.Http.Headers;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic;
+using MrBigHead.Shared;
+using static System.Net.WebRequestMethods;
+using System.Net.Http.Json;
 
 namespace MrBigHead.Func
 {
@@ -18,7 +24,7 @@ namespace MrBigHead.Func
         }
 
         [Function("GetTwitchUserInfo")]
-        public HttpResponseData Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req)
+        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
@@ -41,21 +47,41 @@ namespace MrBigHead.Func
                 _logger.LogError($"Threw and error on GetSecret: {ex.Message}");
                 throw;
             }
+;
+            _logger.LogInformation("is the secret null");
+
+            TwitchUserInformation? twitchResponse;
+
+            using (HttpClient client = new())
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", req.Query["accessToken"]);
+                client.DefaultRequestHeaders.Add("Client-Id", secret.Value);
+
+                twitchResponse = await client.GetFromJsonAsync<TwitchUserInformation>("https://api.twitch.tv/helix/users");
+
+                //if (response.IsSuccessStatusCode)
+                //{
+                //    string apiResponse = await response.Content.ReadAsStringAsync();
+                //    return new OkObjectResult(apiResponse);
+                //}
+                //else
+                //{
+                //    return new BadRequestObjectResult("Failed to call the API");
+                //}
+            }
+
+            var userinfo = new UserInformation
+            {
+                UserName = twitchResponse?.Login,
+                DisplayName = twitchResponse?.Display_name,
+                Email = twitchResponse?.Email,
+                ImageUrl = twitchResponse?.Profile_image_url,
+            };
 
             var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
-            _logger.LogInformation("is the secret null");
-            if (secret != null)
-            {
-                response.WriteString("secrets are not blank");
-            }
-            else
-            {
-                _logger.LogInformation("yep");
-                response.WriteString("Welcome to Azure Functions!");
-            };
+            await response.WriteAsJsonAsync(userinfo);
 
             return response;
         }
-}
+    }
 }
