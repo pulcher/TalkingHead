@@ -11,16 +11,22 @@ using Microsoft.VisualBasic;
 using MrBigHead.Shared;
 using static System.Net.WebRequestMethods;
 using System.Net.Http.Json;
+using Microsoft.Extensions.Configuration;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace MrBigHead.Func
 {
     public class GetTwitchUserInfo
     {
         private readonly ILogger _logger;
+        private readonly IConfiguration configuration;
 
-        public GetTwitchUserInfo(ILoggerFactory loggerFactory)
+        public GetTwitchUserInfo(ILoggerFactory loggerFactory, IConfiguration configuration)
         {
             _logger = loggerFactory.CreateLogger<GetTwitchUserInfo>();
+            this.configuration = configuration;
         }
 
         [Function("GetTwitchUserInfo")]
@@ -31,33 +37,57 @@ namespace MrBigHead.Func
             var keyVaultName = "mbh-keyvault";
             var secretName = "TwitchAPI-ClientId";
 
+            var clientId= configuration[secretName];
+
             _logger.LogInformation("about to make a SecretClient");
             var secretClient = new SecretClient(new Uri($"https://{keyVaultName}.vault.azure.net"), new DefaultAzureCredential());
             _logger.LogInformation("made a SecretClient");
 
             KeyVaultSecret secret;
 
-            try
+            if (clientId == null)
             {
-                secret = secretClient.GetSecret(secretName);
-                _logger.LogInformation("Got a secret");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Threw and error on GetSecret: {ex.Message}");
-                throw;
-            }
-;
+                try
+                {
+                    secret = secretClient.GetSecret(secretName);
+                    _logger.LogInformation("Got a secret");
+                    clientId = secret.Value;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Threw and error on GetSecret: {ex.Message}");
+                    throw;
+                }
+            };
+
             _logger.LogInformation("is the secret null");
 
-            TwitchUserInformation? twitchResponse;
+            TwitchUserInformation? twitchResponse = new();
 
             using (HttpClient client = new())
             {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", req.Query["accessToken"]);
-                client.DefaultRequestHeaders.Add("Client-Id", secret.Value);
+                var testToken = req.Query["accessToken"];
 
-                twitchResponse = await client.GetFromJsonAsync<TwitchUserInformation>("https://api.twitch.tv/helix/users");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", req.Query["accessToken"]);
+                client.DefaultRequestHeaders.Add("Client-Id", clientId);
+
+
+                try
+                {
+                    var responseString = await client.GetStringAsync("https://api.twitch.tv/helix/users");
+                    var something = JsonObject.Parse(responseString);
+                    var somethingelse = something["data"];
+
+                    twitchResponse = somethingelse[0].Deserialize<TwitchUserInformation>();
+
+
+                    var test = string.Empty;
+                    //string test = await client.GetStringAsync("https://api.twitch.tv/helix/users");
+                }
+                catch (Exception ex)
+                {
+                    var test = ex.Message;
+                };
 
                 //if (response.IsSuccessStatusCode)
                 //{
@@ -73,9 +103,9 @@ namespace MrBigHead.Func
             var userinfo = new UserInformation
             {
                 UserName = twitchResponse?.Login,
-                DisplayName = twitchResponse?.Display_name,
+                DisplayName = twitchResponse?.DisplayName,
                 Email = twitchResponse?.Email,
-                ImageUrl = twitchResponse?.Profile_image_url,
+                ImageUrl = twitchResponse?.ProfileImageUrl,
             };
 
             var response = req.CreateResponse(HttpStatusCode.OK);
