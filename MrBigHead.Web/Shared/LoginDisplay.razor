@@ -10,17 +10,7 @@
 <AuthorizeView>
     <Authorized>
         Hello, @context.User.Identity.Name! 
-        - @context.User.Claims.Count()
         - - 
-@*         @if (context.User.Claims.Count() > 0)
-        {
-            <ul>
-                @foreach (var claim in context.User.Claims)
-                {
-                    <li>@claim.Type: @claim.Value</li>
-                }
-            </ul>
-        } *@
         <button class="nav-link btn btn-link" @onclick="BeginLogout">Log out</button>
     </Authorized>
     <NotAuthorized>
@@ -36,9 +26,9 @@
     {
         await base.OnInitializedAsync();
 
-        var authstate = await authenticationState;
-        var user = authstate?.User;
-        var idp_token = user.Claims.First(x => x.Type == "idp_access_token");
+        // var authstate = await authenticationState;
+        // var user = authstate?.User;
+        // var idp_token = user?.Claims.First(x => x.Type == "idp_access_token");
         // var idp_user_id = user.Claims.First(x => x.Type == "");
 
         // var request = new HttpRequestMessage(HttpMethod.Get,

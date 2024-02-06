@@ -11,6 +11,7 @@ namespace MrBigHead.Web.Services
     {
         private readonly HttpClient http = http;
         private string AccessToken;
+        private UserInformation UserInformation = new();
 
         public async Task<UserInformation> GetUserInformation(ClaimsPrincipal principal)
         {
@@ -18,9 +19,12 @@ namespace MrBigHead.Web.Services
 
             AccessToken = principal.Claims.FirstOrDefault(c => c.Type == "idp_access_token").Value;
 
-            var userInformation = await http.GetFromJsonAsync<UserInformation>($"https://bigheadfuncs.azurewebsites.net/api/GetTwitchUserInfo?userToken={AccessToken}");
+            if (string.IsNullOrEmpty(UserInformation.UserName))
+            {
+                UserInformation = await http.GetFromJsonAsync<UserInformation>($"https://bigheadfuncs.azurewebsites.net/api/GetTwitchUserInfo?userToken={AccessToken}");
+            }
 
-            return userInformation;
+            return UserInformation;
         }
     }
 }
