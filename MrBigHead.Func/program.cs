@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 var host = new HostBuilder()
@@ -7,6 +8,10 @@ var host = new HostBuilder()
     //{
     //    logging.SetMinimumLevel(LogLevel.Debug);
     //})
+    .ConfigureAppConfiguration( conf =>
+    {
+        conf.AddUserSecrets<Program>(optional: true, reloadOnChange: false);
+    })
     .Build();
 
 host.Run();

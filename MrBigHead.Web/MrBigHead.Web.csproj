@@ -34,4 +34,8 @@
     <None Include="Pages\CliamsPrincipalData.razor" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MrBigHead.Shared\MrBigHead.Shared.csproj" />
+  </ItemGroup>
+
 </Project>
