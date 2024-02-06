@@ -12,7 +12,7 @@ namespace MrBigHead.Web.Services
         private readonly HttpClient http = http;
         private string AccessToken;
 
-        public async Task<UserInformation> GetUserInformation(ClaimsPrincipal principal, string clientId)
+        public async Task<UserInformation> GetUserInformation(ClaimsPrincipal principal)
         {
             if (principal == null) return new UserInformation();
 

@@ -16,7 +16,7 @@
 
 <h1>YO - @AuthenticatedUser?.Identity?.Name  -  @twitchClientId</h1>
 
-<h2>Hey - @UserInformation.UserName --- @UserInformation.ImageUrl</h2>
+@* <h2>Hey - @UserInformation.UserName --- @UserInformation.ImageUrl</h2> *@
 
 <h2>Claims</h2>
 
@@ -40,9 +40,9 @@
             .GetAuthenticationStateAsync();
 
         var user = authState.User;
-        twitchClientId = Configuration.GetSection("TwitchAPI").GetValue<string>("ClientId");
+       // twitchClientId = Configuration.GetSection("TwitchAPI").GetValue<string>("ClientId");
 
-        UserInformation = await UserInformationProvider.GetUserInformation(user, twitchClientId);
+        // UserInformation = await UserInformationProvider.GetUserInformation(user);
 
         if (user.Identity is not null && user.Identity.IsAuthenticated)
         {

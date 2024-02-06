@@ -1,20 +1,14 @@
-using System.ComponentModel.DataAnnotations;
-using System.Net;
-using Azure.Core;
-using System.Net.Http.Headers;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
-using MrBigHead.Shared;
-using static System.Net.WebRequestMethods;
-using System.Net.Http.Json;
 using Microsoft.Extensions.Configuration;
-using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
+using Microsoft.Extensions.Logging;
+using MrBigHead.Shared;
+using System.Net;
+using System.Net.Http.Headers;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace MrBigHead.Func
 {
@@ -22,6 +16,7 @@ namespace MrBigHead.Func
     {
         private readonly ILogger _logger;
         private readonly IConfiguration configuration;
+        private string errorMessage;
 
         public GetTwitchUserInfo(ILoggerFactory loggerFactory, IConfiguration configuration)
         {
@@ -55,49 +50,33 @@ namespace MrBigHead.Func
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Threw and error on GetSecret: {ex.Message}");
+                    _logger.LogError(ex, "Threw and error on GetSecret");
                     throw;
                 }
             };
-
-            _logger.LogInformation("is the secret null");
 
             TwitchUserInformation? twitchResponse = new();
 
             using (HttpClient client = new())
             {
-                var testToken = req.Query["accessToken"];
+                var token = req.Query["accessToken"];
 
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", req.Query["accessToken"]);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 client.DefaultRequestHeaders.Add("Client-Id", clientId);
-
 
                 try
                 {
                     var responseString = await client.GetStringAsync("https://api.twitch.tv/helix/users");
-                    var something = JsonObject.Parse(responseString);
-                    var somethingelse = something["data"];
+                    var arrayOfTwitchData = JsonNode.Parse(responseString);
+                    var firstUser = arrayOfTwitchData["data"];
 
-                    twitchResponse = somethingelse[0].Deserialize<TwitchUserInformation>();
-
-
-                    var test = string.Empty;
-                    //string test = await client.GetStringAsync("https://api.twitch.tv/helix/users");
+                    twitchResponse = firstUser[0].Deserialize<TwitchUserInformation>();
                 }
                 catch (Exception ex)
                 {
-                    var test = ex.Message;
+                    _logger.LogError(ex, "Threw and error on GetStringAsync");
+                    errorMessage = ex.Message;
                 };
-
-                //if (response.IsSuccessStatusCode)
-                //{
-                //    string apiResponse = await response.Content.ReadAsStringAsync();
-                //    return new OkObjectResult(apiResponse);
-                //}
-                //else
-                //{
-                //    return new BadRequestObjectResult("Failed to call the API");
-                //}
             }
 
             var userinfo = new UserInformation
@@ -106,6 +85,7 @@ namespace MrBigHead.Func
                 DisplayName = twitchResponse?.DisplayName,
                 Email = twitchResponse?.Email,
                 ImageUrl = twitchResponse?.ProfileImageUrl,
+                ErrorMessage = errorMessage
             };
 
             var response = req.CreateResponse(HttpStatusCode.OK);
