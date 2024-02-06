@@ -9,7 +9,7 @@
 
 <AuthorizeView>
     <Authorized>
-        Hello, @context.User.Identity.Name! 
+        Hello, @context?.User?.Identity?.Name! 
         - - 
         <button class="nav-link btn btn-link" @onclick="BeginLogout">Log out</button>
     </Authorized>
@@ -25,26 +25,12 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-
-        // var authstate = await authenticationState;
-        // var user = authstate?.User;
-        // var idp_token = user?.Claims.First(x => x.Type == "idp_access_token");
-        // var idp_user_id = user.Claims.First(x => x.Type == "");
-
-        // var request = new HttpRequestMessage(HttpMethod.Get,
-        //     "https://api.twitch.tv/helix/subscriptions/user");
-        // request.Headers.Add("Authorization", $"Berrer {idp_token}");
-
-        //return;
     }
+
     private async Task BeginLogout(MouseEventArgs args)
     {
         logger.LogInformation($"Logging out: something");
         await SignOutManager.SetSignOutState();
         Navigation.NavigateTo("authentication/logout");
     }
-
-
-
-    //logger.LogInformation($"Name: {context.User.Identity.Name}");
 }

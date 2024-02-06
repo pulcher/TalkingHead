@@ -21,7 +21,7 @@ namespace MrBigHead.Web.Services
 
             if (string.IsNullOrEmpty(UserInformation.UserName))
             {
-                UserInformation = await http.GetFromJsonAsync<UserInformation>($"https://bigheadfuncs.azurewebsites.net/api/GetTwitchUserInfo?userToken={AccessToken}");
+                UserInformation = await http.GetFromJsonAsync<UserInformation>($"https://bigheadfuncs.azurewebsites.net/api/GetTwitchUserInfo?accessToken={AccessToken}");
             }
 
             return UserInformation;

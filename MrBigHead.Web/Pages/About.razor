@@ -10,11 +10,16 @@
 @inject UserInformationProvider UserInformationProvider
 @inject IConfiguration Configuration
 
+@if (!string.IsNullOrEmpty(UserInformation?.ImageUrl))
+{
+    <p>
+        <img src="@UserInformation.ImageUrl" />
+    </p>    
+}
+@* <h1>About</h1> *@
+@* <p>Some stuff about the user</p>
 
-<h1>About</h1>
-<p>Some stuff about the user</p>
-
-<h2>Hey - @UserInformation?.UserName --- @UserInformation?.ImageUrl</h2>
+<h2>Hey - @UserInformation?.UserName --- @UserInformation?.ImageUrl</h2> *@
 
 @* <h2>Claims</h2>
 
@@ -37,11 +42,11 @@
         var authState = await AuthenticationStateProvider
             .GetAuthenticationStateAsync();
 
-        var user = authState.User;
+        var user = authState?.User;
 
         UserInformation = await UserInformationProvider.GetUserInformation(user);
 
-        if (user.Identity is not null && user.Identity.IsAuthenticated)
+        if (user is not null && user.Identity is not null && user.Identity.IsAuthenticated)
         {
             AuthenticatedUser = user;
 
