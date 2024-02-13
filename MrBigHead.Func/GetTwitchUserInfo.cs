@@ -1,14 +1,21 @@
+using System.ComponentModel.DataAnnotations;
+using System.Net;
+using Azure.Core;
+using System.Net.Http.Headers;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic;
 using MrBigHead.Shared;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Text.Json;
+using static System.Net.WebRequestMethods;
+using System.Net.Http.Json;
+using Microsoft.Extensions.Configuration;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using System;
 
 namespace MrBigHead.Func
 {
@@ -16,7 +23,6 @@ namespace MrBigHead.Func
     {
         private readonly ILogger _logger;
         private readonly IConfiguration configuration;
-        private string errorMessage;
 
         public GetTwitchUserInfo(ILoggerFactory loggerFactory, IConfiguration configuration)
         {
@@ -31,61 +37,88 @@ namespace MrBigHead.Func
 
             var keyVaultName = "mbh-keyvault";
             var secretName = "TwitchAPI-ClientId";
+            var secretBroadcasterName = "TwitchAPI-BroadcasterId";
 
-            var clientId= configuration[secretName];
+            var clientId = configuration[secretName];
+            var broadcasterId = configuration[secretBroadcasterName];
+
+            var loggedInUserId = req.Query["userId"];
 
             _logger.LogInformation("about to make a SecretClient");
             var secretClient = new SecretClient(new Uri($"https://{keyVaultName}.vault.azure.net"), new DefaultAzureCredential());
+
             _logger.LogInformation("made a SecretClient");
 
-            KeyVaultSecret secret;
+            KeyVaultSecret secretCliendId;
+            KeyVaultSecret secretBroadcasterId;
 
-            if (clientId == null)
+            if (clientId == null || broadcasterId == null)
             {
                 try
                 {
-                    secret = secretClient.GetSecret(secretName);
+                    secretCliendId = secretClient.GetSecret(secretName);
                     _logger.LogInformation("Got a secret");
-                    clientId = secret.Value;
+                    clientId = secretCliendId.Value;
+
+                    // my broadcasterId
+                    secretBroadcasterId = secretClient.GetSecret(secretName);
+                    _logger.LogInformation("Got a broadcasterId");
+                    broadcasterId = secretBroadcasterId.Value;
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Threw and error on GetSecret");
+                    _logger.LogError($"Threw and error on GetSecret: {ex.Message}");
                     throw;
                 }
             };
 
-            TwitchUserInformation? twitchResponse = new();
+            _logger.LogInformation("is the secret null");
+
+            TwitchUserInformation? twitchUserResponse = new();
+            TwitchSubscriptionInformation? twitchSubscriptionResponse = new();
 
             using (HttpClient client = new())
             {
-                var token = req.Query["accessToken"];
+                var testUserId = req.Query["userId"];
 
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", req.Query["accessToken"]);
                 client.DefaultRequestHeaders.Add("Client-Id", clientId);
+
 
                 try
                 {
                     var responseString = await client.GetStringAsync("https://api.twitch.tv/helix/users");
-                    var arrayOfTwitchData = JsonNode.Parse(responseString);
-                    var firstUser = arrayOfTwitchData["data"];
+                    var something = JsonObject.Parse(responseString);
+                    var somethingelse = something["data"];
 
-                    twitchResponse = firstUser[0].Deserialize<TwitchUserInformation>();
+                    twitchUserResponse = somethingelse[0].Deserialize<TwitchUserInformation>();
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Threw and error on GetStringAsync");
-                    errorMessage = ex.Message;
+                    var test = ex.Message;
                 };
+
+                try
+                {
+                    var responseString = await client.GetStringAsync($"https://api.twitch.tv/helix/subscriptions/user?broadcaster_id={broadcasterId}&user_id={loggedInUserId}");
+                    var parsedResponse = JsonObject.Parse(responseString);
+                    var responseData = parsedResponse["data"];
+
+                    twitchSubscriptionResponse = responseData[0].Deserialize<TwitchSubscriptionInformation>();
+                }
+                catch (Exception ex)
+                {
+                    var test = ex.Message;
+                }
             }
 
             var userinfo = new UserInformation
             {
-                UserName = twitchResponse?.Login,
-                DisplayName = twitchResponse?.DisplayName,
-                Email = twitchResponse?.Email,
-                ImageUrl = twitchResponse?.ProfileImageUrl,
-                ErrorMessage = errorMessage
+                UserName = twitchUserResponse?.Login,
+                DisplayName = twitchUserResponse?.DisplayName,
+                Email = twitchUserResponse?.Email,
+                ImageUrl = twitchUserResponse?.ProfileImageUrl,
+                Tier = twitchSubscriptionResponse.Tier,
             };
 
             var response = req.CreateResponse(HttpStatusCode.OK);
