@@ -1,21 +1,14 @@
-using System.ComponentModel.DataAnnotations;
-using System.Net;
-using Azure.Core;
-using System.Net.Http.Headers;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
-using MrBigHead.Shared;
-using static System.Net.WebRequestMethods;
-using System.Net.Http.Json;
 using Microsoft.Extensions.Configuration;
-using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
+using Microsoft.Extensions.Logging;
+using MrBigHead.Shared;
+using System.Net;
+using System.Net.Http.Headers;
 using System.Text.Json;
-using System;
+using System.Text.Json.Nodes;
 
 namespace MrBigHead.Func
 {
