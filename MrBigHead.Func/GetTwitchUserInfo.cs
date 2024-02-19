@@ -1,21 +1,14 @@
-using System.ComponentModel.DataAnnotations;
-using System.Net;
-using Azure.Core;
-using System.Net.Http.Headers;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
-using MrBigHead.Shared;
-using static System.Net.WebRequestMethods;
-using System.Net.Http.Json;
 using Microsoft.Extensions.Configuration;
-using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
+using Microsoft.Extensions.Logging;
+using MrBigHead.Shared;
+using System.Net;
+using System.Net.Http.Headers;
 using System.Text.Json;
-using System;
+using System.Text.Json.Nodes;
 
 namespace MrBigHead.Func
 {
@@ -57,12 +50,12 @@ namespace MrBigHead.Func
                 try
                 {
                     secretCliendId = secretClient.GetSecret(secretName);
-                    _logger.LogInformation("Got a secret");
+                    _logger.LogInformation($"Got a secret: {secretCliendId}");
                     clientId = secretCliendId.Value;
 
                     // my broadcasterId
-                    secretBroadcasterId = secretClient.GetSecret(secretName);
-                    _logger.LogInformation("Got a broadcasterId");
+                    secretBroadcasterId = secretClient.GetSecret(secretBroadcasterName);
+                    _logger.LogInformation($"Got a broadcasterId: {secretBroadcasterId}");
                     broadcasterId = secretBroadcasterId.Value;
                 }
                 catch (Exception ex)
@@ -79,11 +72,8 @@ namespace MrBigHead.Func
 
             using (HttpClient client = new())
             {
-                var testUserId = req.Query["userId"];
-
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", req.Query["accessToken"]);
                 client.DefaultRequestHeaders.Add("Client-Id", clientId);
-
 
                 try
                 {
@@ -96,11 +86,13 @@ namespace MrBigHead.Func
                 catch (Exception ex)
                 {
                     var test = ex.Message;
+                    _logger.LogInformation($"threw users execption: {ex.Message}");
                 };
 
+                _logger.LogInformation("going for sub level...");
                 try
                 {
-                    var responseString = await client.GetStringAsync($"https://api.twitch.tv/helix/subscriptions/user?broadcaster_id={broadcasterId}&user_id={loggedInUserId}");
+                    var responseString = await client.GetStringAsync($"https://api.twitch.tv/helix/subscriptions/user?broadcaster_id={broadcasterId}&user_id={twitchUserResponse?.Id}");
                     var parsedResponse = JsonObject.Parse(responseString);
                     var responseData = parsedResponse["data"];
 
@@ -109,6 +101,7 @@ namespace MrBigHead.Func
                 catch (Exception ex)
                 {
                     var test = ex.Message;
+                    _logger.LogInformation($"threw tier level execption: {ex.Message}");
                 }
             }
 
@@ -118,7 +111,7 @@ namespace MrBigHead.Func
                 DisplayName = twitchUserResponse?.DisplayName,
                 Email = twitchUserResponse?.Email,
                 ImageUrl = twitchUserResponse?.ProfileImageUrl,
-                Tier = twitchSubscriptionResponse.Tier,
+                Tier = twitchSubscriptionResponse?.Tier,
             };
 
             var response = req.CreateResponse(HttpStatusCode.OK);

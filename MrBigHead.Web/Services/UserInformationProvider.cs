@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration.UserSecrets;
 using MrBigHead.Shared;
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -12,7 +13,6 @@ namespace MrBigHead.Web.Services
     {
         private readonly HttpClient http = http;
         private string AccessToken;
-        private string UserId;
 
         private UserInformation UserInformation = new();
 
@@ -20,14 +20,26 @@ namespace MrBigHead.Web.Services
         {
             if (principal == null) return new UserInformation();
 
-            AccessToken = principal.Claims.FirstOrDefault(c => c.Type == "idp_access_token").Value;
-            UserId = principal.Claims.FirstOrDefault(c => c.Type == "id").Value;
-
-            if (string.IsNullOrEmpty(UserInformation.UserName))
+            await Console.Out.WriteLineAsync("Principle is not null");
+            AccessToken = principal?.Claims?.FirstOrDefault(c => c.Type == "idp_access_token")?.Value;
+            await Console.Out.WriteLineAsync($"AccessToken: {AccessToken}|");
+            await Console.Out.WriteLineAsync($"principal: {principal}, Claims: {principal?.Claims}");
+            await Console.Out.WriteLineAsync("claims:");
+            foreach (var claim in principal.Claims)
             {
-                UserInformation = await http.GetFromJsonAsync<UserInformation>($"https://bigheadfuncs.azurewebsites.net/api/GetTwitchUserInfo?accessToken={AccessToken}?userId={UserId}");
+                await Console.Out.WriteLineAsync($"claim: {claim.Type} Value: {claim.Value}");
             }
 
+            if (string.IsNullOrEmpty(UserInformation?.UserName))
+            {
+                UserInformation = await http.GetFromJsonAsync<UserInformation>($"https://bigheadfuncs.azurewebsites.net/api/GetTwitchUserInfo?accessToken={AccessToken}");
+            }
+            else
+            {
+                await Console.Out.WriteLineAsync($"no username or other information");
+            }
+
+            await Console.Out.WriteLineAsync($"Image: {UserInformation.ImageUrl}");
             return UserInformation;
         }
     }
