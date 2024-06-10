@@ -36,7 +36,8 @@ namespace MrBigHead.Web.Services
             }
             else
             {
-                await Console.Out.WriteLineAsync($"no username or other information");
+                await Console.Out.WriteLineAsync($"return whatever userinformation we have.");
+                return UserInformation;
             }
 
             await Console.Out.WriteLineAsync($"Image: {UserInformation.ImageUrl}");
