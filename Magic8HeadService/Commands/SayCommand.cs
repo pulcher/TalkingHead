@@ -49,5 +49,15 @@ namespace Magic8HeadService
             
             var check = string.Empty;
         }
+
+        bool IMbhCommand.CanExecute()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        void IMbhCommand.Handle(OnChatCommandReceivedArgs cmd)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

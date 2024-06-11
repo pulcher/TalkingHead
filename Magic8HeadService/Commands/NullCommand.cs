@@ -12,6 +12,11 @@ namespace Magic8HeadService
             this.logger = logger;
         }
 
+        public bool CanExecute()
+        {
+            return false;
+        }
+
         public void Handle(OnChatCommandReceivedArgs cmd)
         {
             logger.LogInformation($"Nope.... not gonna do it!");

@@ -19,6 +19,11 @@ namespace Magic8HeadService
             this.logger = logger;
         }
 
+        public bool CanExecute()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public void Handle(OnChatCommandReceivedArgs cmd)
         {
             var message = GetRandomAnswer();

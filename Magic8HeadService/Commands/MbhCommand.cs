@@ -3,6 +3,8 @@ using Magic8HeadService.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MrBigHead.Shared;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Interfaces;
@@ -18,6 +20,7 @@ public class MbhCommand : ICommandMbhToTwitch
     private IMbhCommand action;
     private string mood= Moods.Snarky;
     private ICommandTracker commandTracker;
+    private Dictionary<string, DateTime> coolDownTimes = new Dictionary<string, DateTime>();
 
     public string Name => "mbh";
 
@@ -36,8 +39,10 @@ public class MbhCommand : ICommandMbhToTwitch
     public void Handle(OnChatCommandReceivedArgs args)
     {
         action = new NullCommand(logger);
+        
+        var commandToExecute = args.Command.ArgumentsAsList.FirstOrDefault()?.ToLower();
 
-        switch (args.Command.ArgumentsAsList.FirstOrDefault()?.ToLower())
+        switch (commandToExecute)
         {
             case AvailableCommands.Help:
                 // case null:
@@ -47,7 +52,8 @@ public class MbhCommand : ICommandMbhToTwitch
                 action = new AskCommand(client, sayingResponse, mood, logger);
                 break;
             case AvailableCommands.Dad:
-                action = new DadCommand(client, sayingResponse, dadJokeService, logger);
+                action = new DadCommand(client, sayingResponse, dadJokeService, 
+                    GetCoolDown(commandToExecute), logger);
                 break;
             case AvailableCommands.Inspire:
                 action = new InspirationalCommand(client, sayingResponse, logger);
@@ -59,7 +65,31 @@ public class MbhCommand : ICommandMbhToTwitch
                 break;
         }
 
+        UpdateCooldown(commandToExecute);
+
         action.Handle(args);
         return;
+    }
+
+    private DateTime GetCoolDown(string commandToExecute)
+    {
+        if (coolDownTimes.TryGetValue(commandToExecute, out var cooldown)) {
+            return cooldown;
+        }
+
+        return DateTime.MinValue;
+    }
+
+    private DateTime UpdateCooldown(string commandToExecute)
+    {
+        var nextExecuteTime = DateTime.UtcNow.AddMinutes(1);
+        
+        if (!coolDownTimes.TryAdd(commandToExecute, nextExecuteTime))
+        {
+            coolDownTimes[commandToExecute] = nextExecuteTime;
+        }
+
+        return nextExecuteTime;
+
     }
 }

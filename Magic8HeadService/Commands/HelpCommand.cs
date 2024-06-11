@@ -45,5 +45,10 @@ namespace Magic8HeadService
             trimmedResult += ".  To help code me or request another feature head over to my repository at https://github.com/pulcher/TalkingHead";
             return trimmedResult;
         }
+
+        public bool CanExecute()
+        {
+            return true;
+        }
     }
 }
