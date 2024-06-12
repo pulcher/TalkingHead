@@ -1,4 +1,5 @@
 using Magic8HeadService.MqttHandlers;
+using Magic8HeadService.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -29,6 +30,7 @@ namespace Magic8HeadService
         readonly IDadJokeService scopedDadJokeService;
         readonly MqttFactory scopedMqttFactory;
         readonly IMessageStackService scopedMessageStackService;
+        readonly CoolDownService scopedCoolDownService;
 
         public Worker(IServiceProvider service, IConfiguration config, TwitchBotConfiguration twitchBotConfiguration,
              ILogger<Worker> logger)
@@ -63,6 +65,10 @@ namespace Magic8HeadService
                 scope.ServiceProvider
                 .GetRequiredService<IMessageStackService>();
 
+            scopedCoolDownService = 
+                scope.ServiceProvider
+                .GetRequiredService<CoolDownService>();
+
             var listOfCommands = scope.ServiceProvider.GetServices<ICommandMbhToTwitch>();
             var helpCommand = scope.ServiceProvider.GetService<ICommandMbhTwitchHelp>();
             var mqttHandlers = scope.ServiceProvider.GetServices<IMqttHandler>();
@@ -70,7 +76,7 @@ namespace Magic8HeadService
             var twitchBot = new TwitchBot(twitchClient, connectionCredentials, twitchBotConfiguration,
                 scopedSayingResponse, scopedDadJokeService, listOfCommands, 
                 helpCommand, scopedMqttFactory, mqttHandlers, scopedMessageStackService,
-                logger);
+                scopedCoolDownService, logger);
 
             SetupGPIO();
         }

@@ -20,12 +20,13 @@ public class MbhCommand : ICommandMbhToTwitch
     private IMbhCommand action;
     private string mood= Moods.Snarky;
     private ICommandTracker commandTracker;
-    private Dictionary<string, DateTime> coolDownTimes = new Dictionary<string, DateTime>();
+    private readonly CoolDownService coolDownService;
 
     public string Name => "mbh";
 
     public MbhCommand(ITwitchClient client, IConfiguration config, ISayingResponse sayingResponse,
-        IDadJokeService dadJokeService, IMessageChecker messageChecker, ICommandTracker commandTracker, ILogger<Worker> logger)
+        IDadJokeService dadJokeService, IMessageChecker messageChecker, ICommandTracker commandTracker, 
+        CoolDownService coolDownService, ILogger<Worker> logger)
     {
         this.client         = client;
         this.config         = config;
@@ -33,6 +34,7 @@ public class MbhCommand : ICommandMbhToTwitch
         this.dadJokeService = dadJokeService;
         this.messageChecker = messageChecker;
         this.commandTracker = commandTracker;
+        this.coolDownService = coolDownService;
         this.logger         = logger;
     }
 
@@ -53,7 +55,7 @@ public class MbhCommand : ICommandMbhToTwitch
                 break;
             case AvailableCommands.Dad:
                 action = new DadCommand(client, sayingResponse, dadJokeService, 
-                    GetCoolDown(commandToExecute), logger);
+                    coolDownService, logger);
                 break;
             case AvailableCommands.Inspire:
                 action = new InspirationalCommand(client, sayingResponse, logger);
@@ -65,31 +67,7 @@ public class MbhCommand : ICommandMbhToTwitch
                 break;
         }
 
-        UpdateCooldown(commandToExecute);
-
         action.Handle(args);
         return;
-    }
-
-    private DateTime GetCoolDown(string commandToExecute)
-    {
-        if (coolDownTimes.TryGetValue(commandToExecute, out var cooldown)) {
-            return cooldown;
-        }
-
-        return DateTime.MinValue;
-    }
-
-    private DateTime UpdateCooldown(string commandToExecute)
-    {
-        var nextExecuteTime = DateTime.UtcNow.AddMinutes(1);
-        
-        if (!coolDownTimes.TryAdd(commandToExecute, nextExecuteTime))
-        {
-            coolDownTimes[commandToExecute] = nextExecuteTime;
-        }
-
-        return nextExecuteTime;
-
     }
 }

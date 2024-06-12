@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Magic8HeadService.Services;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 using TwitchLib.Client;
@@ -17,7 +18,8 @@ namespace Magic8HeadService
         private ILogger<Worker> logger;
         private string alternateSite = "https://karljoke.herokuapp.com/jokes/random"; //= string.Empty;
 
-        public DadCommand(ITwitchClient client, ISayingResponse sayingResponse, IDadJokeService dadJokeService, DateTime coolDown, ILogger<Worker> logger)
+        public DadCommand(ITwitchClient client, ISayingResponse sayingResponse, IDadJokeService dadJokeService,
+            CoolDownService coolDownService, ILogger<Worker> logger)
         {
             this.client = client;
             this.sayingResponse = sayingResponse;

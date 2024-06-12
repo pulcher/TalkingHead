@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Magic8HeadService.Services
 {
-    internal class CoolDownService
+    public class CoolDownService
     {
     }
 }
