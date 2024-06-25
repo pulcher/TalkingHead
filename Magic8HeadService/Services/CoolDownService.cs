@@ -12,23 +12,35 @@ namespace Magic8HeadService.Services
     {
         private Dictionary<string, DateTime> CurrentCoolsDowns  
             = new Dictionary<string, DateTime>();
-        private IOptionsSnapshot<CoolDownOptions> options;
+        private IOptions<CoolDownOptions> options;
 
-        public CoolDownService(IOptionsSnapshot<CoolDownOptions> options)
+        public CoolDownService(IOptions<CoolDownOptions> options)
         {
             this.options = options;
         }
 
-        public void Execute(string commandString)
+        public DateTime Execute(string commandString)
         {
-            if (CurrentCoolsDowns.ContainsKey(commandString))
+            var nextExecutionTime = DateTime.UtcNow.AddSeconds(options.Value.Options[commandString]);
+
+            if (CurrentCoolsDowns.TryGetValue(commandString, out DateTime coolDownDateTime))
             {
-                CurrentCoolsDowns[commandString] = DateTime.Now;
+                if (DateTime.UtcNow >  coolDownDateTime)
+                {
+                    CurrentCoolsDowns[commandString]
+                        = nextExecutionTime;
+                }
+                else
+                {
+                    return coolDownDateTime;
+                }
             }
             else
             {
-                CurrentCoolsDowns.Add(commandString, DateTime.Now);
+                CurrentCoolsDowns.Add(commandString, nextExecutionTime);
             }
+
+            return nextExecutionTime;
         }
 
         public ReadOnlyDictionary<string, DateTime> GetAllCoolDowns()

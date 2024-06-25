@@ -13,6 +13,7 @@ namespace Magic8HeadService
         private ITwitchClient client;
         private ISayingResponse sayingResponse;
         private readonly IDadJokeService dadJokeService;
+        private readonly CoolDownService coolDownService;
         private TimeSpan coolDownTimeSpan = TimeSpan.FromSeconds(15);
         private DateTime coolDown = DateTime.MinValue;
         private ILogger<Worker> logger;
@@ -24,8 +25,8 @@ namespace Magic8HeadService
             this.client = client;
             this.sayingResponse = sayingResponse;
             this.dadJokeService = dadJokeService;
+            this.coolDownService = coolDownService;
             this.logger = logger;
-            this.coolDown = coolDown;
         }
 
         public void Handle(OnChatCommandReceivedArgs cmd)
@@ -49,7 +50,9 @@ namespace Magic8HeadService
         public bool CanExecute()
         {
             var currentTime = DateTime.UtcNow;
-            if ( currentTime < coolDown )
+            var currentCoolDown = coolDownService.GetCurrentCoolDown("dad");
+
+            if (currentTime < currentCoolDown)
             {
                 return false;
             }

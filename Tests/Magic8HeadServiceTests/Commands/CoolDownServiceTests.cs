@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using FluentAssertions.Extensions;
 using Magic8HeadService.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -14,13 +15,13 @@ namespace Magic8HeadServiceTests
     [TestClass]
     public class CoolDownServiceTests
     {
-        private IOptionsSnapshot<CoolDownOptions> optionsSnapshot 
-            = Substitute.For<IOptionsSnapshot<CoolDownOptions>>();
+        private IOptions<CoolDownOptions> options 
+            = Substitute.For<IOptions<CoolDownOptions>>();
 
         [TestMethod]
         public void CanInstance()
         {
-            var cot = new CoolDownService(optionsSnapshot);
+            var cot = new CoolDownService(options);
 
             cot.Should().NotBeNull();
         }
@@ -28,7 +29,8 @@ namespace Magic8HeadServiceTests
         [TestMethod]
         public void GivenCommandExecutionWhenExcutedSetsCoolDown()
         {
-            var cot = new CoolDownService(optionsSnapshot);
+            options.Value.Returns(SetupOptions(2000));
+            var cot = new CoolDownService(options);
 
             cot.Execute("dad");
 
@@ -42,7 +44,8 @@ namespace Magic8HeadServiceTests
         [TestMethod]
         public void GivenCommandExecutionWhenExcutedMultipleTimesSetsCoolDown()
         {
-            var cot = new CoolDownService(optionsSnapshot);
+            options.Value.Returns(SetupOptions(2000));
+            var cot = new CoolDownService(options);
 
             cot.Execute("dad");
             cot.Execute("dad");
@@ -57,16 +60,63 @@ namespace Magic8HeadServiceTests
         [TestMethod]
         public void GivenCommandExecutionWhenExecutedThenCoolDownHasExpectedTime()
         {
-            optionsSnapshot.Value.Returns(new CoolDownOptions { /* set your properties here */ });
-            var cot = new CoolDownService(optionsSnapshot);
+            options.Value.Returns(SetupOptions(2000));
+            var cot = new CoolDownService(options);
+
+            var expectedDateTime  = cot.Execute("dad");
+
+            var results = cot.GetAllCoolDowns();
+
+            results.Should().NotBeNull()
+                .And.ContainKey("dad");
+
+            var diffDate = results["dad"] - expectedDateTime;
+            diffDate.Should().BeLessThan(1.Seconds());
+        }
+
+        [TestMethod]
+        public void GivenCommandExecutionWhenExecutedThenCoolDownDoesNotHaveUnexpectedKey()
+        {
+            options.Value.Returns(SetupOptions(2000));
+            var cot = new CoolDownService(options);
+
+            var expectedDateTime = cot.Execute("dad");
+
+            var results = cot.GetAllCoolDowns();
+
+            results.Should().NotContainKey("dad2");
+        }
+
+        [TestMethod]
+        public void GivenCommandExecutionTwiceWhenExecutedThenCoolDownsContainsCorrectEntry()
+        {
+            options.Value.Returns(SetupOptions(2000));
+            var cot = new CoolDownService(options);
+
+            var expectedDateTime = cot.Execute("dad");
 
             cot.Execute("dad");
 
             var results = cot.GetAllCoolDowns();
 
-            results.Should().NotBeNull();
-            results.Keys.Should().Contain("dad");
-            results["dad"].Should().Be(DateTime.Now);
+            results.Should().NotBeNull()
+                .And.ContainKey("dad");
+
+            var diffDate = results["dad"] - expectedDateTime;
+            diffDate.Should().BeLessThan(1.Seconds());
+        }
+
+        private CoolDownOptions SetupOptions(int delay)
+        {
+            var newOptions = new Dictionary<string, int>
+            {
+                { "dad", delay}
+            };
+
+            return new CoolDownOptions
+            {
+                Options = newOptions
+            };
         }
     }
 }
