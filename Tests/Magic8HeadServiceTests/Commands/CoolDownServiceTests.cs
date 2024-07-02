@@ -106,6 +106,30 @@ namespace Magic8HeadServiceTests
             diffDate.Should().BeLessThan(1.Seconds());
         }
 
+        [TestMethod]
+        public void GivenEmptyConfigurationWhenGetCurrentCoolDownMinDateTimeIsReturned()
+        {
+            options.Value.Returns(SetupOptions(2000));
+            var cot = new CoolDownService(options);
+
+            var nextExecution = cot.GetCurrentCoolDown("dad2");
+
+            nextExecution.Should().Be(DateTime.MinValue);
+        }
+
+        [TestMethod]
+        public void GivenConfigurationWhenGetCurrentCoolDownExpectedDateTimeIsReturned()
+        {
+            options.Value.Returns(SetupOptions(2000));
+            var cot = new CoolDownService(options);
+
+            var expectedDateTime = cot.Execute("dad");
+
+            var nextExecution = cot.GetCurrentCoolDown("dad");
+
+            nextExecution.Should().Be(expectedDateTime);
+        }
+
         private CoolDownOptions SetupOptions(int delay)
         {
             var newOptions = new Dictionary<string, int>

@@ -44,11 +44,15 @@ namespace Magic8HeadService
                     var configuration = services.BuildServiceProvider().GetService<IConfiguration>();
 
                     // probably could convert this into a bind and only need to pass around this object
-                    // well, I believe Huga may have a better idea. :) aka IOptions<T>
+                    // well, I believe Hugo may have a better idea. :) aka IOptions<T>
                     var twitchBotConfiguration = new TwitchBotConfiguration();
                     configuration.GetSection("TwitchBotConfiguration").Bind(twitchBotConfiguration);
-
                     services.AddSingleton(twitchBotConfiguration);
+
+                    var coolDownOptions = new CoolDownOptions();
+                    configuration.GetSection("CoolDownOptions").Bind(coolDownOptions);
+                    services.AddSingleton(coolDownOptions);
+
 
                     var credentials = new ConnectionCredentials(twitchBotConfiguration.UserName, twitchBotConfiguration.AccessToken);
                     services.AddSingleton(credentials);

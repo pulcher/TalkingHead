@@ -10,7 +10,7 @@ namespace Magic8HeadService.Services
 {
     public class CoolDownService
     {
-        private Dictionary<string, DateTime> CurrentCoolsDowns  
+        private Dictionary<string, DateTime> CurrentCoolsDowns
             = new Dictionary<string, DateTime>();
         private IOptions<CoolDownOptions> options;
 
@@ -25,7 +25,7 @@ namespace Magic8HeadService.Services
 
             if (CurrentCoolsDowns.TryGetValue(commandString, out DateTime coolDownDateTime))
             {
-                if (DateTime.UtcNow >  coolDownDateTime)
+                if (DateTime.UtcNow > coolDownDateTime)
                 {
                     CurrentCoolsDowns[commandString]
                         = nextExecutionTime;
@@ -47,6 +47,16 @@ namespace Magic8HeadService.Services
         {
             var readOnlyCurrentCurrentCoolDowns = new ReadOnlyDictionary<string, DateTime>(CurrentCoolsDowns);
             return readOnlyCurrentCurrentCoolDowns;
+        }
+
+        public DateTime GetCurrentCoolDown(string commandString)
+        {
+            if (CurrentCoolsDowns.TryGetValue(commandString, out DateTime coolDownDateTime))
+            {
+                return coolDownDateTime;
+            }
+
+            return DateTime.MinValue;
         }
     }
 }
