@@ -22,6 +22,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrBigHead.Services", "MrBig
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrBigHead.VoiceChecker", "MrBigHead.VoiceChecker\MrBigHead.VoiceChecker.csproj", "{8DDE5BFD-B979-450A-9CDE-9D4BF0BBCF96}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magic8HeadServiceTests", "Tests\Magic8HeadServiceTests\Magic8HeadServiceTests.csproj", "{18942CBD-9D97-4C76-B7AA-4E3B0B2018B9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,10 @@ Global
 		{8DDE5BFD-B979-450A-9CDE-9D4BF0BBCF96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DDE5BFD-B979-450A-9CDE-9D4BF0BBCF96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DDE5BFD-B979-450A-9CDE-9D4BF0BBCF96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18942CBD-9D97-4C76-B7AA-4E3B0B2018B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18942CBD-9D97-4C76-B7AA-4E3B0B2018B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18942CBD-9D97-4C76-B7AA-4E3B0B2018B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18942CBD-9D97-4C76-B7AA-4E3B0B2018B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

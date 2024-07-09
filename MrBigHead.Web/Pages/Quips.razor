@@ -1,6 +1,9 @@
 ﻿@page "/quips"
 @using Microsoft.AspNetCore.Components.QuickGrid
+@using MrBigHead.Shared
+@using MrBigHead.Web.Services
 @inject HttpClient Http
+@inject UserInformationProvider UserInformationProvider
 
 <h1>Phrases</h1>
 
@@ -15,7 +18,7 @@ else
     <QuickGrid Items="@sayings.AsQueryable()" Pagination="@pagination">
         <PropertyColumn Property="@(m => m.Mood)" Sortable="true" />
         <PropertyColumn Property="@(p => p.Phrase)" Sortable="true" />
-        @if (isAdmin)
+        @if (userInformation.Tier == "3000")
         {
         <TemplateColumn Title="Actions">
             <button>Edit</button>
@@ -30,11 +33,15 @@ else
 @code {
     private IEnumerable<Sayings> sayings;
     PaginationState pagination = new PaginationState { ItemsPerPage = 20 };
+    UserInformation userInformation { get; set; }
     bool isAdmin { get; set; } = true;
 
     protected override async Task OnInitializedAsync()
     {
         sayings = await Http.GetFromJsonAsync<IEnumerable<Sayings>>("https://bigheadfuncs.azurewebsites.net/api/getallphrases");
+
+        userInformation = await UserInformationProvider.GetUserInformation(null);
+        Console.WriteLine($"Tier: {userInformation.Tier}");
     }
 
     public class Sayings

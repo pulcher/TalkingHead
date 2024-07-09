@@ -1,4 +1,5 @@
 using Magic8HeadService.MqttHandlers;
+using Magic8HeadService.Services;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
 using MQTTnet.Client;
@@ -29,11 +30,12 @@ namespace Magic8HeadService
         private readonly ISayingResponse sayingResponse;
         private readonly IDadJokeService dadJokeService;
         private readonly IMessageStackService messageStackService;
+        private readonly CoolDownService coolDownService;
 
         public TwitchBot(ITwitchClient client, ConnectionCredentials clientCredentials, TwitchBotConfiguration twitchBotConfiguration,
             ISayingResponse sayingResponse, IDadJokeService dadJokeService, IEnumerable<ICommandMbhToTwitch> listOfCommands, 
             ICommandMbhTwitchHelp helpCommand, MqttFactory mqttFactory, IEnumerable<IMqttHandler> mqttHandlers, 
-            IMessageStackService messageStackService, ILogger<Worker> logger)
+            IMessageStackService messageStackService, CoolDownService coolDownService, ILogger<Worker> logger)
         {
             this.client = client;
 
@@ -42,6 +44,7 @@ namespace Magic8HeadService
             this.sayingResponse = sayingResponse;
             this.dadJokeService = dadJokeService;
             this.messageStackService = messageStackService;
+            this.coolDownService = coolDownService;
             var listOfNames = listOfCommands.Select(x => x.Name);
             this.logger.LogInformation($"-------------- List of Names :  {string.Join(',', listOfNames)}");
             dictOfCommands = listOfCommands
