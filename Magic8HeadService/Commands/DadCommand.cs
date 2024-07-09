@@ -40,6 +40,8 @@ namespace Magic8HeadService
 
                 sayingResponse.SaySomethingNiceAsync(dadJoke, client, cmd.Command.ChatMessage.Channel, cmd.Command.ChatMessage.Username);
                 client.SendMessage(cmd.Command.ChatMessage.Channel, $"Q: {dadJoke}");
+
+                coolDownService.Execute(AvailableCommands.Dad);
             }
             else
             {
@@ -50,7 +52,7 @@ namespace Magic8HeadService
         public bool CanExecute()
         {
             var currentTime = DateTime.UtcNow;
-            var currentCoolDown = coolDownService.GetCurrentCoolDown("dad");
+            var currentCoolDown = coolDownService.GetCurrentCoolDown(AvailableCommands.Dad);
 
             if (currentTime < currentCoolDown)
             {

@@ -49,10 +49,11 @@ namespace Magic8HeadService
                     configuration.GetSection("TwitchBotConfiguration").Bind(twitchBotConfiguration);
                     services.AddSingleton(twitchBotConfiguration);
 
-                    var coolDownOptions = new CoolDownOptions();
-                    configuration.GetSection("CoolDownOptions").Bind(coolDownOptions);
-                    services.AddSingleton(coolDownOptions);
+                    //var coolDownOptions = new CoolDownOptions();
+                    //configuration.GetSection("CoolDownOptions").Bind(coolDownOptions);
+                    //services.AddSingleton(coolDownOptions);
 
+                    services.Configure<CoolDownOptions>(configuration.GetSection("CoolDownOptions"));
 
                     var credentials = new ConnectionCredentials(twitchBotConfiguration.UserName, twitchBotConfiguration.AccessToken);
                     services.AddSingleton(credentials);
