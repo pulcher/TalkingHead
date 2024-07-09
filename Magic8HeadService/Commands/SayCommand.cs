@@ -52,12 +52,7 @@ namespace Magic8HeadService
 
         bool IMbhCommand.CanExecute()
         {
-            throw new System.NotImplementedException();
-        }
-
-        void IMbhCommand.Handle(OnChatCommandReceivedArgs cmd)
-        {
-            throw new System.NotImplementedException();
+            return true;
         }
     }
 }
