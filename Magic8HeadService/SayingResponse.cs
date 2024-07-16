@@ -232,5 +232,23 @@ namespace Magic8HeadService
 
             return pickedSaying.Phrase;
         }
+
+        public bool ResetVoiceForUser(string username)
+        {
+            logger.LogInformation("{username}", username);
+
+            // see if the user exists
+            var userSpeechConfigs = speechConfigAssociated.Where(u => u.Username == username).FirstOrDefault();
+
+            if (userSpeechConfigs != null)
+            {
+                speechConfigAssociated.Remove(userSpeechConfigs);
+                return true;
+                //SaySomethingNiceAsync($"Hey Programs guess who is getting a new voice? {username} is cuz they are a big baby!",
+                //    );
+            }
+
+            return false;
+        }
     }
 }

@@ -12,5 +12,6 @@ namespace Magic8HeadService
             string username, CommandTrackerEntry commandTrackerEntity = null);
         Task SetupSayingsAsync();
         Task SetupVoiceListAsync();
+        bool ResetVoiceForUser(string username);
     }
 }
