@@ -244,8 +244,6 @@ namespace Magic8HeadService
             {
                 speechConfigAssociated.Remove(userSpeechConfigs);
                 return true;
-                //SaySomethingNiceAsync($"Hey Programs guess who is getting a new voice? {username} is cuz they are a big baby!",
-                //    );
             }
 
             return false;
