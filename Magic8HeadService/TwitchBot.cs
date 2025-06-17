@@ -112,6 +112,7 @@ namespace Magic8HeadService
             this.client.OnChatCommandReceived += Client_OnChatCommandReceived;
             this.client.OnConnected += Client_OnConnected;
             this.client.OnDisconnected += Client_OnDisconnected;
+            this.client.OnGiftedSubscription += Client_OnGiftedSubscription;
             this.client.OnJoinedChannel += Client_OnJoinedChannel;
             this.client.OnLog += Client_OnLog;
             this.client.OnMessageReceived += Client_OnMessageReceived;
@@ -157,6 +158,26 @@ namespace Magic8HeadService
             logger.LogInformation($"======== Disconnected ===================");
         }
 
+        public void Client_OnGiftedSubscription(object sender, OnGiftedSubscriptionArgs e)
+        {
+            var message = $"Thanks {e.GiftedSubscription.DisplayName} for gifting a ";
+
+            if (e.GiftedSubscription.MsgParamSubPlan == SubscriptionPlan.Prime)
+                message += "prime ";
+            else if (e.GiftedSubscription.MsgParamSubPlan == SubscriptionPlan.Tier1)
+                message += "Tier 1 ";
+            else if (e.GiftedSubscription.MsgParamSubPlan == SubscriptionPlan.Tier2)
+                message += "Tier 2 ";
+            else if (e.GiftedSubscription.MsgParamSubPlan == SubscriptionPlan.Tier3)
+                message += "Tier 3 ";
+
+            message += $"subscription to {e.GiftedSubscription.MsgParamRecipientUserName}!  You're a rockstar!";
+
+            sayingResponse.SaySomethingNiceAsync(message, client, e.Channel, string.Empty).Wait();
+
+            this.client.SendMessage(e.Channel, message);
+        }
+
         public void Client_OnJoinedChannel(object sender, OnJoinedChannelArgs e)
         {
             logger.LogInformation("Hey programs! Let's talk and make stuff, break stuff, and learn stuff!");
@@ -188,7 +209,7 @@ namespace Magic8HeadService
 
         public void Client_OnNewSubscriber(object sender, OnNewSubscriberArgs e)
         {
-            var message = $"Welcome {e.Subscriber.DisplayName} to the my lab!";
+            var message = $"Welcome {e.Subscriber.DisplayName} to my lab!";
 
             if (e.Subscriber.SubscriptionPlan == SubscriptionPlan.Prime)
                 message += " So kind of you to use your Twitch Prime on my channel!";
