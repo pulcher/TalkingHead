@@ -56,10 +56,11 @@ namespace Magic8HeadService
 
             mqttClient = mqttFactory.CreateMqttClient();
 
-            var mqttCreds = new MqttClientCredentials("mbh", Encoding.ASCII.GetBytes("mbh"));
+            var mqttCreds = new MqttClientCredentials(twitchBotConfiguration.MqttUsername, 
+                Encoding.ASCII.GetBytes( twitchBotConfiguration.MqttPassword));
 
             var mqttClientOptions = new MqttClientOptionsBuilder()
-                .WithTcpServer("broker1.killercomputing.com")
+                .WithTcpServer(twitchBotConfiguration.MqttBroker)
                 .WithCredentials(mqttCreds)
                 .Build();
 
